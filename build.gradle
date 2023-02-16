@@ -19,8 +19,8 @@ apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: 'org.spongepowered.mixin'
 
 version = "1.0"
-group = "dreamys.studio" //http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "examplemod" //name of the output jar
+group = "com.nut.client" //http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "Nut Client" //name of the output jar
 
 sourceCompatibility = targetCompatibility = 1.8 //using java 8
 compileJava.options.encoding = "UTF-8"
@@ -105,18 +105,18 @@ reobf {
 
 jar {
     manifest {
-        attributes "FMLCorePlugin": "studio.dreamys.mixin.MixinLoader",
+        attributes "FMLCorePlugin": "com.nut.client.mixin.MixinLoader",
                 "ForceLoadAsMod": false,
                 "TweakOrder": 0,
                 "ModSide": "CLIENT",
                 'FMLCorePluginContainsFMLMod': true,
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                'MixinConfigs': 'mixins.examplemod.json'
+                'MixinConfigs': 'mixins.nutclient.json'
     }
 }
 
 sourceSets {
     main {
-        ext.refMap = "mixins.examplemod.refmap.json"
+        ext.refMap = "mixins.nutclient.refmap.json"
     }
 }

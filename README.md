@@ -51,7 +51,7 @@ mixinlibrary   0.7.10-SNAPSHOT
 
 jar {
     manifest {
-        attributes "FMLCorePlugin": "studio.dreamys.mixin.MixinLoader", //change this to your path to MixinLoader class
+        attributes "FMLCorePlugin": "mixin.com.nut.MixinLoader", //change this to your path to MixinLoader class
                 "ForceLoadAsMod": true,
                 "TweakOrder": 0,
                 "ModSide": "CLIENT",
@@ -98,7 +98,7 @@ public class MixinLoader implements IFMLLoadingPlugin {
 ### Optional
 If you ever want to debug with mixins in your client, add this to your VM options in the `Minecraft Client` run configuration:
 
-`-Dfml.coreMods.load="studio.dreamys.mixin.MixinLoader"`
+`-Dfml.coreMods.load="mixin.com.nut.MixinLoader"`
 
 *Change to your path to MixinLoader class.*
 

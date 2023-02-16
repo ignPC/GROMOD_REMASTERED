@@ -1,4 +1,4 @@
-package studio.dreamys.mixin;
+package com.nut.client.mixin;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.spongepowered.asm.launch.MixinBootstrap;
@@ -9,9 +9,9 @@ import java.util.Map;
 
 public class MixinLoader implements IFMLLoadingPlugin {
     public MixinLoader() {
-        System.out.println("[ExampleMod] Injecting with IFMLLoadingPlugin.");
+        System.out.println("[Nut Client] Injecting with IFMLLoadingPlugin.");
         MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.examplemod.json");
+        Mixins.addConfiguration("mixins.nutclient.json");
         MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
     }
 

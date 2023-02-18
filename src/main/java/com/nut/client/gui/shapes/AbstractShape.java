@@ -8,8 +8,8 @@ public abstract class AbstractShape {
     private int y;
     private int width;
     private int height;
-    private int margin;
-    private int padding;
+    private int margin = 0;
+    private int padding = 0;
     private AbstractShape parent;
     protected List<AbstractShape> subclassList = new ArrayList<>();
 
@@ -35,8 +35,9 @@ public abstract class AbstractShape {
 
     public static class ShapeBuilder {
         private final Class<? extends AbstractShape> clazz;
-        private int padding;
-        private int margin;
+
+        public int padding = 0;
+        public int margin = 0;
 
         public ShapeBuilder(Class<? extends AbstractShape> clazz) {
             this.clazz = clazz;
@@ -52,7 +53,7 @@ public abstract class AbstractShape {
             return this;
         }
 
-        public AbstractShape build(int x, int y, int width, int height) throws IllegalAccessException, InstantiationException {
+        public AbstractShape build(int x, int y, int width, int height) throws InstantiationException, IllegalAccessException {
             AbstractShape shape = clazz.newInstance();
             shape.setX(x);
             shape.setY(y);

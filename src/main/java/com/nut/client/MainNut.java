@@ -12,4 +12,10 @@ public class MainNut {
     public void init(FMLInitializationEvent event) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         new Loader();
     }
+
+    /*
+    TODO:
+        - gui framework
+        - modules annotation
+     */
 }

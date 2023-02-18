@@ -25,7 +25,9 @@ public abstract class AbstractShape {
         }
     }
 
-    public void add(AbstractShape shapeObject){
+     public void add(AbstractShape shapeObject){
+        shapeObject.x += this.x;
+        shapeObject.y += this.y;
         subclassList.add(shapeObject);
     }
 

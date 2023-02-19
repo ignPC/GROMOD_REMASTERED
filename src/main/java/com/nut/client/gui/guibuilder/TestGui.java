@@ -1,4 +1,4 @@
-package com.nut.client;
+package com.nut.client.gui.guibuilder;
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;

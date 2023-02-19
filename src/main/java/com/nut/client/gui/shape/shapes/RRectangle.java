@@ -1,4 +1,6 @@
-package com.nut.client.gui.shapes;
+package com.nut.client.gui.shape.shapes;
+
+import com.nut.client.gui.shape.AbstractShape;
 
 public class RRectangle extends AbstractShape {
     private final int radius;

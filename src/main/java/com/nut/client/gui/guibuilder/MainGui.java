@@ -1,9 +1,9 @@
 package com.nut.client.gui.guibuilder;
 
-import com.nut.client.gui.shapes.AbstractShape;
-import com.nut.client.gui.shapes.RRectangle;
+import com.nut.client.gui.shape.FloatDir;
+import com.nut.client.gui.shape.shapes.RRectangle;
 
-import static com.nut.client.gui.shapes.AbstractShape.*;
+import static com.nut.client.gui.shape.AbstractShape.*;
 
 public class MainGui {
     public MainGui() throws IllegalAccessException, InstantiationException {
@@ -13,6 +13,9 @@ public class MainGui {
         RRectangle rRectangle = (RRectangle) new ShapeBuilder(RRectangle.class)
                 .withPadding(10)
                 .withMargin(20)
+                .withFloat(FloatDir.LEFT)
                 .build(0, 0, 100, 50);
+
+
     }
 }

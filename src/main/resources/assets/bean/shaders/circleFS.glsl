@@ -1,12 +1,16 @@
 #version 330 core
 
-uniform vec2 center;
+in vec4 color;
+in vec2 shape_position;
+in vec2 shape_size;
+in float radius;
+in float shade;
+in float halo;
 
 void main() {
-    float radius = 200.;
-    float shade = 2.;
-
+    vec2 center = shape_position + shape_size / 2.;
     float len = length(center - gl_FragCoord.xy);
-    float step = smoothstep(radius, radius + shade, len);
-    gl_FragColor = vec4(vec3(step), 1);
+    float step = 1. - smoothstep(radius, radius + shade, len);
+
+    gl_FragColor = vec4(color.rgb, step);
 }

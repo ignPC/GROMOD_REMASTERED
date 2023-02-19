@@ -58,9 +58,6 @@ dependencies {
         exclude module: 'log4j-core'
     }
     shade('org.reflections:reflections:0.10.2')
-    shade('org.slick2d:slick2d-core:1.0.2') {
-        exclude module: 'lwjgl'
-    }
     compileOnly 'org.projectlombok:lombok:1.18.26'
 
     //compile will make your library available only in this dev environment

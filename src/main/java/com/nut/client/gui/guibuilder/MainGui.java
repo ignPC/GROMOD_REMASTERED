@@ -1,6 +1,5 @@
 package com.nut.client.gui.guibuilder;
 
-import com.nut.client.gui.shapes.AbstractShape;
 import com.nut.client.gui.shapes.RRectangle;
 
 import static com.nut.client.gui.shapes.AbstractShape.*;

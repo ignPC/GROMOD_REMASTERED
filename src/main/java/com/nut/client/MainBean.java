@@ -1,5 +1,6 @@
 package com.nut.client;
 
+import com.nut.client.gui.guibuilder.MainGui;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 

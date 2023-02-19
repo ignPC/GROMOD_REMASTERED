@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractShape {
+    private int originalX;
+    private int originalY;
+    private int originalWidth;
+    private int originalHeight;
+
     private int x;
     private int y;
     private int width;
@@ -12,37 +17,42 @@ public abstract class AbstractShape {
     private int padding = 0;
     private FloatDir floatDir = FloatDir.NONE;
     private AbstractShape parent;
-    protected List<AbstractShape> subclassList = new ArrayList<>();
+    protected List<AbstractShape> childShapeList = new ArrayList<>();
 
     public AbstractShape(int x, int y, int width, int height) {
         this.setX(x);
         this.setY(y);
         this.setWidth(width);
         this.setHeight(height);
+
+        this.originalX = x;
+        this.originalY = y;
+        this.originalWidth = width;
+        this.originalHeight = height;
     }
 
     public void draw() {
-        for (AbstractShape shape : subclassList) {
+        for (AbstractShape shape : childShapeList) {
             shape.draw();
         }
     }
 
     public void add(AbstractShape shapeObject){
         shapeObject.setParent(this);
-        subclassList.add(shapeObject);
+        childShapeList.add(shapeObject);
     }
 
     /***========================================BUILDER========================================***/
 
     public static class ShapeBuilder {
-        private final Class<? extends AbstractShape> clazz;
+        private final AbstractShape shape;
 
         public int padding = 0;
         public int margin = 0;
         private FloatDir sFloat;
 
-        public ShapeBuilder(Class<? extends AbstractShape> clazz) {
-            this.clazz = clazz;
+        public ShapeBuilder(AbstractShape shape) {
+            this.shape = shape;
         }
 
         public ShapeBuilder withPadding(int padding) {
@@ -60,12 +70,7 @@ public abstract class AbstractShape {
             return this;
         }
 
-        public AbstractShape build(int x, int y, int width, int height) throws InstantiationException, IllegalAccessException {
-            AbstractShape shape = clazz.newInstance();
-            shape.setX(x);
-            shape.setY(y);
-            shape.setWidth(width);
-            shape.setHeight(height);
+        public AbstractShape build() {
             shape.setPadding(padding);
             shape.setMargin(margin);
             shape.setFloat(sFloat);
@@ -73,23 +78,26 @@ public abstract class AbstractShape {
         }
     }
 
+
     /***========================================SETTERS========================================***/
 
     public void setX(int x) {
-        switch (floatDir) {
-            case NONE:
-            case TOP:
-            case BOTTOM:
-                break;
-            case RIGHT:
-            case LEFT:
-                floatX(x);
-                break;
-            default:
-                throw new IllegalArgumentException("Shape Float not set correctly.");
+        if(parent != null) {
+            switch (floatDir) {
+                case NONE:
+                case TOP:
+                case BOTTOM:
+                    break;
+                case RIGHT:
+                case LEFT:
+                    floatX(x);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Shape Float not set correctly.");
+            }
         }
 
-        this.x = x + margin;
+        this.x = originalX + margin;
     }
 
     public void setY(int y) {
@@ -108,7 +116,7 @@ public abstract class AbstractShape {
             }
         }
 
-        this.y = y + margin;
+        this.y = originalY + margin;
     }
 
     public void setWidth(int width) {
@@ -119,7 +127,7 @@ public abstract class AbstractShape {
         if (floatDir != FloatDir.NONE && parent != null) {
             if (floatDir == FloatDir.LEFT) {
                 int maxX = parent.getInnerX();
-                for (AbstractShape sibling : parent.subclassList) {
+                for (AbstractShape sibling : parent.childShapeList) {
                     if (sibling != this && sibling.getFloat() != FloatDir.RIGHT) {
                         maxX = Math.max(maxX, sibling.getOuterX() + sibling.getOuterWidth());
                     }
@@ -127,7 +135,7 @@ public abstract class AbstractShape {
                 this.width = maxX - x - margin;
             } else if (floatDir == FloatDir.RIGHT) {
                 int minX = parent.getInnerX() + parent.getInnerWidth();
-                for (AbstractShape sibling : parent.subclassList) {
+                for (AbstractShape sibling : parent.childShapeList) {
                     if (sibling != this && sibling.getFloat() != FloatDir.LEFT) {
                         minX = Math.min(minX, sibling.getOuterX());
                     }
@@ -149,7 +157,7 @@ public abstract class AbstractShape {
         if (floatDir != FloatDir.NONE && parent != null) {
             if (floatDir == FloatDir.BOTTOM) {
                 int maxY = parent.getInnerY();
-                for (AbstractShape sibling : parent.subclassList) {
+                for (AbstractShape sibling : parent.childShapeList) {
                     if (sibling != this && sibling.getFloat() != FloatDir.TOP) {
                         maxY = Math.max(maxY, sibling.getOuterY() + sibling.getOuterHeight());
                     }
@@ -157,7 +165,7 @@ public abstract class AbstractShape {
                 this.height = maxY - y - margin;
             } else if (floatDir == FloatDir.TOP) {
                 int minY = parent.getInnerY() + parent.getInnerHeight();
-                for (AbstractShape sibling : parent.subclassList) {
+                for (AbstractShape sibling : parent.childShapeList) {
                     if (sibling != this && sibling.getFloat() != FloatDir.BOTTOM) {
                         minY = Math.min(minY, sibling.getOuterX());
                     }
@@ -174,7 +182,7 @@ public abstract class AbstractShape {
     public void floatX(int x){
         if (floatDir == FloatDir.RIGHT) {
             int minX = parent.getInnerX() + parent.getInnerWidth();
-            for (AbstractShape sibling : parent.subclassList) {
+            for (AbstractShape sibling : parent.childShapeList) {
                 if (sibling != this && sibling.getFloat() != FloatDir.LEFT) {
                     minX = Math.min(minX, sibling.getOuterX());
                 }
@@ -182,7 +190,7 @@ public abstract class AbstractShape {
             this.x = Math.min(minX - width, x - margin);
         } else if (floatDir == FloatDir.LEFT) {
             int maxX = parent.getInnerX();
-            for (AbstractShape sibling : parent.subclassList) {
+            for (AbstractShape sibling : parent.childShapeList) {
                 if (sibling != this && sibling.getFloat() != FloatDir.RIGHT) {
                     maxX = Math.max(maxX, sibling.getOuterX() + sibling.getOuterWidth());
                 }
@@ -195,7 +203,7 @@ public abstract class AbstractShape {
         if (floatDir == FloatDir.BOTTOM) {
             assert parent != null;
             int minY = parent.getInnerY() + parent.getInnerHeight();
-            for (AbstractShape sibling : parent.subclassList) {
+            for (AbstractShape sibling : parent.childShapeList) {
                 if (sibling != this && sibling.getFloat() != FloatDir.TOP) {
                     minY = Math.min(minY, sibling.getOuterY());
                 }
@@ -204,7 +212,7 @@ public abstract class AbstractShape {
         } else if (floatDir == FloatDir.TOP) {
             assert parent != null;
             int maxY = parent.getInnerY();
-            for (AbstractShape sibling : parent.subclassList) {
+            for (AbstractShape sibling : parent.childShapeList) {
                 if (sibling != this && sibling.getFloat() != FloatDir.BOTTOM) {
                     maxY = Math.max(maxY, sibling.getOuterY() + sibling.getOuterHeight());
                 }
@@ -219,7 +227,7 @@ public abstract class AbstractShape {
         setY(y);
         setWidth(width);
         setHeight(height);
-        for (AbstractShape shape : subclassList) {
+        for (AbstractShape shape : childShapeList) {
             shape.setX(x);
             shape.setY(y);
             shape.setWidth(width);
@@ -233,7 +241,7 @@ public abstract class AbstractShape {
         setY(y);
         setWidth(width);
         setHeight(height);
-        for (AbstractShape shape : subclassList) {
+        for (AbstractShape shape : childShapeList) {
             shape.setX(x);
             shape.setY(y);
             shape.setWidth(width);
@@ -243,7 +251,7 @@ public abstract class AbstractShape {
 
     public void setPadding(int padding) {
         this.padding = padding;
-        for (AbstractShape shape : subclassList) {
+        for (AbstractShape shape : childShapeList) {
             shape.setX(x);
             shape.setY(y);
             shape.setWidth(width);
@@ -319,6 +327,23 @@ public abstract class AbstractShape {
 
     public AbstractShape getParent() {
         return parent;
+    }
+
+    /***========================================DEBUG========================================***/
+
+    public String getInformation() {
+        return "AbstractShape{" +
+                "x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                ", margin=" + margin +
+                ", padding=" + padding +
+                ", floatDir=" + floatDir +
+                ", parent=" + parent +
+                ", childShapeList=" + childShapeList +
+                '}';
+
     }
 }
 

@@ -1,4 +1,4 @@
-package com.nut.client.gui;
+package com.nut.client.utils;
 
 import lombok.Getter;
 import lombok.Setter;

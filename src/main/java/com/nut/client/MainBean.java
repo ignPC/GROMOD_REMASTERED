@@ -19,5 +19,18 @@ public class MainBean {
             - shaders
             - more shapes
         - modules annotation
+            - module class automatically creates gui element
+        - custom 3d renders
+        - basebuilder
+        - autotick
+        - fps
+            -entity limit
+            -entity custom render
+        - debugblock that works
+        - schematica mods
+            -faster printer somehow
+            -replay printer
+            -auto fit schematic
+
      */
 }

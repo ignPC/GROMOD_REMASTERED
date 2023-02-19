@@ -5,6 +5,7 @@ import com.nut.client.annotation.Component;
 import com.nut.client.event.AfterScreenCreationEvent;
 import com.nut.client.renderer.GLObject;
 import com.nut.client.renderer.Shader;
+import com.nut.client.renderer.util.ProjectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
@@ -15,20 +16,22 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.opengl.Display;
 
+import java.io.IOException;
+
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL20.glUniform2f;
-import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL20.*;
 
 @Component
 public class TestGui extends GuiScreen {
 
     private final KeyBinding keyBinding;
     private final Shader circle = new Shader(
-            null,
+            new ResourceLocation("bean", "shaders/circleVS.glsl"),
             new ResourceLocation("bean", "shaders/circleFS.glsl"),
+            "projection",
             "center"
     );
     private GLObject object;
@@ -46,6 +49,7 @@ public class TestGui extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         glUseProgram(circle.getShaderProgram());
+        glUniformMatrix4(circle.getUniform("projection"), false, ProjectionUtils.orthoProjection);
         glUniform2f(circle.getUniform("center"), Display.getWidth() / 2f, Display.getHeight() / 2f);
 
         object.render();
@@ -57,10 +61,10 @@ public class TestGui extends GuiScreen {
     @SubscribeEvent
     public void onScreenCreation(AfterScreenCreationEvent event) {
         float[] positions = {
-                0, 0,
                 0, 1080,
-                1920, 1080,
-                1920, 0
+                0, 0,
+                1920, 0,
+                1920, 1080
         };
 
         object = new GLObject(GL_QUADS, 0, 4)
@@ -73,11 +77,12 @@ public class TestGui extends GuiScreen {
                 .unbindVao();
     }
 
+    @Override
+    public void handleInput() throws IOException {
+        super.handleInput();
+    }
+
     @SubscribeEvent
     public void onClientTick(InputEvent event) {
-        if (Minecraft.getMinecraft().currentScreen == null) {
-            if (keyBinding.isPressed())
-                Minecraft.getMinecraft().displayGuiScreen(this);
-        }
     }
 }

@@ -10,5 +10,5 @@ public class Module {
     public Module() {
     }
 
-    private final String moduleName = "dsoifs";
+    private final String moduleName = "module";
 }

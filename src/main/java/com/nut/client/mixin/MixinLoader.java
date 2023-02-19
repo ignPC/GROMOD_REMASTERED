@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MixinLoader implements IFMLLoadingPlugin {
     public MixinLoader() {
-        System.out.println("[Nut Client] Injecting with IFMLLoadingPlugin.");
+        System.out.println("[Bean Client] Injecting with IFMLLoadingPlugin.");
         MixinBootstrap.init();
         Mixins.addConfiguration("mixins.nutclient.json");
         MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
@@ -31,9 +31,7 @@ public class MixinLoader implements IFMLLoadingPlugin {
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {
-
-    }
+    public void injectData(Map<String, Object> data) {}
 
     @Override
     public String getAccessTransformerClass() {

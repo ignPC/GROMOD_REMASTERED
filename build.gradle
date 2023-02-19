@@ -45,6 +45,7 @@ repositories {
 }
 
 dependencies {
+
     //shade will bundle your library to the output jar
     //your libraries will be accessible outside of intellij
     //example:
@@ -117,7 +118,7 @@ jar {
 }
 
 sourceSets {
-    main {
+    main{
         ext.refMap = "mixins.nutclient.refmap.json"
     }
 }

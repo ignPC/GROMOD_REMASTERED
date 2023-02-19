@@ -6,10 +6,18 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import java.lang.reflect.InvocationTargetException;
 
 @Mod(modid = "Nut Client", version = "1.0.0")
-public class MainNut {
+public class MainBean {
     
     @Mod.EventHandler
     public void init(FMLPostInitializationEvent event) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         new Loader();
     }
+
+    /*
+    TODO:
+        - gui framework
+            - shaders
+            - more shapes
+        - modules annotation
+     */
 }

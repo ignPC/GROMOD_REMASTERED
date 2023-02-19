@@ -1,7 +1,7 @@
 package com.nut.client;
 
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 public class MainNut {
     
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    public void init(FMLPostInitializationEvent event) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         new Loader();
     }
 }

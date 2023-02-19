@@ -1,11 +1,14 @@
-package com.nut.client.gui;
+package com.nut.client.gui.guibuilder;
+
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
 import com.nut.client.event.GuiOpenEvent;
+import com.nut.client.gui.shape.AbstractShape;
+import com.nut.client.gui.shape.shapes.RRectangle;
 import com.nut.client.renderer.RenderPipeline;
+import com.nut.client.utils.Color;
 import net.minecraftforge.common.MinecraftForge;
-import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.List;
 public class BaseGui {
 
     public static BaseGui currentScreen;
-    private final List<AbstractShape1> shapes = new ArrayList<>();
+    private final List<AbstractShape> shapes = new ArrayList<>();
 
     @AutoInit
     public BaseGui() {
@@ -22,16 +25,14 @@ public class BaseGui {
     }
 
     public void init() {
-        RRectangle1 rRectangle1 = new RRectangle1(1920 / 2f - 100, 1080 / 2f - 100, 200, 200, new Color(1f, 1f, 0f, 1f))
-                .radius(80)
-                .shade(2f)
-                .halo(10f);
-        shapes.add(rRectangle1);
+        RRectangle rRectangle = new RRectangle((int) (1920 / 2f - 100), (int) (1080 / 2f - 100), 200, 200, new Color(1f, 1f, 0f, 1f), 10);
+
+        shapes.add(rRectangle);
     }
 
     public void openGui() {
         RenderPipeline.clearPipeline();
-        for (AbstractShape1 shape : shapes)
+        for (AbstractShape shape : shapes)
             shape.pushToPipeline();
         MinecraftForge.EVENT_BUS.post(new GuiOpenEvent());
         currentScreen = this;

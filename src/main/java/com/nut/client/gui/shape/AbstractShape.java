@@ -1,29 +1,33 @@
 package com.nut.client.gui.shape;
 
+import com.nut.client.utils.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractShape {
-    private int originalX;
-    private int originalY;
-    private int originalWidth;
-    private int originalHeight;
+    protected final int originalX;
+    protected final int originalY;
+    protected final int originalWidth;
+    protected final int originalHeight;
 
-    private int x;
-    private int y;
-    private int width;
-    private int height;
-    private int margin = 0;
-    private int padding = 0;
-    private FloatDir floatDir = FloatDir.NONE;
-    private AbstractShape parent;
+    protected int x;
+    protected int y;
+    protected int width;
+    protected int height;
+    protected Color color;
+    protected int margin = 0;
+    protected int padding = 0;
+    protected FloatDir floatDir = FloatDir.NONE;
+    protected AbstractShape parent;
     protected List<AbstractShape> childShapeList = new ArrayList<>();
 
-    public AbstractShape(int x, int y, int width, int height) {
+    public AbstractShape(int x, int y, int width, int height, Color color) {
         this.setX(x);
         this.setY(y);
         this.setWidth(width);
         this.setHeight(height);
+        this.setColor(color);
 
         this.originalX = x;
         this.originalY = y;
@@ -41,6 +45,8 @@ public abstract class AbstractShape {
         shapeObject.setParent(this);
         childShapeList.add(shapeObject);
     }
+
+    public abstract void pushToPipeline();
 
     /***========================================BUILDER========================================***/
 
@@ -259,6 +265,10 @@ public abstract class AbstractShape {
         }
     }
 
+    private void setColor(Color color) {
+        this.color = color;
+    }
+
     public void setParent(AbstractShape parent) {
         this.parent = parent;
     }
@@ -323,6 +333,10 @@ public abstract class AbstractShape {
 
     private FloatDir getFloat() {
         return floatDir;
+    }
+
+    public Color getColor(){
+        return color;
     }
 
     public AbstractShape getParent() {

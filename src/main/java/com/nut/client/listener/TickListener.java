@@ -2,7 +2,7 @@ package com.nut.client.listener;
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
-import com.nut.client.gui.BaseGui;
+import com.nut.client.gui.guibuilder.BaseGui;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;

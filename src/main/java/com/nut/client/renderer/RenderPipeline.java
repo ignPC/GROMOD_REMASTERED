@@ -4,7 +4,7 @@ import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
 import com.nut.client.event.AfterScreenCreationEvent;
 import com.nut.client.event.GuiOpenEvent;
-import com.nut.client.gui.BaseGui;
+import com.nut.client.gui.guibuilder.BaseGui;
 import com.nut.client.renderer.util.ProjectionUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;

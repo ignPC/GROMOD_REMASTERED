@@ -10,7 +10,7 @@ in float halo;
 void main() {
     vec2 center = shape_position + shape_size / 2.;
     float len = length(center - gl_FragCoord.xy);
-    float step = 1. - smoothstep(radius, radius + shade, len);
+    float step = smoothstep(radius, radius + shade, len);
 
-    gl_FragColor = vec4(color.rgb, step);
+    gl_FragColor = vec4(vec3(step), 1);
 }

@@ -26,12 +26,8 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
 @Component
 public class RenderPipeline {
 
-    private final GLObject pipeline = new GLObject(GL_QUADS, 0, 4);
-    private final Shader circle = new Shader(
-            new ResourceLocation("bean", "shaders/circleVS.glsl"),
-            new ResourceLocation("bean", "shaders/circleFS.glsl"),
-            "projection"
-    );
+    private GLObject pipeline;
+    private Shader shader;
 
     public static final List<Float> quadPositions = new ArrayList<>();
     public static final List<Float> colors = new ArrayList<>();
@@ -49,17 +45,15 @@ public class RenderPipeline {
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
         if (BaseGui.currentScreen == null) return;
-        glUseProgram(circle.getShaderProgram());
-        glUniformMatrix4(circle.getUniform("projection"), false, ProjectionUtils.orthoProjection);
+        glUseProgram(shader.getShaderProgram());
+        glUniformMatrix4(shader.getUniform("projection"), false, ProjectionUtils.orthoProjection);
 
-        GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(770, 771);
 
         pipeline.render();
         pipeline.unbindVao();
 
-        GlStateManager.enableTexture2D();
         glUseProgram(0);
     }
 
@@ -77,6 +71,12 @@ public class RenderPipeline {
 
     @SubscribeEvent
     public void onAfterScreenCreation(AfterScreenCreationEvent event) {
+        shader = new Shader(
+                new ResourceLocation("bean", "shaders/guiVS.glsl"),
+                new ResourceLocation("bean", "shaders/guiFS.glsl"),
+                "projection"
+        );
+        pipeline = new GLObject(GL_QUADS, 0, 8);
         pipeline
                 .bindVao()
                 .addVbo(GL_ARRAY_BUFFER) // Quad positions 4 * vec2

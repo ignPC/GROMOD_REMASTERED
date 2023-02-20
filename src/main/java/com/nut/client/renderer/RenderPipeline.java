@@ -3,22 +3,22 @@ package com.nut.client.renderer;
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
 import com.nut.client.event.AfterScreenCreationEvent;
-import com.nut.client.event.GuiOpenEvent;
+import com.nut.client.event.RenderPipelineRefreshEvent;
+import com.nut.client.event.GuiRenderEvent;
 import com.nut.client.gui.guibuilder.BaseGui;
 import com.nut.client.renderer.util.ProjectionUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 
@@ -45,7 +45,7 @@ public class RenderPipeline {
     }
 
     @SubscribeEvent
-    public void onRenderWorldLast(RenderWorldLastEvent event) {
+    public void onRenderWorldLast(GuiRenderEvent event) {
         if (BaseGui.currentScreen == null) return;
         glUseProgram(shader.getShaderProgram());
         glUniformMatrix4(shader.getUniform("projection"), false, ProjectionUtils.orthoProjection);
@@ -60,7 +60,7 @@ public class RenderPipeline {
     }
 
     @SubscribeEvent
-    public void onGuiChange(GuiOpenEvent event) {
+    public void onGuiChange(RenderPipelineRefreshEvent event) {
         pipeline
                 .populateVbo(0, list2Array(quadPositions), GL_STATIC_DRAW)
                 .populateVbo(1, list2Array(colors), GL_STATIC_DRAW)
@@ -128,7 +128,6 @@ public class RenderPipeline {
         float[] floats = new float[data.size()];
         for (int i = 0; i < floats.length; i++)
             floats[i] = data.get(i);
-        System.out.println(Arrays.toString(floats));
         return floats;
     }
 

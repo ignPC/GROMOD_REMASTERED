@@ -29,11 +29,6 @@ public class RRectangle extends AbstractShape {
         return this;
     }
 
-    public RRectangle withHalo(float halo) {
-        this.halo = halo;
-        return this;
-    }
-
     @Override
     public void draw(){
         pushToPipeline();
@@ -41,10 +36,10 @@ public class RRectangle extends AbstractShape {
     }
 
     public void pushToPipeline() {
-        RenderPipeline.queueData(RenderPipeline.quadPositions, x, y + height, x, y, x + width, y, x + width, y + height);
+        RenderPipeline.queueData(RenderPipeline.quadPositions, 800, y + height, 800, y, 800 + width, y, 800 + width, y + height);
         for (int i = 0; i < 4; i++) {
             RenderPipeline.queueData(RenderPipeline.colors, color.getR(), color.getG(), color.getB(), color.getA());
-            RenderPipeline.queueData(RenderPipeline.shapePositions, x, y);
+            RenderPipeline.queueData(RenderPipeline.shapePositions, 800, y);
             RenderPipeline.queueData(RenderPipeline.shapeSizes, width, height);
             RenderPipeline.queueData(RenderPipeline.radiusFloats, radius);
             RenderPipeline.queueData(RenderPipeline.shadeFloats, shade);

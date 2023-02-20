@@ -77,7 +77,11 @@ public abstract class AbstractShape {
                 case BOTTOM:
                     break;
                 case RIGHT:
+                case TOP_RIGHT:
+                case BOTTOM_RIGHT:
                 case LEFT:
+                case TOP_LEFT:
+                case BOTTOM_LEFT:
                     floatX(x);
                     break;
                 default:
@@ -96,7 +100,11 @@ public abstract class AbstractShape {
                 case LEFT:
                     break;
                 case TOP:
+                case TOP_LEFT:
+                case TOP_RIGHT:
                 case BOTTOM:
+                case BOTTOM_LEFT:
+                case BOTTOM_RIGHT:
                     floatY(y);
                     break;
                 default:
@@ -113,18 +121,18 @@ public abstract class AbstractShape {
         }
 
         if (floatDir != FloatDir.NONE && parent != null) {
-            if (floatDir == FloatDir.LEFT) {
+            if (FloatDir.getLeft().contains(floatDir)) {
                 int maxX = parent.getInnerX();
                 for (AbstractShape sibling : parent.childShapeList) {
-                    if (sibling != this && sibling.getFloat() != FloatDir.RIGHT) {
+                    if (sibling != this && FloatDir.getRight().contains(sibling.getFloat())) {
                         maxX = Math.max(maxX, sibling.getOuterX() + sibling.getOuterWidth());
                     }
                 }
                 this.width = maxX - x - margin;
-            } else if (floatDir == FloatDir.RIGHT) {
+            } else if (FloatDir.getRight().contains(floatDir)) {
                 int minX = parent.getInnerX() + parent.getInnerWidth();
                 for (AbstractShape sibling : parent.childShapeList) {
-                    if (sibling != this && sibling.getFloat() != FloatDir.LEFT) {
+                    if (sibling != this && FloatDir.getLeft().contains(sibling.getFloat())) {
                         minX = Math.min(minX, sibling.getOuterX());
                     }
                 }
@@ -143,18 +151,18 @@ public abstract class AbstractShape {
         }
 
         if (floatDir != FloatDir.NONE && parent != null) {
-            if (floatDir == FloatDir.BOTTOM) {
+            if (FloatDir.getBottom().contains(floatDir)) {
                 int maxY = parent.getInnerY();
                 for (AbstractShape sibling : parent.childShapeList) {
-                    if (sibling != this && sibling.getFloat() != FloatDir.TOP) {
+                    if (sibling != this && FloatDir.getTop().contains(sibling.getFloat())) {
                         maxY = Math.max(maxY, sibling.getOuterY() + sibling.getOuterHeight());
                     }
                 }
                 this.height = maxY - y - margin;
-            } else if (floatDir == FloatDir.TOP) {
+            } else if (FloatDir.getTop().contains(floatDir)) {
                 int minY = parent.getInnerY() + parent.getInnerHeight();
                 for (AbstractShape sibling : parent.childShapeList) {
-                    if (sibling != this && sibling.getFloat() != FloatDir.BOTTOM) {
+                    if (sibling != this && FloatDir.getBottom().contains(sibling.getFloat())) {
                         minY = Math.min(minY, sibling.getOuterX());
                     }
                 }
@@ -168,18 +176,18 @@ public abstract class AbstractShape {
     }
 
     public void floatX(int x){
-        if (floatDir == FloatDir.RIGHT) {
+        if (FloatDir.getRight().contains(floatDir)) {
             int minX = parent.getInnerX() + parent.getInnerWidth();
             for (AbstractShape sibling : parent.childShapeList) {
-                if (sibling != this && sibling.getFloat() != FloatDir.LEFT) {
+                if (sibling != this && FloatDir.getLeft().contains(sibling.getFloat())) {
                     minX = Math.min(minX, sibling.getOuterX());
                 }
             }
             this.x = Math.min(minX - width, x - margin);
-        } else if (floatDir == FloatDir.LEFT) {
+        } else if (FloatDir.getLeft().contains(floatDir)) {
             int maxX = parent.getInnerX();
             for (AbstractShape sibling : parent.childShapeList) {
-                if (sibling != this && sibling.getFloat() != FloatDir.RIGHT) {
+                if (sibling != this && FloatDir.getRight().contains(sibling.getFloat())) {
                     maxX = Math.max(maxX, sibling.getOuterX() + sibling.getOuterWidth());
                 }
             }
@@ -188,20 +196,20 @@ public abstract class AbstractShape {
     }
 
     public void floatY(int y){
-        if (floatDir == FloatDir.BOTTOM) {
+        if (FloatDir.getBottom().contains(floatDir)) {
             assert parent != null;
             int minY = parent.getInnerY() + parent.getInnerHeight();
             for (AbstractShape sibling : parent.childShapeList) {
-                if (sibling != this && sibling.getFloat() != FloatDir.TOP) {
+                if (sibling != this && FloatDir.getTop().contains(sibling.getFloat())) {
                     minY = Math.min(minY, sibling.getOuterY());
                 }
             }
             this.y = Math.min(minY - height, y - margin);
-        } else if (floatDir == FloatDir.TOP) {
+        } else if (FloatDir.getTop().contains(floatDir)) {
             assert parent != null;
             int maxY = parent.getInnerY();
             for (AbstractShape sibling : parent.childShapeList) {
-                if (sibling != this && sibling.getFloat() != FloatDir.BOTTOM) {
+                if (sibling != this && FloatDir.getBottom().contains(sibling.getFloat())) {
                     maxY = Math.max(maxY, sibling.getOuterY() + sibling.getOuterHeight());
                 }
             }

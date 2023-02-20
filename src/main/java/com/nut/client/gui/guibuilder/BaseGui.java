@@ -4,6 +4,7 @@ import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
 import com.nut.client.event.GuiOpenEvent;
 import com.nut.client.gui.shape.AbstractShape;
+import com.nut.client.gui.shape.FloatDir;
 import com.nut.client.gui.shape.shapes.Circle;
 import com.nut.client.gui.shape.shapes.RRectangle;
 import com.nut.client.renderer.RenderPipeline;
@@ -26,30 +27,22 @@ public class BaseGui {
     }
 
     public void init() {
-        Circle circle = new Circle(0, 0, 100, 100, new Color(1, 1, 0, 1))
+        RRectangle roundedRectangle = (RRectangle) new RRectangle(500, 500, 400, 1080, new Color(1, 0, 0, 1))
                 .withRadius(40)
-                .withShade(2)
-                .withHalo(6);
+                .withShade(2);
 
-        Circle circle1 = new Circle(200, 200, 100, 100, new Color(1, 1, 0, 1))
+        roundedRectangle.add(new RRectangle(0, 0, 200, 100, new Color(0, 1, 0, 1))
                 .withRadius(40)
-                .withShade(2)
-                .withHalo(6);
+                .withShade(2));
 
-        RRectangle roundedRectangle = new RRectangle(0, 0, 400, 1080, new Color(1, 0, 0, 1))
-                .withRadius(40)
-                .withShade(10);
-
-        shapes.add(circle);
-        shapes.add(circle1);
         shapes.add(roundedRectangle);
     }
 
     public void openGui() {
         RenderPipeline.clearPipeline();
         for (AbstractShape shape : shapes)
-            shape.pushToPipeline();
-        RenderPipeline.shapes = shapes.size();
+            shape.draw();
+
         MinecraftForge.EVENT_BUS.post(new GuiOpenEvent());
         currentScreen = this;
     }

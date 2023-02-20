@@ -33,8 +33,8 @@ public class Circle extends AbstractShape {
 
     @Override
     public void draw(){
-        super.draw();
         pushToPipeline();
+        super.draw();
     }
 
     @Override
@@ -49,5 +49,6 @@ public class Circle extends AbstractShape {
             RenderPipeline.queueData(RenderPipeline.haloFloats, halo);
             RenderPipeline.queueData(RenderPipeline.shapeTypeFloats, shapeType.ordinal());
         }
+        RenderPipeline.shapes++;
     }
 }

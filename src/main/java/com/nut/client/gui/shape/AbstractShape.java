@@ -1,28 +1,29 @@
 package com.nut.client.gui.shape;
 
+import com.nut.client.renderer.RenderPipeline;
 import com.nut.client.utils.Color;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Getter
 public abstract class AbstractShape {
-    @Getter protected final int originalX;
-    @Getter protected final int originalY;
-    @Getter protected final int originalWidth;
-    @Getter protected final int originalHeight;
+    protected final int originalX;
+    protected final int originalY;
+    protected final int originalWidth;
+    protected final int originalHeight;
 
-    @Getter protected int x;
-    @Getter protected int y;
-    @Getter protected int width;
-    @Getter protected int height;
-    @Getter protected Color color;
-    @Getter protected int margin = 0;
-    @Getter protected int padding = 0;
-    @Getter protected FloatDir floatDir = FloatDir.NONE;
-    @Getter protected AbstractShape parent;
-    @Getter protected List<AbstractShape> childShapeList = new ArrayList<>();
+    protected int x;
+    protected int y;
+    protected int width;
+    protected int height;
+    protected Color color;
+    protected int margin = 0;
+    protected int padding = 0;
+    protected FloatDir floatDir = FloatDir.NONE;
+    protected AbstractShape parent = null;
+    protected List<AbstractShape> childShapeList = new ArrayList<>();
 
     public AbstractShape(int x, int y, int width, int height, Color color) {
         this.setX(x);
@@ -71,6 +72,7 @@ public abstract class AbstractShape {
 
     public void setX(int x) {
         if(parent != null) {
+            this.x = originalX + getParent().getPadding() + getMargin();
             switch (floatDir) {
                 case NONE:
                 case TOP:
@@ -87,6 +89,7 @@ public abstract class AbstractShape {
                 default:
                     throw new IllegalArgumentException("Shape Float not set correctly.");
             }
+            return;
         }
 
         this.x = originalX + margin;
@@ -94,6 +97,7 @@ public abstract class AbstractShape {
 
     public void setY(int y) {
         if(parent != null) {
+            this.y = originalY + getParent().getPadding() + getMargin();
             switch (floatDir) {
                 case NONE:
                 case RIGHT:
@@ -110,6 +114,7 @@ public abstract class AbstractShape {
                 default:
                     throw new IllegalArgumentException("Shape Float not set correctly.");
             }
+            return;
         }
 
         this.y = originalY + margin;

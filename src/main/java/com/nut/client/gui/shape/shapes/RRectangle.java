@@ -36,8 +36,8 @@ public class RRectangle extends AbstractShape {
 
     @Override
     public void draw(){
-        super.draw();
         pushToPipeline();
+        super.draw();
     }
 
     public void pushToPipeline() {
@@ -51,5 +51,6 @@ public class RRectangle extends AbstractShape {
             RenderPipeline.queueData(RenderPipeline.haloFloats, halo);
             RenderPipeline.queueData(RenderPipeline.shapeTypeFloats, shapeType.ordinal());
         }
+        RenderPipeline.shapes++;
     }
 }

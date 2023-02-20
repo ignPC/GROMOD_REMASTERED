@@ -14,7 +14,6 @@ public enum FloatDir {
     BOTTOM_RIGHT,
     NONE;
 
-
     public static List<FloatDir> getLeft() {
         List<FloatDir> list = new ArrayList<>();
         list.add(LEFT);

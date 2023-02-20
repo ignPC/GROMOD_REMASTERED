@@ -15,13 +15,11 @@ public class GLObject {
 
     private final VAO vao;
     private final List<VBO> vbos = new ArrayList<>();
-    private final int primitive, first, last;
+    private final int primitive;
 
-    public GLObject(int primitive, int first, int last) {
+    public GLObject(int primitive) {
         vao = new VAO();
         this.primitive = primitive;
-        this.first = first;
-        this.last = last;
     }
 
     public GLObject addVbo(int bufferTarget) {
@@ -52,12 +50,12 @@ public class GLObject {
         return this;
     }
 
-    public void render() {
+    public void render(int first, int last) {
         vao.bind();
         glDrawArrays(primitive, first, last);
     }
 
-    public void renderInstanced(int count) {
+    public void renderInstanced(int first, int last, int count) {
         vao.bind();
         glDrawArraysInstanced(primitive, first, last, count);
     }

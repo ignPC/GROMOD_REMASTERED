@@ -72,12 +72,4 @@ public class Shader {
             return inputStreamString;
         } catch (IOException e) {throw new RuntimeException(e);}
     }
-
-    public static void setColorRGBA(Shader shader, int color) {
-        glUniform4f(shader.getUniform("color"), (color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, (color >> 24 & 0xFF) / 255f);
-    }
-
-    public static void setColorRGB(Shader shader, int color) {
-        glUniform3f(shader.getUniform("color"), (color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f);
-    }
 }

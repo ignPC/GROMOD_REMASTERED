@@ -18,13 +18,14 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 
 @Component
 public class RenderPipeline {
+
+    public static int shapes;
 
     private GLObject pipeline;
     private Shader shader;
@@ -36,6 +37,7 @@ public class RenderPipeline {
     public static final List<Float> radiusFloats = new ArrayList<>();
     public static final List<Float> shadeFloats = new ArrayList<>();
     public static final List<Float> haloFloats = new ArrayList<>();
+    public static final List<Float> shapeTypeFloats = new ArrayList<>();
 
     @AutoInit
     public RenderPipeline() {
@@ -51,7 +53,7 @@ public class RenderPipeline {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(770, 771);
 
-        pipeline.render();
+        pipeline.render(0, shapes * 4);
         pipeline.unbindVao();
 
         glUseProgram(0);
@@ -66,7 +68,8 @@ public class RenderPipeline {
                 .populateVbo(3, list2Array(shapeSizes), GL_STATIC_DRAW)
                 .populateVbo(4, list2Array(radiusFloats), GL_STATIC_DRAW)
                 .populateVbo(5, list2Array(shadeFloats), GL_STATIC_DRAW)
-                .populateVbo(6, list2Array(haloFloats), GL_STATIC_DRAW);
+                .populateVbo(6, list2Array(haloFloats), GL_STATIC_DRAW)
+                .populateVbo(7, list2Array(shapeTypeFloats), GL_STATIC_DRAW);
     }
 
     @SubscribeEvent
@@ -76,7 +79,7 @@ public class RenderPipeline {
                 new ResourceLocation("bean", "shaders/guiFS.glsl"),
                 "projection"
         );
-        pipeline = new GLObject(GL_QUADS, 0, 8);
+        pipeline = new GLObject(GL_QUADS);
         pipeline
                 .bindVao()
                 .addVbo(GL_ARRAY_BUFFER) // Quad positions 4 * vec2
@@ -86,35 +89,33 @@ public class RenderPipeline {
                 .addVbo(GL_ARRAY_BUFFER) // Radius 1 * float (Rounded rectangle)
                 .addVbo(GL_ARRAY_BUFFER) // Shade 1 * float
                 .addVbo(GL_ARRAY_BUFFER) // Halo 1 * float (Circle)
+                .addVbo(GL_ARRAY_BUFFER) // Shape type 1 * float
 
                 .bindVbo(0)
                 .populateVao(0, 2, GL_FLOAT, 0, 0)
 
                 .bindVbo(1)
                 .populateVao(1, 4, GL_FLOAT, 0, 0)
-                .divisor(1, 1)
 
                 .bindVbo(2)
                 .populateVao(2, 2, GL_FLOAT, 0, 0)
-                .divisor(2, 1)
 
                 .bindVbo(3)
                 .populateVao(3, 2, GL_FLOAT, 0, 0)
-                .divisor(3, 1)
 
                 .bindVbo(4)
                 .populateVao(4, 1, GL_FLOAT, 0, 0)
-                .divisor(4, 1)
 
                 .bindVbo(5)
                 .populateVao(5, 1, GL_FLOAT, 0, 0)
-                .divisor(5, 1)
 
                 .bindVbo(6)
                 .populateVao(6, 1, GL_FLOAT, 0, 0)
-                .divisor(6, 1)
 
-                .unbindVbo(6)
+                .bindVbo(7)
+                .populateVao(7, 1, GL_FLOAT, 0, 0)
+
+                .unbindVbo(7)
                 .unbindVao();
     }
 
@@ -132,6 +133,7 @@ public class RenderPipeline {
     }
 
     public static void clearPipeline() {
+        shapes = 0;
         quadPositions.clear();
         colors.clear();
         shapePositions.clear();
@@ -139,5 +141,6 @@ public class RenderPipeline {
         radiusFloats.clear();
         shadeFloats.clear();
         haloFloats.clear();
+        shapeTypeFloats.clear();
     }
 }

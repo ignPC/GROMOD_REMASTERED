@@ -7,6 +7,7 @@ layout (location = 3) in vec2 aShape_size;
 layout (location = 4) in float aRadius;
 layout (location = 5) in float aShade;
 layout (location = 6) in float aHalo;
+layout (location = 7) in float aShape_type;
 
 uniform mat4 projection;
 
@@ -16,6 +17,7 @@ out vec2 shape_size;
 out float radius;
 out float shade;
 out float halo;
+out float shape_type;
 
 void main() {
     gl_Position = projection * vec4(aPos, 0, 1);
@@ -25,4 +27,5 @@ void main() {
     radius = aRadius;
     shade = aShade;
     halo = aHalo;
+    shape_type = aShape_type;
 }

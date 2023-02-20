@@ -1,23 +1,29 @@
 package com.nut.client.keybinds;
 
+import com.nut.client.annotation.AutoInit;
+import com.nut.client.annotation.Component;
+import com.nut.client.gui.guibuilder.BaseGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import scala.collection.parallel.ParIterableLike;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class InputHandler {
 
     private static final KeyBinding KEY_BINDING_GUI = new KeyBinding("Click Gui", 56, "Bean Client");
-    private final Minecraft minecraft;
+    private final BaseGui baseGui;
 
-    public InputHandler(Minecraft minecraft) {
+    @AutoInit
+    public InputHandler(BaseGui baseGui) {
         MinecraftForge.EVENT_BUS.register(this);
-        this.minecraft = minecraft;
+        this.baseGui = baseGui;
 
         List<KeyBinding> bindingList = new ArrayList<>();
 
@@ -30,9 +36,9 @@ public class InputHandler {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent event) {
-        if (minecraft.currentScreen == null) {
+        if (BaseGui.currentScreen == null) {
             if (KEY_BINDING_GUI.isPressed()) {
-
+                baseGui.openGui();
             }
         }
     }

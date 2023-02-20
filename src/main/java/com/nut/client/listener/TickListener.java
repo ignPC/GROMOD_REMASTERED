@@ -22,17 +22,13 @@ public class TickListener {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (Keyboard.getEventKeyState()) {
-            int keyCode = Keyboard.getEventKey();
-            if (BaseGui.currentScreen == null) {
-                if (keyCode == 56) {
-                    baseGui.openGui();
-                }
-            } else {
-                BaseGui.currentScreen.keyboardInput(keyCode);
-            }
-        }
-        if (BaseGui.currentScreen != null)
-            BaseGui.currentScreen.mouseInput(Mouse.getEventButton(), Mouse.getX(), Mouse.getY());
+        if(BaseGui.currentScreen == null) return;
+
+        BaseGui.currentScreen.mouseInput(Mouse.getEventButton(), Mouse.getX(), Mouse.getY());
+
+        if (!Keyboard.getEventKeyState()) return;
+
+        int keyCode = Keyboard.getEventKey();
+        BaseGui.currentScreen.keyboardInput(keyCode);
     }
 }

@@ -1,5 +1,7 @@
-package com.nut.client.guitest;
+package com.nut.client.gui.shape.shapes;
 
+import com.nut.client.gui.shape.AbstractShape;
+import com.nut.client.gui.shape.ShapeType;
 import com.nut.client.renderer.RenderPipeline;
 import com.nut.client.utils.Color;
 
@@ -10,23 +12,29 @@ public class Circle extends AbstractShape {
     private float halo;
     private final ShapeType shapeType = ShapeType.CIRCLE;
 
-    public Circle(float x, float y, float width, float height, Color color) {
+    public Circle(int x, int y, int width, int height, Color color) {
         super(x, y, width, height, color);
     }
 
-    public Circle radius(float radius) {
+    public Circle withRadius(float radius) {
         this.radius = radius;
         return this;
     }
 
-    public Circle shade(float shade) {
+    public Circle withShade(float shade) {
         this.shade = shade;
         return this;
     }
 
-    public Circle halo(float halo) {
+    public Circle withHalo(float halo) {
         this.halo = halo;
         return this;
+    }
+
+    @Override
+    public void draw(){
+        super.draw();
+        pushToPipeline();
     }
 
     @Override

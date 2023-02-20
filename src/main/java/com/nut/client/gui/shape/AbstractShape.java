@@ -1,26 +1,28 @@
 package com.nut.client.gui.shape;
 
 import com.nut.client.utils.Color;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractShape {
-    protected final int originalX;
-    protected final int originalY;
-    protected final int originalWidth;
-    protected final int originalHeight;
 
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
-    protected Color color;
-    protected int margin = 0;
-    protected int padding = 0;
-    protected FloatDir floatDir = FloatDir.NONE;
-    protected AbstractShape parent;
-    protected List<AbstractShape> childShapeList = new ArrayList<>();
+public abstract class AbstractShape {
+    @Getter protected final int originalX;
+    @Getter protected final int originalY;
+    @Getter protected final int originalWidth;
+    @Getter protected final int originalHeight;
+
+    @Getter protected int x;
+    @Getter protected int y;
+    @Getter protected int width;
+    @Getter protected int height;
+    @Getter protected Color color;
+    @Getter protected int margin = 0;
+    @Getter protected int padding = 0;
+    @Getter protected FloatDir floatDir = FloatDir.NONE;
+    @Getter protected AbstractShape parent;
+    @Getter protected List<AbstractShape> childShapeList = new ArrayList<>();
 
     public AbstractShape(int x, int y, int width, int height, Color color) {
         this.setX(x);
@@ -50,40 +52,20 @@ public abstract class AbstractShape {
 
     /***========================================BUILDER========================================***/
 
-    public static class ShapeBuilder {
-        private final AbstractShape shape;
-
-        public int padding = 0;
-        public int margin = 0;
-        private FloatDir sFloat;
-
-        public ShapeBuilder(AbstractShape shape) {
-            this.shape = shape;
-        }
-
-        public ShapeBuilder withPadding(int padding) {
-            this.padding = padding;
-            return this;
-        }
-
-        public ShapeBuilder withMargin(int margin) {
-            this.margin = margin;
-            return this;
-        }
-
-        public ShapeBuilder withFloat(FloatDir sFloat){
-            this.sFloat = sFloat;
-            return this;
-        }
-
-        public AbstractShape build() {
-            shape.setPadding(padding);
-            shape.setMargin(margin);
-            shape.setFloat(sFloat);
-            return shape;
-        }
+    public AbstractShape withPadding(int padding) {
+        setPadding(padding);
+        return this;
     }
 
+    public AbstractShape withMargin(int margin) {
+        setMargin(margin);
+        return this;
+    }
+
+    public AbstractShape withFloat(FloatDir sFloat){
+        setFloat(sFloat);
+        return this;
+    }
 
     /***========================================SETTERS========================================***/
 
@@ -275,30 +257,6 @@ public abstract class AbstractShape {
 
     /***========================================GETTERS========================================***/
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getMargin() {
-        return margin;
-    }
-
-    public int getPadding() {
-        return padding;
-    }
-
     public int getInnerX() {
         return x + padding;
     }
@@ -333,14 +291,6 @@ public abstract class AbstractShape {
 
     private FloatDir getFloat() {
         return floatDir;
-    }
-
-    public Color getColor(){
-        return color;
-    }
-
-    public AbstractShape getParent() {
-        return parent;
     }
 
     /***========================================DEBUG========================================***/

@@ -2,15 +2,16 @@ package com.nut.client.gui.guibuilder;
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
-import com.nut.client.event.RenderPipelineRefreshEvent;
-import com.nut.client.gui.shape.AbstractShape;
-import com.nut.client.gui.shape.shapes.RRectangle;
+import com.nut.client.gui.testshape.Positioner;
+import com.nut.client.gui.testshape.RRectangle;
+import com.nut.client.gui.testshape.Shape;
 import com.nut.client.renderer.RenderPipeline;
+import com.nut.client.renderer.util.ProjectionUtils;
 import com.nut.client.utils.Color;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,11 @@ import java.util.List;
 public class BaseGui {
 
     public static BaseGui currentScreen;
-    private final List<AbstractShape> shapes = new ArrayList<>();
+    private final List<Shape> shapes = new ArrayList<>();
     private final Minecraft minecraft;
+
+    private float screenWidth = 1920;
+    private float screenHeight = 1080;
 
     @AutoInit
     public BaseGui(Minecraft minecraft) {
@@ -29,23 +33,37 @@ public class BaseGui {
     }
 
     public void init() {
-        RRectangle roundedRectangle = (RRectangle) new RRectangle(500, 500, 400, 1080, new Color(1, 0, 0, 1))
-                .withRadius(40)
-                .withShade(2);
+        RRectangle rectangle = new RRectangle(100, 100, new Color(0, 1, 0, 1))
+                .radius(20)
+                .shade(2);
 
-        roundedRectangle.add(new RRectangle(0, 0, 200, 100, new Color(0, 1, 0, 1))
-                .withRadius(40)
-                .withShade(2));
+        RRectangle rRectangle = new RRectangle(100, 100, new Color(1, 0, 0, 1))
+                .radius(30)
+                .shade(4);
 
-        shapes.add(roundedRectangle);
+        RRectangle rRectangle1 = new RRectangle(100, 100, new Color(0, 0, 1, 1))
+                .radius(20)
+                .shade(2);
+
+        RRectangle rRectangle2 = new RRectangle(100, 100, new Color(0, 1, 1, 1))
+                .margin(40, 30, 0, 0)
+                .radius(0)
+                .shade(0);
+
+        Positioner.position(0, 0, 2, 2, 10, rectangle, rRectangle, rRectangle1, rRectangle2);
+        shapes.add(rectangle);
+        shapes.add(rRectangle);
+        shapes.add(rRectangle1);
+        shapes.add(rRectangle2);
     }
 
     public void openGui() {
+        handleResolution();
         RenderPipeline.clearPipeline();
-        for (AbstractShape shape : shapes)
-            shape.draw();
+        for (Shape shape : shapes)
+            shape.push();
 
-        MinecraftForge.EVENT_BUS.post(new RenderPipelineRefreshEvent());
+        RenderPipeline.refreshPipeline();
         minecraft.setIngameNotInFocus();
         currentScreen = this;
     }
@@ -53,6 +71,11 @@ public class BaseGui {
     public void closeGui() {
         currentScreen = null;
         minecraft.setIngameFocus();
+    }
+
+    public void loop() {
+        handleResolution();
+        handleInput();
     }
 
     public void handleInput() {
@@ -69,5 +92,15 @@ public class BaseGui {
 
     public void mouseInput(int button, int mouseX, int mouseY) {
 
+    }
+
+    public void handleResolution() {
+        if (Display.getWidth() != screenWidth || Display.getHeight() != screenHeight) {
+            screenWidth = Display.getWidth();
+            screenHeight = Display.getHeight();
+            ProjectionUtils.setOrthoProjection(0, Display.getWidth(), 0, Display.getHeight(), 0, 1);
+            Shape.xScale = Display.getWidth() / 1920f;
+            Shape.yScale = Display.getHeight() / 1080f;
+        }
     }
 }

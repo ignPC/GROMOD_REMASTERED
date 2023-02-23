@@ -3,11 +3,9 @@ package com.nut.client.renderer;
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
 import com.nut.client.event.AfterScreenCreationEvent;
-import com.nut.client.event.RenderPipelineRefreshEvent;
 import com.nut.client.event.GuiRenderEvent;
 import com.nut.client.gui.guibuilder.BaseGui;
 import com.nut.client.renderer.util.ProjectionUtils;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,8 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4;
@@ -26,8 +23,8 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
 public class RenderPipeline {
 
     public static int shapes;
+    private static GLObject pipeline;
 
-    private GLObject pipeline;
     private Shader shader;
 
     public static final List<Float> quadPositions = new ArrayList<>();
@@ -45,31 +42,19 @@ public class RenderPipeline {
     }
 
     @SubscribeEvent
-    public void onRenderWorldLast(GuiRenderEvent event) {
+    public void onGuiRender(GuiRenderEvent event) {
         if (BaseGui.currentScreen == null) return;
+
         glUseProgram(shader.getShaderProgram());
         glUniformMatrix4(shader.getUniform("projection"), false, ProjectionUtils.orthoProjection);
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(770, 771);
+        glEnable(GL_BLEND);
+        glBlendFunc(770, 771);
 
         pipeline.render(0, shapes * 4);
         pipeline.unbindVao();
 
         glUseProgram(0);
-    }
-
-    @SubscribeEvent
-    public void onGuiChange(RenderPipelineRefreshEvent event) {
-        pipeline
-                .populateVbo(0, list2Array(quadPositions), GL_STATIC_DRAW)
-                .populateVbo(1, list2Array(colors), GL_STATIC_DRAW)
-                .populateVbo(2, list2Array(shapePositions), GL_STATIC_DRAW)
-                .populateVbo(3, list2Array(shapeSizes), GL_STATIC_DRAW)
-                .populateVbo(4, list2Array(radiusFloats), GL_STATIC_DRAW)
-                .populateVbo(5, list2Array(shadeFloats), GL_STATIC_DRAW)
-                .populateVbo(6, list2Array(haloFloats), GL_STATIC_DRAW)
-                .populateVbo(7, list2Array(shapeTypeFloats), GL_STATIC_DRAW);
     }
 
     @SubscribeEvent
@@ -79,6 +64,7 @@ public class RenderPipeline {
                 new ResourceLocation("bean", "shaders/guiFS.glsl"),
                 "projection"
         );
+
         pipeline = new GLObject(GL_QUADS);
         pipeline
                 .bindVao()
@@ -90,33 +76,38 @@ public class RenderPipeline {
                 .addVbo(GL_ARRAY_BUFFER) // Shade 1 * float
                 .addVbo(GL_ARRAY_BUFFER) // Halo 1 * float (Circle)
                 .addVbo(GL_ARRAY_BUFFER) // Shape type 1 * float
-
                 .bindVbo(0)
                 .populateVao(0, 2, GL_FLOAT, 0, 0)
-
                 .bindVbo(1)
                 .populateVao(1, 4, GL_FLOAT, 0, 0)
-
                 .bindVbo(2)
                 .populateVao(2, 2, GL_FLOAT, 0, 0)
-
                 .bindVbo(3)
                 .populateVao(3, 2, GL_FLOAT, 0, 0)
-
                 .bindVbo(4)
                 .populateVao(4, 1, GL_FLOAT, 0, 0)
-
                 .bindVbo(5)
                 .populateVao(5, 1, GL_FLOAT, 0, 0)
-
                 .bindVbo(6)
                 .populateVao(6, 1, GL_FLOAT, 0, 0)
-
                 .bindVbo(7)
                 .populateVao(7, 1, GL_FLOAT, 0, 0)
-
                 .unbindVbo(7)
                 .unbindVao();
+    }
+
+    // Run this if you expect any changes in shape data
+    public static void refreshPipeline() {
+        pipeline
+                .populateVbo(0, list2Array(quadPositions), GL_STATIC_DRAW)
+                .populateVbo(1, list2Array(colors), GL_STATIC_DRAW)
+                .populateVbo(2, list2Array(shapePositions), GL_STATIC_DRAW)
+                .populateVbo(3, list2Array(shapeSizes), GL_STATIC_DRAW)
+                .populateVbo(4, list2Array(radiusFloats), GL_STATIC_DRAW)
+                .populateVbo(5, list2Array(shadeFloats), GL_STATIC_DRAW)
+                .populateVbo(6, list2Array(haloFloats), GL_STATIC_DRAW)
+                .populateVbo(7, list2Array(shapeTypeFloats), GL_STATIC_DRAW)
+                .unbindVbo(7);
     }
 
     public static void queueData(List<Float> floats, float... data) {
@@ -124,7 +115,7 @@ public class RenderPipeline {
             floats.add(f);
     }
 
-    private float[] list2Array(List<Float> data) {
+    private static float[] list2Array(List<Float> data) {
         float[] floats = new float[data.size()];
         for (int i = 0; i < floats.length; i++)
             floats[i] = data.get(i);

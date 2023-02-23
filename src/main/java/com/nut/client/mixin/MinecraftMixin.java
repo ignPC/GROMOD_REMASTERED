@@ -149,7 +149,7 @@ public abstract class MinecraftMixin {
         }
 
         if (BaseGui.currentScreen != null)
-            BaseGui.currentScreen.handleInput();
+            BaseGui.currentScreen.loop();
 
         if (this.currentScreen != null)
         {

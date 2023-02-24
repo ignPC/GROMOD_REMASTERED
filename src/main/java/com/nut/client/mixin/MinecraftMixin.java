@@ -88,6 +88,11 @@ public abstract class MinecraftMixin {
         MinecraftForge.EVENT_BUS.post(new AfterScreenCreationEvent());
     }
 
+    @Inject(method = "displayGuiScreen", at = @At("HEAD"))
+    public void displayGuiScreen(GuiScreen guiScreenIn, CallbackInfo ci) {
+        BaseGui.currentScreen = null;
+    }
+
     /**
      * @author Gromit
      * @reason Gui stuff

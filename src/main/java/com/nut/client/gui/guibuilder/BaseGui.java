@@ -58,13 +58,9 @@ public class BaseGui {
     }
 
     public void openGui() {
-        handleResolution();
-        RenderPipeline.clearPipeline();
-        for (Shape shape : shapes)
-            shape.push();
-
-        RenderPipeline.refreshPipeline();
         minecraft.setIngameNotInFocus();
+        handleResolution();
+        refreshPipeline();
         currentScreen = this;
     }
 
@@ -88,6 +84,11 @@ public class BaseGui {
     public void keyboardInput(int keyCode) {
         if (keyCode == 1)
             closeGui();
+        else if (keyCode == 87) {
+            minecraft.toggleFullscreen();
+            handleResolution();
+            refreshPipeline();
+        }
     }
 
     public void mouseInput(int button, int mouseX, int mouseY) {
@@ -102,5 +103,12 @@ public class BaseGui {
             Shape.xScale = Display.getWidth() / 1920f;
             Shape.yScale = Display.getHeight() / 1080f;
         }
+    }
+
+    public void refreshPipeline() {
+        RenderPipeline.clearPipeline();
+        for (Shape shape : shapes)
+            shape.push();
+        RenderPipeline.refreshPipeline();
     }
 }

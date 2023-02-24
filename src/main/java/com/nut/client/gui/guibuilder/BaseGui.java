@@ -2,6 +2,7 @@ package com.nut.client.gui.guibuilder;
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
+import com.nut.client.gui.testshape.Circle;
 import com.nut.client.gui.testshape.Positioner;
 import com.nut.client.gui.testshape.RRectangle;
 import com.nut.client.gui.testshape.Shape;
@@ -47,24 +48,27 @@ public class BaseGui {
 
         RRectangle rRectangle2 = new RRectangle(100, 100, new Color(0, 1, 1, 1))
                 .margin(40, 30, 0, 0)
-                .radius(0)
-                .shade(0);
+                .radius(20)
+                .shade(2);
 
-        Positioner.position(0, 0, 2, 2, 10, rectangle, rRectangle, rRectangle1, rRectangle2);
+        Circle circle = new Circle(200, 200, new Color(1, 1, 1, 1))
+                .margin(0, 60, 0, 0)
+                .radius(100)
+                .shade(2)
+                .halo(4);
+
+        Positioner.position(0, 0, 2, 3, 10, rectangle, rRectangle, rRectangle1, rRectangle2, circle);
         shapes.add(rectangle);
         shapes.add(rRectangle);
         shapes.add(rRectangle1);
         shapes.add(rRectangle2);
+        shapes.add(circle);
     }
 
     public void openGui() {
-        handleResolution();
-        RenderPipeline.clearPipeline();
-        for (Shape shape : shapes)
-            shape.push();
-
-        RenderPipeline.refreshPipeline();
         minecraft.setIngameNotInFocus();
+        handleResolution();
+        refreshPipeline();
         currentScreen = this;
     }
 
@@ -88,6 +92,11 @@ public class BaseGui {
     public void keyboardInput(int keyCode) {
         if (keyCode == 1)
             closeGui();
+        else if (keyCode == 87) {
+            minecraft.toggleFullscreen();
+            handleResolution();
+            refreshPipeline();
+        }
     }
 
     public void mouseInput(int button, int mouseX, int mouseY) {
@@ -102,5 +111,12 @@ public class BaseGui {
             Shape.xScale = Display.getWidth() / 1920f;
             Shape.yScale = Display.getHeight() / 1080f;
         }
+    }
+
+    public void refreshPipeline() {
+        RenderPipeline.clearPipeline();
+        for (Shape shape : shapes)
+            shape.push();
+        RenderPipeline.refreshPipeline();
     }
 }

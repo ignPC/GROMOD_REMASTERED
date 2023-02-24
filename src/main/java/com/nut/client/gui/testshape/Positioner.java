@@ -14,10 +14,10 @@ public class Positioner {
                 vector.set(x, lastShape.y + lastShape.height + lastShape.margin.getBottom() + gap);
 
             for (int j = 0; j < columns; j++) {
+                if (index == shapes.length) break;
                 lastShape = shapes[index];
 
-                vector.add(lastShape.margin.getLeft(), lastShape.margin.getTop());
-                lastShape.setPosition(vector);
+                lastShape.setPosition(vector.x + lastShape.margin.getLeft(), vector.y + lastShape.margin.getTop());
                 vector.set(lastShape.x + lastShape.width + lastShape.margin.getRight() + gap, vector.y);
                 index++;
             }

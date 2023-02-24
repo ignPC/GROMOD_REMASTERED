@@ -47,6 +47,13 @@ public abstract class AbstractShape {
     public void add(AbstractShape shapeObject){
         shapeObject.setParent(this);
         childShapeList.add(shapeObject);
+
+        for (AbstractShape shape : childShapeList) {
+            shape.setX(shape.getX());
+            shape.setY(shape.getY());
+            shape.setWidth(shape.getWidth());
+            shape.setHeight(shape.getHeight());
+        }
     }
 
     public abstract void pushToPipeline();
@@ -72,7 +79,7 @@ public abstract class AbstractShape {
 
     public void setX(int x) {
         if(parent != null) {
-            this.x = originalX + getParent().getPadding() + getMargin();
+            this.x = originalX + getParent().getInnerX() + getMargin();
             switch (floatDir) {
                 case NONE:
                 case TOP:
@@ -89,15 +96,16 @@ public abstract class AbstractShape {
                 default:
                     throw new IllegalArgumentException("Shape Float not set correctly.");
             }
-            return;
         }
-
-        this.x = originalX + margin;
+        else{
+            this.x = originalX + margin;
+        }
     }
 
     public void setY(int y) {
         if(parent != null) {
-            this.y = originalY + getParent().getPadding() + getMargin();
+            this.y = originalY + getParent().getInnerY() + getMargin();
+            System.out.println(this.y);
             switch (floatDir) {
                 case NONE:
                 case RIGHT:
@@ -114,10 +122,10 @@ public abstract class AbstractShape {
                 default:
                     throw new IllegalArgumentException("Shape Float not set correctly.");
             }
-            return;
         }
-
-        this.y = originalY + margin;
+        else{
+            this.x = originalX + margin;
+        }
     }
 
     public void setWidth(int width) {

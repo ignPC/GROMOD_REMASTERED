@@ -17,7 +17,7 @@ public class ProjectionUtils {
         setOrthoProjection(0, 1920, 0, 1080, 0, 1);
     }
 
-    public void setOrthoProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
+    public static void setOrthoProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
         Matrix4f ortho = new Matrix4f();
         ortho.m00 = 2.0f / (right - left);
         ortho.m11 = 2.0f / (top - bottom);

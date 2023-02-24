@@ -95,7 +95,7 @@ public abstract class MinecraftMixin {
 
     /**
      * @author Gromit
-     * @reason Gui stuff
+     * @reason Run loop method of BaseGui class every game tick
      */
     @Overwrite
     public void runTick() throws IOException

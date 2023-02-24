@@ -110,6 +110,7 @@ public class BaseGui {
             ProjectionUtils.setOrthoProjection(0, Display.getWidth(), 0, Display.getHeight(), 0, 1);
             Shape.xScale = Display.getWidth() / 1920f;
             Shape.yScale = Display.getHeight() / 1080f;
+            refreshPipeline();
         }
     }
 

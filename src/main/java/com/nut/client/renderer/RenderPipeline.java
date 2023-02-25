@@ -5,6 +5,7 @@ import com.nut.client.annotation.Component;
 import com.nut.client.event.AfterScreenCreationEvent;
 import com.nut.client.event.GuiRenderEvent;
 import com.nut.client.gui.guibuilder.BaseGui;
+import com.nut.client.renderer.font.FontRenderer;
 import com.nut.client.renderer.util.ProjectionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,13 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4;
-import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL20.*;
 
 @Component
 public class RenderPipeline {
+
+    public static FontRenderer fontRenderer;
 
     public static int shapes;
     private static GLObject pipeline;
@@ -35,6 +39,7 @@ public class RenderPipeline {
     public static final List<Float> shadeFloats = new ArrayList<>();
     public static final List<Float> haloFloats = new ArrayList<>();
     public static final List<Float> shapeTypeFloats = new ArrayList<>();
+    public static final List<Float> textureCoordFloats = new ArrayList<>();
 
     @AutoInit
     public RenderPipeline() {
@@ -46,10 +51,13 @@ public class RenderPipeline {
         if (BaseGui.currentScreen == null) return;
 
         glUseProgram(shader.getShaderProgram());
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, fontRenderer.getTextureId());
         glUniformMatrix4(shader.getUniform("projection"), false, ProjectionUtils.orthoProjection);
+        glUniform1i(shader.getUniform("font_atlas"), 0);
 
         glEnable(GL_BLEND);
-        glBlendFunc(770, 771);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         pipeline.render(0, shapes * 4);
         pipeline.unbindVao();
@@ -59,10 +67,17 @@ public class RenderPipeline {
 
     @SubscribeEvent
     public void onAfterScreenCreation(AfterScreenCreationEvent event) {
+        fontRenderer = new FontRenderer(
+                "Purple Smile.ttf",
+                36,
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\",
+                12);
+
         shader = new Shader(
                 new ResourceLocation("bean", "shaders/guiVS.glsl"),
                 new ResourceLocation("bean", "shaders/guiFS.glsl"),
-                "projection"
+                "projection",
+                "font_atlas"
         );
 
         pipeline = new GLObject(GL_QUADS);
@@ -76,6 +91,7 @@ public class RenderPipeline {
                 .addVbo(GL_ARRAY_BUFFER) // Shade 1 * float
                 .addVbo(GL_ARRAY_BUFFER) // Halo 1 * float (Circle)
                 .addVbo(GL_ARRAY_BUFFER) // Shape type 1 * float
+                .addVbo(GL_ARRAY_BUFFER) // Texture coords 4 * vec2
                 .bindVbo(0)
                 .populateVao(0, 2, GL_FLOAT, 0, 0)
                 .bindVbo(1)
@@ -92,7 +108,9 @@ public class RenderPipeline {
                 .populateVao(6, 1, GL_FLOAT, 0, 0)
                 .bindVbo(7)
                 .populateVao(7, 1, GL_FLOAT, 0, 0)
-                .unbindVbo(7)
+                .bindVbo(8)
+                .populateVao(8, 2, GL_FLOAT, 0, 0)
+                .unbindVbo(8)
                 .unbindVao();
     }
 
@@ -107,7 +125,8 @@ public class RenderPipeline {
                 .populateVbo(5, list2Array(shadeFloats), GL_STATIC_DRAW)
                 .populateVbo(6, list2Array(haloFloats), GL_STATIC_DRAW)
                 .populateVbo(7, list2Array(shapeTypeFloats), GL_STATIC_DRAW)
-                .unbindVbo(7);
+                .populateVbo(8, list2Array(textureCoordFloats), GL_STATIC_DRAW)
+                .unbindVbo(8);
     }
 
     public static void queueData(List<Float> floats, float... data) {
@@ -132,5 +151,6 @@ public class RenderPipeline {
         shadeFloats.clear();
         haloFloats.clear();
         shapeTypeFloats.clear();
+        textureCoordFloats.clear();
     }
 }

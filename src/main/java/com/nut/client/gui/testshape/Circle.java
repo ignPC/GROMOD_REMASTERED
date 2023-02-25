@@ -52,6 +52,7 @@ public class Circle extends Shape<Circle> {
             RenderPipeline.queueData(RenderPipeline.shadeFloats, shade);
             RenderPipeline.queueData(RenderPipeline.haloFloats, halo);
             RenderPipeline.queueData(RenderPipeline.shapeTypeFloats, ShapeType.CIRCLE.ordinal());
+            RenderPipeline.queueData(RenderPipeline.textureCoordFloats, 0, 0);
         }
         RenderPipeline.shapes++;
     }

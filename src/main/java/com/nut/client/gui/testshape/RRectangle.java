@@ -45,6 +45,7 @@ public class RRectangle extends Shape<RRectangle> {
             RenderPipeline.queueData(RenderPipeline.shadeFloats, shade);
             RenderPipeline.queueData(RenderPipeline.haloFloats, 0);
             RenderPipeline.queueData(RenderPipeline.shapeTypeFloats, ShapeType.ROUNDEDRECTANGLE.ordinal());
+            RenderPipeline.queueData(RenderPipeline.textureCoordFloats, 0, 0);
         }
         RenderPipeline.shapes++;
     }

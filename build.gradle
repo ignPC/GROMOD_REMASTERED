@@ -58,6 +58,7 @@ dependencies {
         exclude module: 'log4j-core'
     }
     shade('org.reflections:reflections:0.10.2')
+    shade('org.l33tlabs.twl:pngdecoder:1.0')
     compileOnly 'org.projectlombok:lombok:1.18.26'
 
     //compile will make your library available only in this dev environment

@@ -1,5 +1,6 @@
 package com.nut.client.gui.guibuilder;
 
+import com.nut.client.MainBean;
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
 import com.nut.client.gui.testshape.Circle;
@@ -34,35 +35,35 @@ public class BaseGui {
     }
 
     public void init() {
-        RRectangle rectangle = new RRectangle(100, 100, new Color(0, 1, 0, 1))
-                .radius(20)
-                .shade(2);
-
-        RRectangle rRectangle = new RRectangle(100, 100, new Color(1, 0, 0, 1))
-                .radius(30)
-                .shade(4);
-
-        RRectangle rRectangle1 = new RRectangle(100, 100, new Color(0, 0, 1, 1))
-                .radius(20)
-                .shade(2);
-
-        RRectangle rRectangle2 = new RRectangle(100, 100, new Color(0, 1, 1, 1))
-                .margin(40, 30, 0, 0)
-                .radius(20)
-                .shade(2);
-
-        Circle circle = new Circle(200, 200, new Color(1, 1, 1, 1))
-                .margin(0, 60, 0, 0)
-                .radius(100)
-                .shade(2)
-                .halo(4);
-
-        Positioner.position(0, 0, 2, 3, 10, rectangle, rRectangle, rRectangle1, rRectangle2, circle);
-        shapes.add(rectangle);
-        shapes.add(rRectangle);
-        shapes.add(rRectangle1);
-        shapes.add(rRectangle2);
-        shapes.add(circle);
+        //RRectangle rectangle = new RRectangle(100, 100, new Color(0, 1, 0, 1))
+        //        .radius(20)
+        //        .shade(2);
+//
+        //RRectangle rRectangle = new RRectangle(100, 100, new Color(1, 0, 0, 1))
+        //        .radius(30)
+        //        .shade(4);
+//
+        //RRectangle rRectangle1 = new RRectangle(100, 100, new Color(0, 0, 1, 1))
+        //        .radius(20)
+        //        .shade(2);
+//
+        //RRectangle rRectangle2 = new RRectangle(100, 100, new Color(0, 1, 1, 1))
+        //        .margin(40, 30, 0, 0)
+        //        .radius(20)
+        //        .shade(2);
+//
+        //Circle circle = new Circle(200, 200, new Color(1, 1, 1, 1))
+        //        .margin(0, 60, 0, 0)
+        //        .radius(100)
+        //        .shade(2)
+        //        .halo(4);
+//
+        //Positioner.position(0, 0, 2, 3, 10, rectangle, rRectangle, rRectangle1, rRectangle2, circle);
+        //shapes.add(rectangle);
+        //shapes.add(rRectangle);
+        //shapes.add(rRectangle1);
+        //shapes.add(rRectangle2);
+        //shapes.add(circle);
     }
 
     public void openGui() {
@@ -118,6 +119,10 @@ public class BaseGui {
         RenderPipeline.clearPipeline();
         for (Shape shape : shapes)
             shape.push();
+
+        // Temporary over here as we need to push to gpu every time gui opens or something changes
+        for (int y = 0; y < 1080; y += 40)
+            RenderPipeline.fontRenderer.drawString(0, y, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\");
         RenderPipeline.refreshPipeline();
     }
 }

@@ -5,6 +5,7 @@ import com.nut.client.annotation.Component;
 import com.nut.client.event.AfterScreenCreationEvent;
 import com.nut.client.event.GuiRenderEvent;
 import com.nut.client.gui.guibuilder.BaseGui;
+import com.nut.client.renderer.font.CustomFont;
 import com.nut.client.renderer.font.FontRenderer;
 import com.nut.client.renderer.util.ProjectionUtils;
 import net.minecraft.util.ResourceLocation;
@@ -25,21 +26,11 @@ import static org.lwjgl.opengl.GL20.*;
 public class RenderPipeline {
 
     public static FontRenderer fontRenderer;
-
     public static int shapes;
     private static GLObject pipeline;
+    private static final List<Float> dataList = new ArrayList<>();
 
     private Shader shader;
-
-    public static final List<Float> quadPositions = new ArrayList<>();
-    public static final List<Float> colors = new ArrayList<>();
-    public static final List<Float> shapePositions = new ArrayList<>();
-    public static final List<Float> shapeSizes = new ArrayList<>();
-    public static final List<Float> radiusFloats = new ArrayList<>();
-    public static final List<Float> shadeFloats = new ArrayList<>();
-    public static final List<Float> haloFloats = new ArrayList<>();
-    public static final List<Float> shapeTypeFloats = new ArrayList<>();
-    public static final List<Float> textureCoordFloats = new ArrayList<>();
 
     @AutoInit
     public RenderPipeline() {
@@ -52,7 +43,7 @@ public class RenderPipeline {
 
         glUseProgram(shader.getShaderProgram());
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, fontRenderer.getTextureId());
+        glBindTexture(GL_TEXTURE_2D, fontRenderer.textureId);
         glUniformMatrix4(shader.getUniform("projection"), false, ProjectionUtils.orthoProjection);
         glUniform1i(shader.getUniform("font_atlas"), 0);
 
@@ -68,10 +59,42 @@ public class RenderPipeline {
     @SubscribeEvent
     public void onAfterScreenCreation(AfterScreenCreationEvent event) {
         fontRenderer = new FontRenderer(
-                "Purple Smile.ttf",
-                36,
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\",
-                12);
+                new CustomFont(
+                        "Sweets Smile.ttf",
+                        60,
+                        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\",
+                        6),
+                new CustomFont(
+                        "Inter-Bold.ttf",
+                        30,
+                        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\",
+                        6
+                ),
+                new CustomFont(
+                        "Inter-ExtraBold.ttf",
+                        24,
+                        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\",
+                        6
+                ),
+                new CustomFont(
+                        "Inter-Thin.ttf",
+                        12,
+                        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\",
+                        6
+                ),
+                new CustomFont(
+                        "Inter-Black.ttf",
+                        60,
+                        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\",
+                        6
+                ),
+                new CustomFont(
+                        "Inter-Light.ttf",
+                        30,
+                        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\",
+                        6
+                )
+        );
 
         shader = new Shader(
                 new ResourceLocation("bean", "shaders/guiVS.glsl"),
@@ -83,55 +106,31 @@ public class RenderPipeline {
         pipeline = new GLObject(GL_QUADS);
         pipeline
                 .bindVao()
-                .addVbo(GL_ARRAY_BUFFER) // Quad positions 4 * vec2
-                .addVbo(GL_ARRAY_BUFFER) // Color 1 * vec4
-                .addVbo(GL_ARRAY_BUFFER) // Shape position 1 * vec2
-                .addVbo(GL_ARRAY_BUFFER) // Shape size 1 * vec2
-                .addVbo(GL_ARRAY_BUFFER) // Radius 1 * float (Rounded rectangle)
-                .addVbo(GL_ARRAY_BUFFER) // Shade 1 * float
-                .addVbo(GL_ARRAY_BUFFER) // Halo 1 * float (Circle)
-                .addVbo(GL_ARRAY_BUFFER) // Shape type 1 * float
-                .addVbo(GL_ARRAY_BUFFER) // Texture coords 4 * vec2
+                .addVbo(GL_ARRAY_BUFFER)
                 .bindVbo(0)
-                .populateVao(0, 2, GL_FLOAT, 0, 0)
-                .bindVbo(1)
-                .populateVao(1, 4, GL_FLOAT, 0, 0)
-                .bindVbo(2)
-                .populateVao(2, 2, GL_FLOAT, 0, 0)
-                .bindVbo(3)
-                .populateVao(3, 2, GL_FLOAT, 0, 0)
-                .bindVbo(4)
-                .populateVao(4, 1, GL_FLOAT, 0, 0)
-                .bindVbo(5)
-                .populateVao(5, 1, GL_FLOAT, 0, 0)
-                .bindVbo(6)
-                .populateVao(6, 1, GL_FLOAT, 0, 0)
-                .bindVbo(7)
-                .populateVao(7, 1, GL_FLOAT, 0, 0)
-                .bindVbo(8)
-                .populateVao(8, 2, GL_FLOAT, 0, 0)
-                .unbindVbo(8)
+                .populateVao(0, 2, GL_FLOAT, 16 * Float.BYTES, 0)
+                .populateVao(1, 4, GL_FLOAT, 16 * Float.BYTES, 2 * Float.BYTES)
+                .populateVao(2, 2, GL_FLOAT, 16 * Float.BYTES, 6 * Float.BYTES)
+                .populateVao(3, 2, GL_FLOAT, 16 * Float.BYTES, 8 * Float.BYTES)
+                .populateVao(4, 1, GL_FLOAT, 16 * Float.BYTES, 10 * Float.BYTES)
+                .populateVao(5, 1, GL_FLOAT, 16 * Float.BYTES, 11 * Float.BYTES)
+                .populateVao(6, 1, GL_FLOAT, 16 * Float.BYTES, 12 * Float.BYTES)
+                .populateVao(7, 1, GL_FLOAT, 16 * Float.BYTES, 13 * Float.BYTES)
+                .populateVao(8, 2, GL_FLOAT, 16 * Float.BYTES, 14 * Float.BYTES)
+                .unbindVbo(0)
                 .unbindVao();
     }
 
-    // Run this if you expect any changes in shape data
+    // Run this if you expect any changes in vertex data
     public static void refreshPipeline() {
         pipeline
-                .populateVbo(0, list2Array(quadPositions), GL_STATIC_DRAW)
-                .populateVbo(1, list2Array(colors), GL_STATIC_DRAW)
-                .populateVbo(2, list2Array(shapePositions), GL_STATIC_DRAW)
-                .populateVbo(3, list2Array(shapeSizes), GL_STATIC_DRAW)
-                .populateVbo(4, list2Array(radiusFloats), GL_STATIC_DRAW)
-                .populateVbo(5, list2Array(shadeFloats), GL_STATIC_DRAW)
-                .populateVbo(6, list2Array(haloFloats), GL_STATIC_DRAW)
-                .populateVbo(7, list2Array(shapeTypeFloats), GL_STATIC_DRAW)
-                .populateVbo(8, list2Array(textureCoordFloats), GL_STATIC_DRAW)
-                .unbindVbo(8);
+                .populateVbo(0, list2Array(dataList), GL_STATIC_DRAW)
+                .unbindVbo(0);
     }
 
-    public static void queueData(List<Float> floats, float... data) {
+    public static void queueData(float... data) {
         for (float f : data)
-            floats.add(f);
+            dataList.add(f);
     }
 
     private static float[] list2Array(List<Float> data) {
@@ -143,14 +142,6 @@ public class RenderPipeline {
 
     public static void clearPipeline() {
         shapes = 0;
-        quadPositions.clear();
-        colors.clear();
-        shapePositions.clear();
-        shapeSizes.clear();
-        radiusFloats.clear();
-        shadeFloats.clear();
-        haloFloats.clear();
-        shapeTypeFloats.clear();
-        textureCoordFloats.clear();
+        dataList.clear();
     }
 }

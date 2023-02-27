@@ -22,6 +22,7 @@ out float shape_type;
 out vec2 tex_coord;
 
 void main() {
+    gl_Position = projection * vec4(aPos, 0, 1);
     color = aColor;
     shape_position = aShape_position;
     shape_size = aShape_size;
@@ -30,5 +31,4 @@ void main() {
     halo = aHalo;
     shape_type = aShape_type;
     tex_coord = aTex_coord;
-    gl_Position = projection * vec4(aPos, 0, 1);
 }

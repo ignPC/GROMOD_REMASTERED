@@ -1,4 +1,4 @@
-package com.nut.client.gui.testshape;
+package com.nut.client.gui.shape;
 
 import com.nut.client.utils.Vector2i;
 

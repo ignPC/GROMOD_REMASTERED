@@ -1,95 +1,94 @@
 package com.nut.client.renderer.font;
 
-import com.nut.client.gui.shape.ShapeType;
-import com.nut.client.gui.testshape.Shape;
-import com.nut.client.renderer.RenderPipeline;
-import lombok.Getter;
 import lombok.SneakyThrows;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.Display;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.util.Arrays;
+import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 
 public class FontRenderer {
 
-    private final String fontName;
-    private final float fontSize;
-    private final String characters;
-    private final int spacing;
-    @Getter private int textureId;
-    @Getter private final CharInfo[] charInfos = new CharInfo[128];
+    public static HashMap<String, CustomFont> fonts = new HashMap<>();
 
-    public FontRenderer(String fontName, int fontSize, String characters, int spacing) {
-        this.fontName = fontName;
-        this.fontSize = fontSize;
-        this.characters = characters;
-        this.spacing = spacing;
-        init();
-    }
+    public int textureId;
+    private final CustomFont[] customFonts;
 
-    public void init() {
+    public FontRenderer(CustomFont... customFonts) {
+        this.customFonts = customFonts;
         createBitmap();
     }
 
     @SneakyThrows
     public void createBitmap() {
-        ResourceLocation fontLocation = new ResourceLocation("bean", "fonts/" + fontName);
-        InputStream stream = Minecraft.getMinecraft().getResourceManager().getResource(fontLocation).getInputStream();
-        Font font = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(fontSize);
-
         BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
-        graphics.setFont(font);
-        FontMetrics fontMetrics = graphics.getFontMetrics();
 
         int width = 0;
-        int height = fontMetrics.getHeight();
-        for (char character : characters.toCharArray()) {
-            if (!font.canDisplay(character)) continue;
+        int height = 0;
+        for (CustomFont customFont : customFonts) {
+            Font font = customFont.font;
+            graphics.setFont(font);
+            FontMetrics metrics = graphics.getFontMetrics();
+            height += metrics.getHeight();
 
-            int charWidth = fontMetrics.charWidth(character);
-            width += charWidth + spacing;
+            for (char character : customFont.characters.toCharArray()) {
+                if (!font.canDisplay(character)) continue;
+
+                int charWidth = metrics.charWidth(character);
+                width += charWidth + customFont.spacing;
+            }
         }
+        height /= customFonts.length;
         graphics.dispose();
 
         int widthHeight = getMinimumBitmapSize(width * height);
         image = new BufferedImage(widthHeight, widthHeight, BufferedImage.TYPE_INT_ARGB);
         graphics = image.createGraphics();
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics.setFont(font);
+        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         graphics.setColor(Color.WHITE);
 
         int x = 0;
-        int y = fontMetrics.getAscent() - fontMetrics.getDescent() - fontMetrics.getLeading();
-        for (char character : characters.toCharArray()) {
-            if (!font.canDisplay(character)) continue;
+        int y = 0;
+        int charHeight = 0;
+        for (CustomFont customFont : customFonts) {
+            x = 0;
+            y += charHeight;
+            Font font = customFont.font;
+            graphics.setFont(font);
+            FontMetrics metrics = graphics.getFontMetrics();
 
-            int charWidth = fontMetrics.charWidth(character);
-            if (x + charWidth > widthHeight) {
-                x = 0;
-                y += fontMetrics.getHeight();
+            charHeight = metrics.getHeight();
+            for (char character : customFont.characters.toCharArray()) {
+                if (!font.canDisplay(character)) continue;
+
+                int charWidth = metrics.charWidth(character);
+                if (x + charWidth > widthHeight) {
+                    x = 0;
+                    y += metrics.getHeight();
+                }
+                if (character == 'j')
+                    charWidth += metrics.getDescent();
+                customFont.charInfos[character] = new CharInfo(
+                        metrics,
+                        (float) x / widthHeight,
+                        (float) y / widthHeight,
+                        (float) charWidth / widthHeight,
+                        (float) charHeight / widthHeight,
+                        charWidth,
+                        charHeight);
+                if (character == 'j')
+                    graphics.drawString(String.valueOf(character), x + metrics.getDescent(), y + metrics.getAscent());
+                else
+                    graphics.drawString(String.valueOf(character), x, y + metrics.getAscent());
+                x += charWidth + customFont.spacing;
             }
-            charInfos[character] = new CharInfo(
-                    fontMetrics,
-                    (float) x / widthHeight,
-                    (float) (y - fontMetrics.getHeight() + fontMetrics.getDescent()) / widthHeight,
-                    (float) charWidth / widthHeight,
-                    (float) height / widthHeight,
-                    charWidth,
-                    height);
-            graphics.drawString(String.valueOf(character), x, y);
-            x += charWidth + spacing;
+            fonts.put(customFont.fontName, customFont);
         }
         graphics.dispose();
         createTexture(image);
@@ -101,13 +100,11 @@ public class FontRenderer {
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
         ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight());
 
-        for(int h = 0; h < image.getHeight(); h++) {
-            for(int w = 0; w < image.getWidth(); w++) {
-                int pixel = pixels[h * image.getWidth() + w];
-
+        for (int y = 0; y < image.getHeight(); y++)
+            for (int x = 0; x < image.getWidth(); x++) {
+                int pixel = pixels[y * image.getWidth() + x];
                 buffer.put((byte) ((pixel >> 24) & 0xFF));
             }
-        }
         buffer.flip();
 
         textureId = glGenTextures();
@@ -119,6 +116,7 @@ public class FontRenderer {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, image.getWidth(), image.getHeight(), 0, GL_RED, GL_UNSIGNED_BYTE, buffer);
+        buffer.clear();
     }
 
     private int getMinimumBitmapSize(int surface) {
@@ -129,37 +127,5 @@ public class FontRenderer {
         length |= length >> 8;
         length |= length >> 16;
         return ++length;
-    }
-
-    public void drawString(int x, int y, String text) {
-        CharInfo charInfo = charInfos['a'];
-        float xScale = Shape.xScale;
-        float yScale = Shape.yScale;
-
-        x = (int) (x * xScale);
-        y = (int) (Display.getHeight() - y * yScale - (charInfo.height - charInfo.metrics.getDescent()) * yScale);
-        for (char character : text.toCharArray()) {
-            charInfo = charInfos[character];
-            int width = (int) (charInfo.width * xScale);
-            int height = (int) (charInfo.height * yScale);
-
-            float uvWidth = charInfo.uvWidth;
-            float uvHeight = charInfo.uvHeight;
-
-            RenderPipeline.queueData(RenderPipeline.quadPositions, x, y + height, x, y, x + width, y, x + width, y + height);
-            for (int i = 0; i < 4; i++) {
-                RenderPipeline.queueData(RenderPipeline.colors, 0, 0, 0, 0);
-                RenderPipeline.queueData(RenderPipeline.shapePositions, 0, 0);
-                RenderPipeline.queueData(RenderPipeline.shapeSizes, 0, 0);
-                RenderPipeline.queueData(RenderPipeline.radiusFloats, 0);
-                RenderPipeline.queueData(RenderPipeline.shadeFloats, 0);
-                RenderPipeline.queueData(RenderPipeline.haloFloats, 0);
-                RenderPipeline.queueData(RenderPipeline.shapeTypeFloats, ShapeType.FONT.ordinal());
-            }
-            RenderPipeline.queueData(RenderPipeline.textureCoordFloats, charInfo.x, charInfo.y, charInfo.x, charInfo.y + uvHeight,
-                    charInfo.x + uvWidth, charInfo.y + uvHeight, charInfo.x + uvWidth, charInfo.y);
-            RenderPipeline.shapes++;
-            x += width;
-        }
     }
 }

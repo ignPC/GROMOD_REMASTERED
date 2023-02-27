@@ -29,6 +29,6 @@ void main() {
         gl_FragColor = vec4(color.rgb, step);
     } else if (shape_type == 2) {
         float alpha = texture(font_atlas, tex_coord).r;
-        gl_FragColor = vec4(1, 1, 1, alpha);
+        gl_FragColor = vec4(color.rgb, alpha * color.a);
     }
 }

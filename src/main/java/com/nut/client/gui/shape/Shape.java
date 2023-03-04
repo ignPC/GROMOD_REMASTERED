@@ -1,12 +1,9 @@
-package com.nut.client.gui.testshape;
+package com.nut.client.gui.shape;
 
 import com.nut.client.utils.Color;
 import com.nut.client.utils.Vector2i;
 
 public abstract class Shape<T> {
-
-    public static float xScale = 1;
-    public static float yScale = 1;
 
     public int x;
     public int y;

@@ -1,16 +1,25 @@
 package com.nut.client;
 
+import com.nut.client.renderer.entity.CustomEntityLoader;
+import com.nut.client.renderer.font.CustomFont;
+import com.nut.client.renderer.font.FontAtlasBuilder;
+import lombok.SneakyThrows;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-
-import java.lang.reflect.InvocationTargetException;
 
 @Mod(modid = "Nut Client", version = "1.0.0")
 public class MainBean {
     
+    @SneakyThrows
     @Mod.EventHandler
-    public void init(FMLPostInitializationEvent event) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    public void init(FMLPostInitializationEvent event) {
         new Loader();
+        FontAtlasBuilder.instance
+                .addFont("Sweets Smile.ttf", 60, CustomFont.ALL, 0)
+                .addFont("Inter-Bold.ttf", 30, CustomFont.ALL, 0)
+                .addFont("Purple Smile.ttf", 60, CustomFont.ALL, 0)
+                .buildAtlas();
+        new CustomEntityLoader();
     }
 
     /*

@@ -1,4 +1,4 @@
-package com.nut.client.gui.testshape;
+package com.nut.client.gui.shape;
 
 public class Margin {
 

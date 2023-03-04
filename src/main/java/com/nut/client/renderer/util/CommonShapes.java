@@ -1,0 +1,84 @@
+package com.nut.client.renderer.util;
+
+public class CommonShapes {
+
+    public static final float[] cubeCoords = AABB2Floats(0, 0, 0, 1, 1, 1);
+
+    public static float[] AABB2Floats(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+        float[] data = new float[72];
+        int index = 0;
+        data[index++] = minX;
+        data[index++] = minY;
+        data[index++] = minZ;
+        data[index++] = minX;
+        data[index++] = maxY;
+        data[index++] = minZ;
+        data[index++] = maxX;
+        data[index++] = maxY;
+        data[index++] = minZ;
+        data[index++] = maxX;
+        data[index++] = minY;
+        data[index++] = minZ;
+        data[index++] = maxX;
+        data[index++] = minY;
+        data[index++] = maxZ;
+        data[index++] = maxX;
+        data[index++] = maxY;
+        data[index++] = maxZ;
+        data[index++] = minX;
+        data[index++] = maxY;
+        data[index++] = maxZ;
+        data[index++] = minX;
+        data[index++] = minY;
+        data[index++] = maxZ;
+        data[index++] = minX;
+        data[index++] = minY;
+        data[index++] = maxZ;
+        data[index++] = minX;
+        data[index++] = maxY;
+        data[index++] = maxZ;
+        data[index++] = minX;
+        data[index++] = maxY;
+        data[index++] = minZ;
+        data[index++] = minX;
+        data[index++] = minY;
+        data[index++] = minZ;
+        data[index++] = maxX;
+        data[index++] = minY;
+        data[index++] = minZ;
+        data[index++] = maxX;
+        data[index++] = maxY;
+        data[index++] = minZ;
+        data[index++] = maxX;
+        data[index++] = maxY;
+        data[index++] = maxZ;
+        data[index++] = maxX;
+        data[index++] = minY;
+        data[index++] = maxZ;
+        data[index++] = minX;
+        data[index++] = maxY;
+        data[index++] = minZ;
+        data[index++] = minX;
+        data[index++] = maxY;
+        data[index++] = maxZ;
+        data[index++] = maxX;
+        data[index++] = maxY;
+        data[index++] = maxZ;
+        data[index++] = maxX;
+        data[index++] = maxY;
+        data[index++] = minZ;
+        data[index++] = maxX;
+        data[index++] = minY;
+        data[index++] = minZ;
+        data[index++] = maxX;
+        data[index++] = minY;
+        data[index++] = maxZ;
+        data[index++] = minX;
+        data[index++] = minY;
+        data[index++] = maxZ;
+        data[index++] = minX;
+        data[index++] = minY;
+        data[index] = minZ;
+        return data;
+    }
+}

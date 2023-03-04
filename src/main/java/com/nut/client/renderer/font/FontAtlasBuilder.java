@@ -3,22 +3,33 @@ package com.nut.client.renderer.font;
 import lombok.SneakyThrows;
 import org.lwjgl.BufferUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class FontRenderer {
+public class FontAtlasBuilder {
+
+    public static final FontAtlasBuilder instance = new FontAtlasBuilder();
 
     public static HashMap<String, CustomFont> fonts = new HashMap<>();
+    public static int textureId;
+    private static final List<CustomFont> customFonts = new ArrayList<>();
 
-    public int textureId;
-    private final CustomFont[] customFonts;
+    public FontAtlasBuilder addFont(String fontName, float fontSize, String characters, int spacing) {
+        customFonts.add(new CustomFont(fontName, fontSize, characters, spacing));
+        return this;
+    }
 
-    public FontRenderer(CustomFont... customFonts) {
-        this.customFonts = customFonts;
+    public void buildAtlas() {
+        if (customFonts.size() == 0)
+            throw new RuntimeException("Cannot build atlas without any custom fonts");
         createBitmap();
     }
 
@@ -42,10 +53,10 @@ public class FontRenderer {
                 width += charWidth + customFont.spacing;
             }
         }
-        height /= customFonts.length;
+        height /= customFonts.size();
         graphics.dispose();
 
-        int widthHeight = getMinimumBitmapSize(width * height);
+        int widthHeight = getMinimumBitmapSize((int) ((width * height) * 1.2));
         image = new BufferedImage(widthHeight, widthHeight, BufferedImage.TYPE_INT_ARGB);
         graphics = image.createGraphics();
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -62,18 +73,17 @@ public class FontRenderer {
             Font font = customFont.font;
             graphics.setFont(font);
             FontMetrics metrics = graphics.getFontMetrics();
-
             charHeight = metrics.getHeight();
             for (char character : customFont.characters.toCharArray()) {
                 if (!font.canDisplay(character)) continue;
 
                 int charWidth = metrics.charWidth(character);
+                if (character == 'j')
+                    charWidth += metrics.getDescent();
                 if (x + charWidth > widthHeight) {
                     x = 0;
                     y += metrics.getHeight();
                 }
-                if (character == 'j')
-                    charWidth += metrics.getDescent();
                 customFont.charInfos[character] = new CharInfo(
                         metrics,
                         (float) x / widthHeight,
@@ -96,8 +106,7 @@ public class FontRenderer {
 
     @SneakyThrows
     private void createTexture(BufferedImage image) {
-        int[] pixels = new int[image.getWidth() * image.getHeight()];
-        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+        int[] pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
         ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight());
 
         for (int y = 0; y < image.getHeight(); y++)
@@ -119,7 +128,7 @@ public class FontRenderer {
         buffer.clear();
     }
 
-    private int getMinimumBitmapSize(int surface) {
+    private static int getMinimumBitmapSize(int surface) {
         int length = (int) Math.sqrt(surface);
         length |= length >> 1;
         length |= length >> 2;

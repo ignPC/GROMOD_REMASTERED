@@ -7,7 +7,7 @@ import com.nut.client.gui.shape.Positioner;
 import com.nut.client.gui.shape.RRectangle;
 import com.nut.client.gui.shape.Shape;
 import com.nut.client.renderer.RenderPipeline;
-import com.nut.client.renderer.font.FontRenderer;
+import com.nut.client.renderer.font.FontAtlasBuilder;
 import com.nut.client.renderer.util.ProjectionUtils;
 import com.nut.client.utils.Color;
 import com.nut.client.utils.Scaled;
@@ -119,11 +119,11 @@ public class BaseGui {
     }
 
     public void refreshPipeline() {
-        RenderPipeline.clearPipeline();
+        RenderPipeline.clearGuiPipeline();
         for (Shape shape : shapes)
             shape.push();
 
-        FontRenderer.fonts.get("Sweets Smile.ttf").drawString(0, 0, "Ong, deez fucking nuts yoj", new Color(1, 0, 0, 1));
-        RenderPipeline.refreshPipeline();
+        FontAtlasBuilder.fonts.get("Inter-Bold.ttf").drawString(0, 0, "Ong, deez fucking nuts yoj", new Color(189 / 255f, 108 / 255f, 59 / 255f, 1));
+        RenderPipeline.refreshGuiPipeline();
     }
 }

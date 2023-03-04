@@ -1,7 +1,7 @@
 package com.nut.client.renderer.font;
 
 import com.nut.client.gui.guibuilder.BaseGui;
-import com.nut.client.gui.shape.ShapeType;
+import com.nut.client.utils.ShapeType;
 import com.nut.client.renderer.RenderPipeline;
 import com.nut.client.utils.Color;
 import lombok.SneakyThrows;
@@ -13,6 +13,8 @@ import java.awt.*;
 import java.io.InputStream;
 
 public class CustomFont {
+
+    public static final String ALL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-/|;:{}[]\"',.=<>?\\";
 
     public final String fontName;
     public final float fontSize;
@@ -58,13 +60,13 @@ public class CustomFont {
             float uvWidth = charInfo.uvWidth;
             float uvHeight = charInfo.uvHeight;
 
-            RenderPipeline.queueData(
+            RenderPipeline.queueGuiData(
                     x, y + height, color.r, color.g, color.b, color.a, 0, 0, 0, 0, 0, 0, 0, ShapeType.FONT.ordinal(), charInfo.x, charInfo.y,
                     x, y, color.r, color.g, color.b, color.a, 0, 0, 0, 0, 0, 0, 0, ShapeType.FONT.ordinal(), charInfo.x, charInfo.y + uvHeight,
                     x + width, y, color.r, color.g, color.b, color.a, 0, 0, 0, 0, 0, 0, 0, ShapeType.FONT.ordinal(), charInfo.x + uvWidth, charInfo.y + uvHeight,
                     x + width, y + height, color.r, color.g, color.b, color.a, 0, 0, 0, 0, 0, 0, 0, ShapeType.FONT.ordinal(), charInfo.x + uvWidth, charInfo.y
             );
-            RenderPipeline.shapes++;
+            RenderPipeline.guiShapes++;
             x += width;
         }
     }

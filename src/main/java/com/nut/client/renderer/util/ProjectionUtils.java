@@ -3,14 +3,17 @@ package com.nut.client.renderer.util;
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.util.vector.Matrix4f;
 
 import java.nio.FloatBuffer;
 
 @Component
 public class ProjectionUtils {
 
-    public static FloatBuffer orthoProjection = BufferUtils.createFloatBuffer(16);
+    public static FloatBuffer guiProjection = BufferUtils.createFloatBuffer(16);
+    public static FloatBuffer worldProjection = BufferUtils.createFloatBuffer(16);
+    private static final Matrix4f guiMatrix = new Matrix4f();
+    private static final Matrix4f projectionMatrix = new Matrix4f();
+    private static final Matrix4f modelViewMatrix = new Matrix4f();
 
     @AutoInit
     public ProjectionUtils() {
@@ -18,14 +21,17 @@ public class ProjectionUtils {
     }
 
     public static void setOrthoProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
-        Matrix4f ortho = new Matrix4f();
-        ortho.m00 = 2.0f / (right - left);
-        ortho.m11 = 2.0f / (top - bottom);
-        ortho.m22 = (2.0f) / (zNear - zFar);
-        ortho.m30 = (right + left) / (left - right);
-        ortho.m31 = (top + bottom) / (bottom - top);
-        ortho.m32 = ((zFar + zNear)) / (zNear - zFar);
-        ortho.store(orthoProjection);
-        orthoProjection.flip();
+        guiMatrix
+                .setIdentity()
+                .setOrtho(left, right, bottom, top, zNear, zFar)
+                .store(guiProjection);
+    }
+
+    public static void update3DMatrix(float[] projectionMatrixBuffer, float[] modelViewMatrixBuffer) {
+        projectionMatrix.set(projectionMatrixBuffer);
+        modelViewMatrix.set(modelViewMatrixBuffer);
+        projectionMatrix
+                .mul(modelViewMatrix)
+                .store(worldProjection);
     }
 }

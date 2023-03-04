@@ -4,7 +4,11 @@
   "refmap": "mixins.nutclient.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "ClippingHelperImplMixin",
     "EntityRendererMixin",
     "MinecraftMixin"
+  ],
+  "mixins": [
+    "EntityTntPrimedMixin"
   ]
 }

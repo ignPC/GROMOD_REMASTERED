@@ -1,4 +1,4 @@
-package com.nut.client.gui.shape;
+package com.nut.client.utils;
 
 public enum ShapeType {
 

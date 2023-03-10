@@ -1,13 +1,11 @@
 #version 330 core
 
+in vec2 outPos;
+in vec2 outOffset;
 in vec4 outColor;
-in vec2 outShapePosition;
-in vec2 outShapeSize;
-in float outRadius;
-in float outShade;
-in float outHalo;
-in float outShapeType;
-in vec2 outTexCoord;
+in vec2 outSize;
+in vec4 outShapeInfo;
+in vec4 outTextureInfo;
 
 uniform sampler2D font_atlas;
 
@@ -16,18 +14,24 @@ float roundedRectangle(vec2 center, vec2 size, float radius) {
 }
 
 void main() {
-    vec2 center = outShapePosition + outShapeSize / 2.;
+    float radius = outShapeInfo.x;
+    float shade = outShapeInfo.y;
+    float halo = outShapeInfo.z;
+    float shapeType = outShapeInfo.w;
+    vec2 center = outOffset + outSize / 2.;
 
-    if (outShapeType == 0) {
+    if (shapeType == 0) {
         float len = length(center - gl_FragCoord.xy);
-        float step = 1. - smoothstep(outRadius - outShade, outRadius, len);
-        gl_FragColor = vec4(outColor.rgb, step);
-    } else if (outShapeType == 1) {
-        float len = roundedRectangle(gl_FragCoord.xy - outShapePosition - outShapeSize / 2., outShapeSize / 2. - vec2(outShade), outRadius);
-        float step = 1. - smoothstep(0., outShade, len);
-        gl_FragColor = vec4(outColor.rgb, step);
-    } else if (outShapeType == 2) {
-        float alpha = texture(font_atlas, outTexCoord).r;
+        float step = 1. - smoothstep(radius - shade, radius, len);
+        gl_FragColor = vec4(outColor.rgb, step * outColor.a);
+    } else if (shapeType == 1) {
+        float len = roundedRectangle(gl_FragCoord.xy - outOffset - outSize / 2., outSize / 2. - vec2(shade), radius);
+        float step = 1. - smoothstep(0., shade, len);
+        gl_FragColor = vec4(outColor.rgb, step * outColor.a);
+    } else if (shapeType == 2) {
+        float alpha = texture(font_atlas, vec2(outPos.x, 1. - outPos.y) * outTextureInfo.zw + outTextureInfo.xy).r;
         gl_FragColor = vec4(outColor.rgb, alpha * outColor.a);
+    } else if (shapeType == 3) {
+        gl_FragColor = outColor;
     }
 }

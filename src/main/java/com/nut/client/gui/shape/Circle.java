@@ -1,9 +1,8 @@
 package com.nut.client.gui.shape;
 
 import com.nut.client.gui.guibuilder.BaseGui;
-import com.nut.client.renderer.RenderPipeline;
 import com.nut.client.utils.Color;
-import com.nut.client.utils.ShapeType;
+import com.nut.client.utils.RenderUtils;
 import org.lwjgl.opengl.Display;
 
 public class Circle extends Shape<Circle> {
@@ -46,14 +45,7 @@ public class Circle extends Shape<Circle> {
         int y = (int) ((Display.getHeight() - this.y * yScale - height));
         float radius = this.radius * xScale;
         float shade = this.shade * xScale;
-        float halo = this.halo * xScale;
 
-        RenderPipeline.queueGuiData(
-                x, y + height, color.r, color.g, color.b, color.a, x, y, width, height, radius, shade, halo, ShapeType.CIRCLE.ordinal(), 0, 0,
-                x, y, color.r, color.g, color.b, color.a, x, y, width, height, radius, shade, halo, ShapeType.CIRCLE.ordinal(), 0, 0,
-                x + width, y, color.r, color.g, color.b, color.a, x, y, width, height, radius, shade, halo, ShapeType.CIRCLE.ordinal(), 0, 0,
-                x + width, y + height, color.r, color.g, color.b, color.a, x, y, width, height, radius, shade, halo, ShapeType.CIRCLE.ordinal(), 0, 0
-        );
-        RenderPipeline.guiShapes++;
+        RenderUtils.drawCircle(x, y, width, height, radius, shade, color);
     }
 }

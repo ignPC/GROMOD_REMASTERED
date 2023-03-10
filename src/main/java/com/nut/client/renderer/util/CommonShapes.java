@@ -2,9 +2,7 @@ package com.nut.client.renderer.util;
 
 public class CommonShapes {
 
-    public static final float[] cubeCoords = AABB2Floats(0, 0, 0, 1, 1, 1);
-
-    public static float[] AABB2Floats(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+    public static float[] cube(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
         float[] data = new float[72];
         int index = 0;
         data[index++] = minX;
@@ -79,6 +77,21 @@ public class CommonShapes {
         data[index++] = minX;
         data[index++] = minY;
         data[index] = minZ;
+        return data;
+    }
+
+    public static float[] rectangle(float minX, float minY, float maxX, float maxY, int repeatAmount) {
+        float[] data = new float[8 * repeatAmount];
+        for (int i = 0; i < 8 * repeatAmount;) {
+            data[i++] = maxX;
+            data[i++] = minY;
+            data[i++] = maxX;
+            data[i++] = maxY;
+            data[i++] = minX;
+            data[i++] = maxY;
+            data[i++] = minX;
+            data[i++] = minY;
+        }
         return data;
     }
 }

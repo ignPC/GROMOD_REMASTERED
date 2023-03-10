@@ -1,30 +1,32 @@
 #version 330 core
 
 layout (location = 0) in vec3 pos;
-layout (location = 1) in vec3 offset;
-layout (location = 2) in vec4 color;
-layout (location = 3) in float scale;
-layout (location = 4) in float textureType;
-layout (location = 5) in vec2 tntTexCoord;
-layout (location = 6) in vec2 sandTexCoord;
-layout (location = 7) in vec2 redSandTexCoord;
-layout (location = 8) in vec2 gravelTexCoord;
+layout (location = 1) in vec2 texturePos;
+layout (location = 2) in vec3 offset;
+layout (location = 3) in vec4 color;
+layout (location = 4) in vec4 cubeInfo;
+layout (location = 5) in vec4 topTexture;
+layout (location = 6) in vec4 middleTexture;
+layout (location = 7) in vec4 bottomTexture;
 
 uniform mat4 projection;
 
+out float outVertexId;
+out vec2 outTexturePos;
 out vec4 outColor;
-out vec2 outTexCoord;
+out vec4 outTopTexture;
+out vec4 outMiddleTexture;
+out vec4 outBottomTexture;
 
 void main() {
-    gl_Position = projection * vec4(pos * scale + offset, 1);
+    gl_Position = projection * vec4(pos * cubeInfo.xyz + offset, 1);
+    outVertexId = gl_VertexID;
+    outTexturePos = texturePos;
     outColor = color;
-    if (textureType == 0) {
-        outTexCoord = tntTexCoord;
-    } else if (textureType == 1) {
-        outTexCoord = sandTexCoord;
-    } else if (textureType == 2) {
-        outTexCoord = redSandTexCoord;
-    } else if (textureType == 3) {
-        outTexCoord = gravelTexCoord;
+    outTopTexture = topTexture;
+    outMiddleTexture = middleTexture;
+    outBottomTexture = bottomTexture;
+    if (cubeInfo.w == 4) {
+        outVertexId = 25;
     }
 }

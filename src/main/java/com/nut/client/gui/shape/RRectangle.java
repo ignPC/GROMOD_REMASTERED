@@ -1,9 +1,8 @@
 package com.nut.client.gui.shape;
 
 import com.nut.client.gui.guibuilder.BaseGui;
-import com.nut.client.renderer.RenderPipeline;
 import com.nut.client.utils.Color;
-import com.nut.client.utils.ShapeType;
+import com.nut.client.utils.RenderUtils;
 import org.lwjgl.opengl.Display;
 
 public class RRectangle extends Shape<RRectangle> {
@@ -41,12 +40,6 @@ public class RRectangle extends Shape<RRectangle> {
         float radius = this.radius * xScale;
         float shade = this.shade * xScale;
 
-        RenderPipeline.queueGuiData(
-                x, y + height, color.r, color.g, color.b, color.a, x, y, width, height, radius, shade, 0, ShapeType.ROUNDEDRECTANGLE.ordinal(), 0, 0,
-                x, y, color.r, color.g, color.b, color.a, x, y, width, height, radius, shade, 0, ShapeType.ROUNDEDRECTANGLE.ordinal(), 0, 0,
-                x + width, y, color.r, color.g, color.b, color.a, x, y, width, height, radius, shade, 0, ShapeType.ROUNDEDRECTANGLE.ordinal(), 0, 0,
-                x + width, y + height, color.r, color.g, color.b, color.a, x, y, width, height, radius, shade, 0, ShapeType.ROUNDEDRECTANGLE.ordinal(), 0, 0
-        );
-        RenderPipeline.guiShapes++;
+        RenderUtils.drawRoundedRectangle(x, y, width, height, radius, shade, color);
     }
 }

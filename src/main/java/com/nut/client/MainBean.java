@@ -13,12 +13,12 @@ public class MainBean {
     @SneakyThrows
     @Mod.EventHandler
     public void init(FMLPostInitializationEvent event) {
-        new Loader();
         FontAtlasBuilder.instance
                 .addFont("Sweets Smile.ttf", 60, CustomFont.ALL, 0)
                 .addFont("Inter-Bold.ttf", 30, CustomFont.ALL, 0)
                 .addFont("Purple Smile.ttf", 60, CustomFont.ALL, 0)
                 .buildAtlas();
+        new Loader();
         new CustomEntityLoader();
     }
 

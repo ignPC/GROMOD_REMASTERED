@@ -7,6 +7,7 @@ import com.nut.client.gui.shape.Positioner;
 import com.nut.client.gui.shape.RRectangle;
 import com.nut.client.gui.shape.Shape;
 import com.nut.client.renderer.RenderPipeline;
+import com.nut.client.renderer.font.CustomFont;
 import com.nut.client.renderer.font.FontAtlasBuilder;
 import com.nut.client.renderer.util.ProjectionUtils;
 import com.nut.client.utils.Color;
@@ -30,14 +31,17 @@ public class BaseGui {
     private float screenWidth = 1920;
     private float screenHeight = 1080;
 
+    private static CustomFont interBold;
+
     @AutoInit
     public BaseGui(Minecraft minecraft) {
         this.minecraft = minecraft;
+        interBold = FontAtlasBuilder.fonts.get("Inter-Bold.ttf");
         init();
     }
 
     public void init() {
-        RRectangle rectangle = new RRectangle(100, 100, new Color(0, 1, 0, 1))
+        RRectangle rectangle = new RRectangle(100, 200, new Color(0, 1, 0, 1))
                 .radius(20)
                 .shade(2);
 
@@ -66,6 +70,13 @@ public class BaseGui {
         shapes.add(rRectangle1);
         shapes.add(rRectangle2);
         shapes.add(circle);
+    }
+
+    public void drawGui() {
+        for (Shape shape : shapes)
+            shape.push();
+
+        interBold.drawString(0, 0, "Your mom gay af lmao kekw", new Color(1, 0, 0, 0.8f));
     }
 
     public void openGui() {
@@ -120,10 +131,7 @@ public class BaseGui {
 
     public void refreshPipeline() {
         RenderPipeline.clearGuiPipeline();
-        for (Shape shape : shapes)
-            shape.push();
-
-        FontAtlasBuilder.fonts.get("Inter-Bold.ttf").drawString(0, 0, "Ong, deez fucking nuts yoj", new Color(189 / 255f, 108 / 255f, 59 / 255f, 1));
+        drawGui();
         RenderPipeline.refreshGuiPipeline();
     }
 }

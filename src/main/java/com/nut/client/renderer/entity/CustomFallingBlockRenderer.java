@@ -78,7 +78,7 @@ public class CustomFallingBlockRenderer extends Render<EntityFallingBlock> {
 
             float brightness = Minecraft.getMinecraft().theWorld.getSunBrightness(partialTicks) * 0.85f;
             Vector3d interpolated = MathUtils.interpolateCoords(entity, partialTicks);
-            RenderUtils.drawCube(interpolated.x - 0.5, interpolated.y, interpolated.z - 0.5, 0.98f, new Color(brightness, brightness, brightness, 1), textureType, partialTicks);
+            RenderUtils.drawCube(interpolated.x - 0.5, interpolated.y, interpolated.z - 0.5, 0.98f, 0.98f, 0.98f, new Color(brightness, brightness, brightness, 1), textureType);
         }
     }
 

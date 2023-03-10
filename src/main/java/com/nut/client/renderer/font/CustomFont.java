@@ -57,14 +57,13 @@ public class CustomFont {
             int width = (int) (charInfo.width * xScale);
             int height = (int) (charInfo.height * yScale);
 
-            float uvWidth = charInfo.uvWidth;
-            float uvHeight = charInfo.uvHeight;
-
             RenderPipeline.queueGuiData(
-                    x, y + height, color.r, color.g, color.b, color.a, 0, 0, 0, 0, 0, 0, 0, ShapeType.FONT.ordinal(), charInfo.x, charInfo.y,
-                    x, y, color.r, color.g, color.b, color.a, 0, 0, 0, 0, 0, 0, 0, ShapeType.FONT.ordinal(), charInfo.x, charInfo.y + uvHeight,
-                    x + width, y, color.r, color.g, color.b, color.a, 0, 0, 0, 0, 0, 0, 0, ShapeType.FONT.ordinal(), charInfo.x + uvWidth, charInfo.y + uvHeight,
-                    x + width, y + height, color.r, color.g, color.b, color.a, 0, 0, 0, 0, 0, 0, 0, ShapeType.FONT.ordinal(), charInfo.x + uvWidth, charInfo.y
+                    x, y,
+                    color.r, color.g, color.b, color.a,
+                    width, height,
+                    0, 0, 0, ShapeType.FONT.ordinal(),
+                    charInfo.x, charInfo.y,
+                    charInfo.uvWidth, charInfo.uvHeight
             );
             RenderPipeline.guiShapes++;
             x += width;

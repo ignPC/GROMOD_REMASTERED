@@ -72,7 +72,7 @@ public class RenderPipeline {
 
         glUseProgram(worldShader.getShaderProgram());
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, 7);
+        glBindTexture(GL_TEXTURE_2D, 8);
         glUniformMatrix4(worldShader.getUniform("projection"), false, ProjectionUtils.worldProjection);
         glUniform1i(worldShader.getUniform("minecraft_atlas"), 0);
 

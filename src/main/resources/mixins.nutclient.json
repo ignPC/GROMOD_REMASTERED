@@ -6,9 +6,8 @@
   "client": [
     "ClippingHelperImplMixin",
     "EntityRendererMixin",
+    "EntityTntPrimedMixin",
+    "ExplosionMixin",
     "MinecraftMixin"
-  ],
-  "mixins": [
-    "EntityTntPrimedMixin"
   ]
 }

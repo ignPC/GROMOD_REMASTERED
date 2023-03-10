@@ -1,6 +1,7 @@
 package com.nut.client;
 
 import com.nut.client.annotation.AutoInit;
+import com.nut.client.annotation.BModule;
 import com.nut.client.annotation.Component;
 import net.minecraft.client.Minecraft;
 import org.reflections.Reflections;
@@ -18,6 +19,7 @@ public class Loader {
 
     public Loader() throws InstantiationException, IllegalAccessException, InvocationTargetException {
         fillClazz2ObjectMap();
+
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Component.class);
         for (Class<?> clazz : classes)
             initClass(clazz);
@@ -57,5 +59,15 @@ public class Loader {
 
     public void fillClazz2ObjectMap() {
         clazz2ObjectMap.put(Minecraft.class, Minecraft.getMinecraft());
+    }
+
+    public void initModule(Class<?> module){
+        BModule annotation = module.getAnnotation(BModule.class);
+        String moduleName = annotation.name();
+        addModuleToGui(moduleName);
+    }
+
+    private void addModuleToGui(String moduleName) {
+
     }
 }

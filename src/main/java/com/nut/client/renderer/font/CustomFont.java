@@ -3,7 +3,7 @@ package com.nut.client.renderer.font;
 import com.nut.client.gui.guibuilder.BaseGui;
 import com.nut.client.utils.ShapeType;
 import com.nut.client.renderer.RenderPipeline;
-import com.nut.client.utils.Color;
+import com.nut.client.utils.BColor;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -38,7 +38,7 @@ public class CustomFont {
         font = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(fontSize);
     }
 
-    public void drawString(int x, int y, String text, Color color) {
+    public void drawString(int x, int y, String text, BColor color) {
         CharInfo charInfo = charInfos['a'];
         float xScale = BaseGui.scaled.getXScale();
         float yScale = BaseGui.scaled.getYScale();

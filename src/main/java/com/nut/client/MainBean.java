@@ -41,6 +41,7 @@ public class MainBean {
             - cannoning
                 - autotick
                 - debugblock that works
+                - inside of gametick tnt visualiser
             - fps
                 - entity limit
                 - entity custom render
@@ -50,5 +51,6 @@ public class MainBean {
                 - auto fit schematic
             - other
                 - basebuilder
+                - flyboost
      */
 }

@@ -1,8 +1,11 @@
 package com.nut.client.mixin;
 
+import com.nut.client.annotation.AutoInit;
+import com.nut.client.module.TntVisualizationModule;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.Vector3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -25,12 +28,25 @@ public abstract class EntityTntPrimedMixin extends Entity {
     }
 
     /**
-     * @author Gromit
-     * @reason Remove ugly ass smoke particle
+     * @author Gromit + PC
+     * @reason Remove ugly ass smoke particle + send info to TNTVisualizationModule
      */
     @Overwrite
     public void onUpdate()
     {
+        if(this.fuse-- <= 0 && this.worldObj.isRemote){
+            TntVisualizationModule tntVis = TntVisualizationModule.getInstance();
+
+            if(tntVis.recordingExplosion || tntVis.recordingFirstExplosion) {
+                Vector3d vec = new Vector3d();
+                vec.x = this.posX;
+                vec.y = this.posY;
+                vec.z = this.posZ;
+
+                tntVis.explosionList.add(vec);
+            }
+        }
+
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;

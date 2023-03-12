@@ -1,6 +1,6 @@
 package com.nut.client.gui.shape;
 
-import com.nut.client.utils.Color;
+import com.nut.client.utils.BColor;
 import com.nut.client.utils.Vector2i;
 
 public abstract class Shape<T> {
@@ -9,10 +9,10 @@ public abstract class Shape<T> {
     public int y;
     public int width;
     public int height;
-    public Color color;
+    public BColor color;
     public final Margin margin = new Margin(0, 0, 0, 0);
 
-    public Shape(int x, int y, int width, int height, Color color) {
+    public Shape(int x, int y, int width, int height, BColor color) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -20,7 +20,7 @@ public abstract class Shape<T> {
         this.color = color;
     }
 
-    public Shape(int width, int height, Color color) {
+    public Shape(int width, int height, BColor color) {
         this.width = width;
         this.height = height;
         this.color = color;

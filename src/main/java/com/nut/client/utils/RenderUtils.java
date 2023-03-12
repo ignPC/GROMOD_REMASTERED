@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 
 public class RenderUtils {
 
-    public static void drawCube(double x, double y, double z, float scaleX, float scaleY, float scaleZ, Color color, TextureType textureType) {
+    public static void drawCube(double x, double y, double z, float scaleX, float scaleY, float scaleZ, BColor color, TextureType textureType) {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
         if (textureType.ordinal() != 4)
@@ -30,7 +30,7 @@ public class RenderUtils {
         RenderPipeline.worldShapes++;
     }
 
-    public static void drawRoundedRectangle(float x, float y, float width, float height, float radius, float shade, Color color) {
+    public static void drawRoundedRectangle(float x, float y, float width, float height, float radius, float shade, BColor color) {
         RenderPipeline.queueGuiData(
                 x, y,
                 color.r, color.g, color.b, color.a,
@@ -41,7 +41,7 @@ public class RenderUtils {
         RenderPipeline.guiShapes++;
     }
 
-    public static void drawCircle(float x, float y, float width, float height, float radius, float shade, Color color) {
+    public static void drawCircle(float x, float y, float width, float height, float radius, float shade, BColor color) {
         RenderPipeline.queueGuiData(
                 x, y,
                 color.r, color.g, color.b, color.a,

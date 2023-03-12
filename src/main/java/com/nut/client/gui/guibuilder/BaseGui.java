@@ -10,7 +10,7 @@ import com.nut.client.renderer.RenderPipeline;
 import com.nut.client.renderer.font.CustomFont;
 import com.nut.client.renderer.font.FontAtlasBuilder;
 import com.nut.client.renderer.util.ProjectionUtils;
-import com.nut.client.utils.Color;
+import com.nut.client.utils.BColor;
 import com.nut.client.utils.Scaled;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
@@ -41,24 +41,24 @@ public class BaseGui {
     }
 
     public void init() {
-        RRectangle rectangle = new RRectangle(100, 200, new Color(0, 1, 0, 1))
+        RRectangle rectangle = new RRectangle(100, 200, new BColor(0, 1, 0, 1))
                 .radius(20)
                 .shade(2);
 
-        RRectangle rRectangle = new RRectangle(100, 100, new Color(1, 0, 0, 1))
+        RRectangle rRectangle = new RRectangle(100, 100, new BColor(1, 0, 0, 1))
                 .radius(30)
                 .shade(4);
 
-        RRectangle rRectangle1 = new RRectangle(100, 100, new Color(0, 0, 1, 1))
+        RRectangle rRectangle1 = new RRectangle(100, 100, new BColor(0, 0, 1, 1))
                 .radius(20)
                 .shade(2);
 
-        RRectangle rRectangle2 = new RRectangle(100, 100, new Color(0, 1, 1, 1))
+        RRectangle rRectangle2 = new RRectangle(100, 100, new BColor(0, 1, 1, 1))
                 .margin(40, 30, 0, 0)
                 .radius(20)
                 .shade(2);
 
-        Circle circle = new Circle(200, 200, new Color(1, 1, 1, 1))
+        Circle circle = new Circle(200, 200, new BColor(1, 1, 1, 1))
                 .margin(0, 60, 0, 0)
                 .radius(100)
                 .shade(2)
@@ -76,7 +76,7 @@ public class BaseGui {
         for (Shape shape : shapes)
             shape.push();
 
-        interBold.drawString(0, 0, "Your mom gay af lmao kekw", new Color(1, 0, 0, 0.8f));
+        interBold.drawString(0, 0, "Your mom gay af lmao kekw", new BColor(1, 0, 0, 0.8f));
     }
 
     public void openGui() {

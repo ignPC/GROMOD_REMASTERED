@@ -1,7 +1,7 @@
 package com.nut.client.gui.shape;
 
 import com.nut.client.gui.guibuilder.BaseGui;
-import com.nut.client.utils.Color;
+import com.nut.client.utils.BColor;
 import com.nut.client.utils.RenderUtils;
 import org.lwjgl.opengl.Display;
 
@@ -11,11 +11,11 @@ public class Circle extends Shape<Circle> {
     private float shade;
     private float halo;
 
-    public Circle(int x, int y, int width, int height, Color color) {
+    public Circle(int x, int y, int width, int height, BColor color) {
         super(x, y, width, height, color);
     }
 
-    public Circle(int width, int height, Color color) {
+    public Circle(int width, int height, BColor color) {
         super(width, height, color);
     }
 

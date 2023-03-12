@@ -1,7 +1,7 @@
 package com.nut.client.gui.shape;
 
 import com.nut.client.gui.guibuilder.BaseGui;
-import com.nut.client.utils.Color;
+import com.nut.client.utils.BColor;
 import com.nut.client.utils.RenderUtils;
 import org.lwjgl.opengl.Display;
 
@@ -10,11 +10,11 @@ public class RRectangle extends Shape<RRectangle> {
     private float radius;
     private float shade;
 
-    public RRectangle(int x, int y, int width, int height, Color color) {
+    public RRectangle(int x, int y, int width, int height, BColor color) {
         super(x, y, width, height, color);
     }
 
-    public RRectangle(int width, int height, Color color) {
+    public RRectangle(int width, int height, BColor color) {
         super(width, height, color);
     }
 

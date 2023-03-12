@@ -34,7 +34,7 @@ public abstract class EntityTntPrimedMixin extends Entity {
     @Overwrite
     public void onUpdate()
     {
-        if(this.fuse-- <= 0){
+        if(this.fuse-- <= 0 && this.worldObj.isRemote){
             TntVisualizationModule tntVis = TntVisualizationModule.getInstance();
 
             if(tntVis.recordingExplosion || tntVis.recordingFirstExplosion) {

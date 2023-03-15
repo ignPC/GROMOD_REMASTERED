@@ -2,10 +2,7 @@ package com.nut.client.module;
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
-import com.nut.client.utils.BColor;
-import com.nut.client.utils.MessageUtils;
-import com.nut.client.utils.RenderUtils;
-import com.nut.client.utils.TextureType;
+import com.nut.client.utils.*;
 import net.minecraft.util.Vector3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,8 +22,8 @@ public class TntVisualizationModule {
 
     public static TntVisualizationModule instance;
 
-    public final List<Vector3d> explosionList = new ArrayList<>();
-    public final List<List<Vector3d>> totalRecording;
+    public final List<BEntity> explosionList = new ArrayList<>();
+    public final List<List<BEntity>> totalRecording;
 
     public boolean recordingExplosion = false;
     public boolean recordingFirstExplosion = false;
@@ -37,7 +34,7 @@ public class TntVisualizationModule {
     private int currentEntityPointer = 0;
     private int currentTickPointer = 0;
 
-    private Vector3d currentPos;
+    private BVector3d currentPos;
 
     @AutoInit
     public TntVisualizationModule() {
@@ -70,7 +67,7 @@ public class TntVisualizationModule {
 
             Utils.liveDebug(ticksSinceExplosion, explosionList);
 
-            List<Vector3d> copyExplosionList = new ArrayList<>(explosionList);
+            List<BEntity> copyExplosionList = new ArrayList<>(explosionList);
             totalRecording.set(ticksSinceExplosion, copyExplosionList);
             explosionList.clear();
 
@@ -88,7 +85,7 @@ public class TntVisualizationModule {
             recordingExplosion = false;
             recordingFirstExplosion = false;
 
-            currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer);
+            currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer).getExplosionPos();
 
             Utils.debugTotal(totalRecording);
             startSim();
@@ -115,7 +112,7 @@ public class TntVisualizationModule {
 
         // if entity pointer not out of range set current pos to next in list
         if (currentEntityPointer < totalRecording.get(currentTickPointer).size()) {
-            currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer);
+            currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer).getExplosionPos();
             MessageUtils.addClientMessage("Showing Tick: " + String.format("%02d", currentTickPointer) + " Order: " + String.format("%02d", currentEntityPointer));
             return;
         }
@@ -135,7 +132,7 @@ public class TntVisualizationModule {
         }
 
         // if while statement did find data, set position to pointer
-        currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer);
+        currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer).getExplosionPos();
 
         MessageUtils.addClientMessage("Showing Tick: " + String.format("%02d", currentTickPointer) + " Order: " + String.format("%02d", currentEntityPointer));
     }
@@ -148,7 +145,7 @@ public class TntVisualizationModule {
 
         // if entity pointer not out of range set current pos to previous in list
         if (currentEntityPointer >= 0) {
-            currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer);
+            currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer).getExplosionPos();
             MessageUtils.addClientMessage("Showing Tick: " + String.format("%02d", currentTickPointer) + " Order: " + String.format("%02d", currentEntityPointer));
             return;
         }
@@ -168,7 +165,7 @@ public class TntVisualizationModule {
         }
 
         // if while statement did find data, set position to pointer
-        currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer);
+        currentPos = totalRecording.get(currentTickPointer).get(currentEntityPointer).getExplosionPos();
 
         MessageUtils.addClientMessage("Showing Tick: " + String.format("%02d", currentTickPointer) + " Order: " + String.format("%02d", currentEntityPointer));
     }
@@ -221,10 +218,11 @@ public class TntVisualizationModule {
             return String.format("%02d", numb);
         }
 
-        private static void liveDebug(int ticksSinceExplosion, List<Vector3d> explosionList){
+        private static void liveDebug(int ticksSinceExplosion, List<BEntity> explosionList){
             printC("======START GAMETICK " + String.format("%02d", ticksSinceExplosion) + "======", Color.GREEN);
             int i = 1;
-            for(Vector3d vec : explosionList) {
+            for(BEntity bEntity : explosionList) {
+                BVector3d vec = bEntity.currentPos;
                 String formattedVec = String.format("%.2f %.2f %.2f", vec.x, vec.y, vec.z);
                 printC(i + ": " + formattedVec, Color.RED);
                 i++;
@@ -232,17 +230,18 @@ public class TntVisualizationModule {
             printC("========END GAMETICK " + String.format("%02d", ticksSinceExplosion) + "======\n", Color.GREEN);
         }
 
-        private static void debugTotal(List<List<Vector3d>> totalRecording){
+        private static void debugTotal(List<List<BEntity>> totalRecording){
             printC("TIMER ENDED", Color.YELLOW);
             printC("=============================\n", Color.YELLOW);
 
-            for (List<Vector3d> orderList : totalRecording) {
+            for (List<BEntity> orderList : totalRecording) {
                 if(orderList == null) continue;
-                for(Vector3d vec: orderList){
+                for(BEntity bEntity: orderList){
+                    BVector3d vec = bEntity.currentPos;
                     if(vec == null) continue;
                     String formattedVec = String.format("%.2f %.2f %.2f", vec.x, vec.y, vec.z);
                     String tick = Utils.formatNum(totalRecording.indexOf(orderList));
-                    String order = Utils.formatNum(orderList.indexOf(vec));
+                    String order = Utils.formatNum(orderList.indexOf(bEntity));
                     printC("TICK " + tick + ": ORDER " + order + ": [" + formattedVec + "]", Color.RED);
                     MessageUtils.addClientMessage("TICK " + tick + ": ORDER " + order + ": [" + formattedVec + "]");
                 }

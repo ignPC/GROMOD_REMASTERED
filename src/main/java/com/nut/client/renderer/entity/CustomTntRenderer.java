@@ -18,7 +18,7 @@ public class CustomTntRenderer extends Render<EntityTNTPrimed> {
     @Override
     public void doRender(EntityTNTPrimed entity, double x, double y, double z, float entityYaw, float partialTicks) {
         float brightness = Minecraft.getMinecraft().theWorld.getSunBrightness(partialTicks) * 0.85f;
-        Vector3d interpolated = MathUtils.interpolateCoords(entity, partialTicks);
+        BVector3d interpolated = MathUtils.interpolateCoords(entity, partialTicks);
         RenderUtils.drawCube(interpolated.x - 0.5, interpolated.y, interpolated.z - 0.5, 0.98f, 0.98f, 0.98f, new BColor(brightness, brightness, brightness, 1), TextureType.TNT);
     }
 

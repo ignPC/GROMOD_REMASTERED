@@ -1,11 +1,10 @@
 package com.nut.client.mixin;
 
-import com.nut.client.annotation.AutoInit;
 import com.nut.client.module.TntVisualizationModule;
+import com.nut.client.utils.BEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vector3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -13,6 +12,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EntityTNTPrimed.class)
 public abstract class EntityTntPrimedMixin extends Entity {
+
+    public BEntity bEntity;
+    private TntVisualizationModule tntVis;
+
 
     @Shadow public int fuse;
 
@@ -24,7 +27,8 @@ public abstract class EntityTntPrimedMixin extends Entity {
 
     @Override
     protected void entityInit() {
-
+        this.tntVis = TntVisualizationModule.getInstance();
+        this.bEntity = new BEntity(this.posX, this.posY, this.posZ);
     }
 
     /**
@@ -34,17 +38,13 @@ public abstract class EntityTntPrimedMixin extends Entity {
     @Overwrite
     public void onUpdate()
     {
-        if(this.fuse-- <= 0 && this.worldObj.isRemote){
-            TntVisualizationModule tntVis = TntVisualizationModule.getInstance();
-
+        if(this.fuse - 1 <= 0 && !this.worldObj.isRemote){
             if(tntVis.recordingExplosion || tntVis.recordingFirstExplosion) {
-                Vector3d vec = new Vector3d();
-                vec.x = this.posX;
-                vec.y = this.posY;
-                vec.z = this.posZ;
-
-                tntVis.explosionList.add(vec);
+                this.bEntity.setExplosionPos(this.posX, this.posY, this.posZ);
+                tntVis.explosionList.add(bEntity);
             }
+        } else{
+            this.bEntity.setCurrentPos(this.posX, this.posY, this.posZ);
         }
 
         this.prevPosX = this.posX;

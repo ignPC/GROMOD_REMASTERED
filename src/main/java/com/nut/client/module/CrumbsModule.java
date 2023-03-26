@@ -1,6 +1,7 @@
 package com.nut.client.module;
 
 import com.nut.client.annotation.AutoInit;
+import com.nut.client.annotation.Component;
 import com.nut.client.utils.MessageUtils;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockObsidian;
@@ -16,6 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.List;
 
+@Component
 public class CrumbsModule {
     public static CrumbsModule instance;
 
@@ -32,7 +34,7 @@ public class CrumbsModule {
     private boolean autoDirection = true;
     private boolean callouts = true;
     private int timeout = 1000;
-    private int sandDetectionAmount = 5;
+    private int sandDetectionAmount = 1;
 
     @AutoInit
     public CrumbsModule() {

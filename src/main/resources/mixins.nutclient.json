@@ -9,5 +9,8 @@
     "EntityTntPrimedMixin",
     "ExplosionMixin",
     "MinecraftMixin"
+  ],
+  "mixins": [
+    "PlayerCapabilitiesMixin"
   ]
 }

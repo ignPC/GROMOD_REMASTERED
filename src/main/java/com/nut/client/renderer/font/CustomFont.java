@@ -1,6 +1,6 @@
 package com.nut.client.renderer.font;
 
-import com.nut.client.gui.guibuilder.BaseGui;
+import com.nut.client.gui.BaseGui;
 import com.nut.client.utils.ShapeType;
 import com.nut.client.renderer.RenderPipeline;
 import com.nut.client.utils.BColor;

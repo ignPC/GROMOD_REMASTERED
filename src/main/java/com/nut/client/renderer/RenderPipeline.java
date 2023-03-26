@@ -4,7 +4,7 @@ import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
 import com.nut.client.event.AfterScreenCreationEvent;
 import com.nut.client.event.GuiRenderEvent;
-import com.nut.client.gui.guibuilder.BaseGui;
+import com.nut.client.gui.BaseGui;
 import com.nut.client.renderer.font.FontAtlasBuilder;
 import com.nut.client.renderer.util.CommonShapes;
 import com.nut.client.renderer.util.ProjectionUtils;

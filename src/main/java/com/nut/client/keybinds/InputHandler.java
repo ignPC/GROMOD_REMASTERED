@@ -2,7 +2,7 @@ package com.nut.client.keybinds;
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
-import com.nut.client.gui.guibuilder.BaseGui;
+import com.nut.client.gui.BaseGui;
 import com.nut.client.module.TntVisualizationModule;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;

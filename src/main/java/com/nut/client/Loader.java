@@ -1,7 +1,6 @@
 package com.nut.client;
 
 import com.nut.client.annotation.AutoInit;
-import com.nut.client.annotation.BModule;
 import com.nut.client.annotation.Component;
 import net.minecraft.client.Minecraft;
 import org.reflections.Reflections;
@@ -59,15 +58,5 @@ public class Loader {
 
     public void fillClazz2ObjectMap() {
         clazz2ObjectMap.put(Minecraft.class, Minecraft.getMinecraft());
-    }
-
-    public void initModule(Class<?> module){
-        BModule annotation = module.getAnnotation(BModule.class);
-        String moduleName = annotation.name();
-        addModuleToGui(moduleName);
-    }
-
-    private void addModuleToGui(String moduleName) {
-
     }
 }

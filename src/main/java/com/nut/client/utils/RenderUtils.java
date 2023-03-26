@@ -1,8 +1,10 @@
 package com.nut.client.utils;
 
+import com.nut.client.gui.BaseGui;
 import com.nut.client.renderer.RenderPipeline;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
+import org.lwjgl.opengl.Display;
 
 public class RenderUtils {
 
@@ -31,6 +33,16 @@ public class RenderUtils {
     }
 
     public static void drawRoundedRectangle(float x, float y, float width, float height, float radius, float shade, BColor color) {
+        float xScale = BaseGui.scaled.getXScale();
+        float yScale = BaseGui.scaled.getYScale();
+
+        x *= xScale;
+        y = (int) ((Display.getHeight() - y * yScale - height * yScale));
+        width *= xScale;
+        height *= yScale;
+        radius *= xScale;
+        shade *= xScale;
+
         RenderPipeline.queueGuiData(
                 x, y,
                 color.r, color.g, color.b, color.a,
@@ -42,6 +54,16 @@ public class RenderUtils {
     }
 
     public static void drawCircle(float x, float y, float width, float height, float radius, float shade, BColor color) {
+        float xScale = BaseGui.scaled.getXScale();
+        float yScale = BaseGui.scaled.getYScale();
+
+        x *= xScale;
+        y = (int) ((Display.getHeight() - y * yScale - height * yScale));
+        width *= xScale;
+        height *= yScale;
+        radius *= xScale;
+        shade *= xScale;
+
         RenderPipeline.queueGuiData(
                 x, y,
                 color.r, color.g, color.b, color.a,

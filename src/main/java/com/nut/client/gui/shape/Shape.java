@@ -1,7 +1,7 @@
 package com.nut.client.gui.shape;
 
+import com.nut.client.gui.guicomponent.GuiComponent;
 import com.nut.client.utils.BColor;
-import com.nut.client.utils.Vector2i;
 
 public abstract class Shape<T> {
 
@@ -9,51 +9,41 @@ public abstract class Shape<T> {
     public int y;
     public int width;
     public int height;
-    public BColor color;
-    public final Margin margin = new Margin(0, 0, 0, 0);
 
-    public Shape(int x, int y, int width, int height, BColor color) {
-        this.x = x;
-        this.y = y;
+    public BColor color;
+    public GuiComponent parent;
+
+    public Shape(GuiComponent guiComponent, int width, int height, BColor color) {
+        x = guiComponent.x;
+        y = guiComponent.y;
         this.width = width;
         this.height = height;
         this.color = color;
+        parent = guiComponent;
+        parent.shapes.add(this);
     }
 
-    public Shape(int width, int height, BColor color) {
-        this.width = width;
-        this.height = height;
+    public Shape(GuiComponent guiComponent, BColor color) {
+        x = guiComponent.x;
+        y = guiComponent.y;
+        width = guiComponent.width;
+        height = guiComponent.height;
         this.color = color;
+        parent = guiComponent;
+        parent.shapes.add(this);
     }
 
     public abstract void push();
 
-    public T margin(int left, int top, int right, int bottom) {
-        margin.set(left, top, right, bottom);
-        return (T) this;
-    }
-
-    public T setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-        return (T) this ;
-    }
-
-    public T setPosition(Vector2i vector) {
-        x = vector.x;
-        y = vector.y;
+    public T offset(int offsetX, int offsetY) {
+        x = parent.x + offsetX;
+        y = parent.y + offsetY;
         return (T) this;
     }
 
     public T setSize(int width, int height) {
         this.width = width;
         this.height = height;
-        return (T) this;
-    }
-
-    public T setSize(Vector2i vector) {
-        width = vector.x;
-        height = vector.y;
         return (T) this;
     }
 }

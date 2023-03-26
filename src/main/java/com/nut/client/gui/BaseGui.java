@@ -1,11 +1,9 @@
-package com.nut.client.gui.guibuilder;
+package com.nut.client.gui;
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
-import com.nut.client.gui.shape.Circle;
-import com.nut.client.gui.shape.Positioner;
+import com.nut.client.gui.guicomponent.GuiComponent;
 import com.nut.client.gui.shape.RRectangle;
-import com.nut.client.gui.shape.Shape;
 import com.nut.client.renderer.RenderPipeline;
 import com.nut.client.renderer.font.CustomFont;
 import com.nut.client.renderer.font.FontAtlasBuilder;
@@ -25,13 +23,16 @@ public class BaseGui {
 
     public static BaseGui currentScreen;
     public static Scaled scaled = new Scaled();
-    private final List<Shape> shapes = new ArrayList<>();
+    private final List<GuiComponent> components = new ArrayList<>();
     private final Minecraft minecraft;
 
     private float screenWidth = 1920;
     private float screenHeight = 1080;
+    private int eventButton;
+    private long lastMouseEvent;
 
-    private static CustomFont interBold;
+    protected static CustomFont interBold;
+    protected static GuiComponent screen = new GuiComponent(0, 0, 1920, 1080);
 
     @AutoInit
     public BaseGui(Minecraft minecraft) {
@@ -41,42 +42,26 @@ public class BaseGui {
     }
 
     public void init() {
-        RRectangle rectangle = new RRectangle(100, 200, new BColor(0, 1, 0, 1))
-                .radius(20)
-                .shade(2);
+        GuiComponent component = new GuiComponent(screen, 400, 400)
+                .offset(100, 100)
+                .shapes(guiComponent -> {
+                    new RRectangle(guiComponent, new BColor(1, 0, 0, 1))
+                            .radius(20)
+                            .shade(3);
 
-        RRectangle rRectangle = new RRectangle(100, 100, new BColor(1, 0, 0, 1))
-                .radius(30)
-                .shade(4);
+                    new RRectangle(guiComponent, 200, 200, new BColor(0, 0, 1, 1))
+                            .offset(100, 100)
+                            .radius(20)
+                            .shade(3);
+                })
+                .listen2Hover(shapes -> shapes.get(0).color = new BColor(0, 1, 0, 1));
 
-        RRectangle rRectangle1 = new RRectangle(100, 100, new BColor(0, 0, 1, 1))
-                .radius(20)
-                .shade(2);
-
-        RRectangle rRectangle2 = new RRectangle(100, 100, new BColor(0, 1, 1, 1))
-                .margin(40, 30, 0, 0)
-                .radius(20)
-                .shade(2);
-
-        Circle circle = new Circle(200, 200, new BColor(1, 1, 1, 1))
-                .margin(0, 60, 0, 0)
-                .radius(100)
-                .shade(2)
-                .halo(4);
-
-        Positioner.position(0, 0, 2, 3, 10, rectangle, rRectangle, rRectangle1, rRectangle2, circle);
-        shapes.add(rectangle);
-        shapes.add(rRectangle);
-        shapes.add(rRectangle1);
-        shapes.add(rRectangle2);
-        shapes.add(circle);
+        components.add(component);
     }
 
     public void drawGui() {
-        for (Shape shape : shapes)
-            shape.push();
-
-        interBold.drawString(0, 0, "Your mom gay af lmao kekw", new BColor(1, 0, 0, 0.8f));
+        for (GuiComponent component : components)
+            component.drawComponent();
     }
 
     public void openGui() {
@@ -97,10 +82,18 @@ public class BaseGui {
     }
 
     public void handleInput() {
-        if (Keyboard.getEventKeyState())
-            keyboardInput(Keyboard.getEventKey());
+        if (Mouse.isCreated()) {
+            while (Mouse.next()) {
+                mouseInput(Mouse.getEventButton(), Mouse.getX(), Mouse.getY());
+            }
+        }
 
-        mouseInput(Mouse.getEventButton(), Mouse.getX(), Mouse.getY());
+        if (Keyboard.isCreated()) {
+            while (Keyboard.next()) {
+                if (Keyboard.getEventKeyState())
+                    keyboardInput(Keyboard.getEventKey());
+            }
+        }
     }
 
     public void keyboardInput(int keyCode) {
@@ -114,7 +107,28 @@ public class BaseGui {
     }
 
     public void mouseInput(int button, int mouseX, int mouseY) {
+        mouseY = Display.getHeight() - mouseY;
 
+        for (GuiComponent component : components)
+            if (component.update) component.update(mouseX, mouseY);
+
+        if (Mouse.getEventButtonState()) {
+            this.eventButton = button;
+            this.lastMouseEvent = System.currentTimeMillis();
+
+            for (GuiComponent component : components)
+                if (component.update && component.hovered)
+                    component.mouseClick(button, mouseX, mouseY);
+        } else if (button != -1) {
+            this.eventButton = -1;
+            for (GuiComponent component : components)
+                if (component.update)
+                    component.mouseRelease(mouseX, mouseY);
+        } else if (this.eventButton != -1 && this.lastMouseEvent > 0L) {
+            for (GuiComponent component : components)
+                if (component.update)
+                    component.mouseDrag(mouseX, mouseY);
+        }
     }
 
     public boolean handleResolution() {

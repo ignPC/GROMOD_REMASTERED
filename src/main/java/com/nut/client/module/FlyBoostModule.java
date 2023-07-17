@@ -1,11 +1,14 @@
 package com.nut.client.module;
 
-import akka.io.Tcp;
 import com.nut.client.annotation.AutoInit;
+import com.nut.client.annotation.GuiModule;
 import com.nut.client.annotation.Component;
+import com.nut.client.annotation.GuiField;
 import com.nut.client.utils.MessageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -13,82 +16,52 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import javax.swing.text.JTextComponent;
+
 @Component
+@GuiModule(name = "Flyboost")
 public class FlyBoostModule {
     public static FlyBoostModule instance;
 
     public Minecraft mc;
-    public EntityPlayerSP player;
+
+    @GuiField(type = GuiField.Type.BUTTON, label = "Toggle Sprint")
     private boolean toggleSprint = true;
-    private boolean sprinting;
-    private boolean toggleSneak = false;
-    private boolean sneaking;
+
+    @GuiField(type = GuiField.Type.BUTTON, label = "FlyBoost")
     private boolean flyBoost = true;
 
-    private double flyBoostMultiplier = 2;
-    private boolean init = true;
+    private boolean sprinting = false;
 
-    private boolean sprintkeydown;
+    private final double flyBoostMultiplier = 2;
 
     @AutoInit
     public FlyBoostModule(){
+        instance = this;
         mc = Minecraft.getMinecraft();
-        player = this.mc.thePlayer;
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
-    public void onInput(InputEvent event) {
-        if (this.toggleSprint && this.mc.gameSettings.keyBindSprint.isPressed() && !sprintkeydown) {
-            this.sprinting = !this.sprinting;
-            if(sprinting)
-                MessageUtils.addClientMessage("SPRINT TRUE");
-            else
-                MessageUtils.addClientMessage("SPRINT FALSE");
+    public void onTick(TickEvent.ClientTickEvent event) {
+        if (mc.theWorld == null || mc.thePlayer == null) return;
+
+        if (toggleSprint) {
+            if (mc.gameSettings.keyBindSprint.isPressed()) sprinting = !sprinting;
+            KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), sprinting);
         }
-        if (this.toggleSneak && this.mc.gameSettings.keyBindSneak.isPressed()) {
-            this.sneaking = !this.sneaking;
+
+        if (mc.thePlayer.capabilities.isCreativeMode && sprinting && flyBoost) {
+            mc.thePlayer.capabilities.setFlySpeed((float)(0.05D * this.flyBoostMultiplier));
+            if (mc.thePlayer.movementInput.jump && !mc.thePlayer.movementInput.sneak && sprinting && mc.thePlayer.capabilities.isFlying) {
+                mc.thePlayer.motionY += 0.009999999776482582D * this.flyBoostMultiplier;
+            } else if (mc.thePlayer.movementInput.sneak && !mc.thePlayer.movementInput.jump && mc.thePlayer.capabilities.isFlying) {
+                mc.thePlayer.motionY -= 0.009999999776482582D * this.flyBoostMultiplier;
+            }
+        } else if (mc.thePlayer.capabilities.isCreativeMode) {
+            mc.thePlayer.capabilities.setFlySpeed(0.05F);
         }
     }
-
-    @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        EntityPlayerSP player = this.mc.thePlayer;
-
-        if (init) {
-            player.setSprinting(false);
-            player.setSneaking(false);
-            sprinting = false;
-            sneaking = false;
-            init = false;
-        }
-
-        if (this.toggleSprint) {
-            if (!player.isSprinting() && this.sprinting) {
-                player.setSprinting(true);
-            } else if (player.isSprinting() && !this.sprinting){
-                player.setSprinting(false);
-            }
-        }
-        if (this.toggleSneak) {
-            if (!player.isSneaking() && this.sneaking) {
-                player.setSneaking(true);
-            } else if (player.isSneaking() && !this.sneaking){
-                player.setSneaking(false);
-            }
-        }
-        if (player.capabilities.isCreativeMode && this.flyBoost && this.sprinting) {
-            player.capabilities.setFlySpeed((float)(0.05D * this.flyBoostMultiplier));
-            if (player.movementInput.jump && !player.movementInput.sneak && sprinting) {
-                player.motionY += 0.009999999776482582D * this.flyBoostMultiplier;
-            } else if (player.movementInput.sneak && !player.movementInput.jump && sneaking) {
-                player.motionY -= 0.009999999776482582D * this.flyBoostMultiplier;
-            }
-        } else if (player.capabilities.isCreativeMode) {
-            player.capabilities.setFlySpeed(0.05F);
-        }
-    }
-
 
     public static FlyBoostModule getInstance() {
         return instance;

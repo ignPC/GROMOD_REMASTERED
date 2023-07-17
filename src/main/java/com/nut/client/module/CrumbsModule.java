@@ -2,6 +2,8 @@ package com.nut.client.module;
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
+import com.nut.client.annotation.GuiField;
+import com.nut.client.annotation.GuiModule;
 import com.nut.client.utils.MessageUtils;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockObsidian;
@@ -17,7 +19,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.List;
 
+
 @Component
+@GuiModule(name = "Crumbs")
 public class CrumbsModule {
     public static CrumbsModule instance;
 
@@ -29,12 +33,21 @@ public class CrumbsModule {
     public long crumbTimeoutAfterEnd;
     public long crumbTimeoutShot;
 
-    private boolean buttonEnabled = true;
+    @GuiField(type = GuiField.Type.BUTTON, label = "Crumbs")
+    private boolean crumbs = true;
+
+    @GuiField(type = GuiField.Type.BUTTON, label = "Cannon Detection")
     private boolean cannonDetection = true;
+
+    @GuiField(type = GuiField.Type.BUTTON, label = "Auto Direction")
     private boolean autoDirection = true;
+
+    @GuiField(type = GuiField.Type.BUTTON, label = "Callouts")
     private boolean callouts = true;
+
     private int timeout = 1000;
     private int sandDetectionAmount = 1;
+
 
     @AutoInit
     public CrumbsModule() {
@@ -46,7 +59,7 @@ public class CrumbsModule {
     public void ClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START || mc.thePlayer == null || mc.theWorld == null) return;
 
-        if (!buttonEnabled) {
+        if (!crumbs) {
             if (Box != null)
                 Box = null;
             return;

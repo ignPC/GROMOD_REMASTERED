@@ -1,6 +1,5 @@
 package com.nut.client.mixin;
 
-import com.nut.client.module.TntVisualizationModule;
 import com.nut.client.utils.BEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityTNTPrimed;
@@ -14,8 +13,6 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class EntityTntPrimedMixin extends Entity {
 
     public BEntity bEntity;
-    private TntVisualizationModule tntVis;
-
 
     @Shadow public int fuse;
 
@@ -27,7 +24,6 @@ public abstract class EntityTntPrimedMixin extends Entity {
 
     @Override
     protected void entityInit() {
-        this.tntVis = TntVisualizationModule.getInstance();
         this.bEntity = new BEntity(this.posX, this.posY, this.posZ);
     }
 
@@ -38,12 +34,7 @@ public abstract class EntityTntPrimedMixin extends Entity {
     @Overwrite
     public void onUpdate()
     {
-        if(this.fuse - 1 <= 0 && !this.worldObj.isRemote){
-            if(tntVis.recordingExplosion || tntVis.recordingFirstExplosion) {
-                this.bEntity.setExplosionPos(this.posX, this.posY, this.posZ);
-                tntVis.explosionList.add(bEntity);
-            }
-        } else{
+        if(!(this.fuse - 1 <= 0 && !this.worldObj.isRemote)){
             this.bEntity.setCurrentPos(this.posX, this.posY, this.posZ);
         }
 

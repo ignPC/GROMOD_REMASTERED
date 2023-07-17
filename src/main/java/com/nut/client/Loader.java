@@ -2,6 +2,7 @@ package com.nut.client;
 
 import com.nut.client.annotation.AutoInit;
 import com.nut.client.annotation.Component;
+import com.nut.client.annotation.GuiModule;
 import net.minecraft.client.Minecraft;
 import org.reflections.Reflections;
 
@@ -19,9 +20,19 @@ public class Loader {
     public Loader() throws InstantiationException, IllegalAccessException, InvocationTargetException {
         fillClazz2ObjectMap();
 
-        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Component.class);
-        for (Class<?> clazz : classes)
+        // Initialize classes annotated with GuiModule first
+        Set<Class<?>> guiModuleClasses = reflections.getTypesAnnotatedWith(GuiModule.class);
+        for (Class<?> clazz : guiModuleClasses) {
             initClass(clazz);
+        }
+
+        // Initialize the remaining classes
+        Set<Class<?>> componentClasses = reflections.getTypesAnnotatedWith(Component.class);
+        for (Class<?> clazz : componentClasses) {
+            if (!guiModuleClasses.contains(clazz)) {
+                initClass(clazz);
+            }
+        }
     }
 
     public Object initClass(Class<?> clazz) throws InvocationTargetException, InstantiationException, IllegalAccessException {

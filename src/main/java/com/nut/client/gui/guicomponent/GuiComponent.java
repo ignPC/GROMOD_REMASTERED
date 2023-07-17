@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class GuiComponent {
-
     public int x;
     public int y;
     public int width;
@@ -104,5 +103,7 @@ public class GuiComponent {
     public void drawComponent() {
         for (Shape shape : shapes)
             shape.push();
+
+
     }
 }

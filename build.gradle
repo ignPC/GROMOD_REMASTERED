@@ -20,7 +20,7 @@ apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: 'org.spongepowered.mixin'
 
 version = "1.0"
-group = "com.gromod.client"                //http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "com.gromod.client"         //http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Gromod"         //name of the output jar
 
 sourceCompatibility = targetCompatibility = 1.8 //using java 8
@@ -86,8 +86,9 @@ processResources {
     }
 
     //copy everything else, that"s not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
+    from("src/main/resources") {
+        include "mcmod.info"
+        into ""
     }
 
     rename '(.+_at.cfg)', 'META-INF/$1'
@@ -97,6 +98,10 @@ shadowJar {
     configurations = [project.configurations.shade]
     duplicatesStrategy DuplicatesStrategy.EXCLUDE //prevent duplicates
     classifier "" //prevent creation of unshadowed jar
+    from("src/main/resources") {
+        include "mcmod.info"
+        into ""
+    }
 }
 
 reobf {
@@ -110,7 +115,7 @@ reobf {
 jar {
     manifest {
         attributes "FMLCorePlugin": "com.gromod.client.mixin.MixinLoader",
-                "ForceLoadAsMod": true,
+                "ForceLoadAsMod": false,
                 "TweakOrder": 0,
                 "ModSide": "CLIENT",
                 'FMLCorePluginContainsFMLMod': true,

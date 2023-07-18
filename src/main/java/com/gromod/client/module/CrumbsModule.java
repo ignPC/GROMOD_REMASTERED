@@ -24,7 +24,7 @@ import java.util.List;
 
 
 @Component
-@GuiModule(name = "CRUMBS")
+@GuiModule(name = "CRUMBS", index = 2)
 public class CrumbsModule {
     public static CrumbsModule instance;
 

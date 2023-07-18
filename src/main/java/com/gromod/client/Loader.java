@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class Loader {
 
-    private final Reflections reflections = new Reflections("com.nut.client");
+    private final Reflections reflections = new Reflections("com.gromod.client");
     private final HashMap<Class<?>, Object> clazz2ObjectMap = new HashMap<>();
 
     public Loader() throws InstantiationException, IllegalAccessException, InvocationTargetException {

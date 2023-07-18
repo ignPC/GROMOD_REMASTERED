@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @Component
-@GuiModule(name = "FPS")
+@GuiModule(name = "FPS", index = 0)
 public class FpsModule {
 
     private static FpsModule instance;

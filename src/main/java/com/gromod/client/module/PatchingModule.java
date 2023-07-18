@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Component
-@GuiModule(name = "PATCHING")
+@GuiModule(name = "PATCHING", index = 3)
 public class PatchingModule {
     private static PatchingModule instance;
     private final CustomEntityLoader customRenderer;

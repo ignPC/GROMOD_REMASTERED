@@ -51,19 +51,19 @@ mixinlibrary   0.7.10-SNAPSHOT
 
 jar {
     manifest {
-        attributes "FMLCorePlugin": "mixin.com.nut.MixinLoader", //change this to your path to MixinLoader class
+        attributes "FMLCorePlugin": "mixin.MixinLoader", //change this to your path to MixinLoader class
                 "ForceLoadAsMod": true,
                 "TweakOrder": 0,
                 "ModSide": "CLIENT",
                 'FMLCorePluginContainsFMLMod': true,
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                'MixinConfigs': 'mixins.examplemod.json' //change examplemod to your modid
+                'MixinConfigs': 'mixins.gromodclient.json' //change examplemod to your modid
     }
 }
 
 sourceSets {
     main {
-        ext.refMap = "mixins.examplemod.refmap.json" //change examplemod to your modid
+        ext.refMap = "mixins.gromodclient.refmap.json" //change examplemod to your modid
     }
 }
 
@@ -89,7 +89,7 @@ public class MixinLoader implements IFMLLoadingPlugin {
     public MixinLoader() {
         System.out.println("[ExampleMod] Injecting with IFMLLoadingPlugin.");
         MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.examplemod.json"); //change examplemod to your modid
+        Mixins.addConfiguration("mixins.gromodclient.json"); //change examplemod to your modid
         MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
     }
     
@@ -98,7 +98,7 @@ public class MixinLoader implements IFMLLoadingPlugin {
 ### Optional
 If you ever want to debug with mixins in your client, add this to your VM options in the `Minecraft Client` run configuration:
 
-`-Dfml.coreMods.load="mixin.com.nut.MixinLoader"`
+`-Dfml.coreMods.load="mixin.com.gromod.client.MixinLoader"`
 
 *Change to your path to MixinLoader class.*
 

@@ -22,8 +22,10 @@ import org.reflections.Reflections;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class BaseGui {
@@ -32,7 +34,7 @@ public class BaseGui {
     public static Scaled scaled = new Scaled();
     private final List<GuiComponent> components = new ArrayList<>();
     private final Minecraft minecraft;
-    private final Reflections reflections = new Reflections("com.nut.client");
+    private final Reflections reflections = new Reflections("com.gromod.client");
 
     private float screenWidth = 1920;
     private float screenHeight = 1080;
@@ -52,7 +54,14 @@ public class BaseGui {
 
     public void init() {
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(GuiModule.class);
+        ArrayList<Class<?>> sortedClasses = classes.stream()
+                .sorted(Comparator.comparingInt(clazz -> clazz.getAnnotation(GuiModule.class).index())).collect(Collectors.toCollection(ArrayList::new));
+
         int classHorizontalOffset = 10;
+
+        screen.shapes(guiComponent -> {
+            new RRectangle(guiComponent, new BColor(0.12f, 0.12f, 0.12f, 0.32f));
+        });
 
         GuiComponent text = new GuiComponent(screen, screen.width, screen.height - 800)
                 .offset(0, 950);
@@ -61,9 +70,10 @@ public class BaseGui {
                     .offset(10, 5);
         });
 
+        components.add(screen);
         components.add(text);
 
-        for (Class<?> clazz : classes) {
+        for (Class<?> clazz : sortedClasses) {
 
             GuiComponent classComponent = new GuiComponent(screen, (screen.width - 70) / 5, 800);
             classComponent.offset(classHorizontalOffset, 10);
@@ -165,11 +175,13 @@ public class BaseGui {
     }
 
     public void drawGui() {
+        Minecraft.getMinecraft().ingameGUI.getChatGUI().clearChatMessages();
         for (GuiComponent component : components)
             component.drawComponent();
     }
 
     public void openGui() {
+        Minecraft.getMinecraft().ingameGUI.getChatGUI().clearChatMessages();
         minecraft.setIngameNotInFocus();
         if (!handleResolution())
             refreshPipeline();

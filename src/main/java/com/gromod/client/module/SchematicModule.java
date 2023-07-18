@@ -5,7 +5,7 @@ import com.gromod.client.annotation.GuiModule;
 import net.minecraftforge.common.MinecraftForge;
 
 @Component
-@GuiModule(name = "SCHEMATICA")
+@GuiModule(name = "SCHEMATICA", index = 4)
 public class SchematicModule {
 
     private static SchematicModule instance;

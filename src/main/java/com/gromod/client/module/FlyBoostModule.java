@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 
 @Component
-@GuiModule(name = "MOVEMENT")
+@GuiModule(name = "MOVEMENT", index = 1)
 public class FlyBoostModule {
     public static FlyBoostModule instance;
 

@@ -7,7 +7,7 @@ import lombok.SneakyThrows;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
-@Mod(modid = "Nut Client", version = "1.0.0")
+@Mod(modid = "Gromod", version = "Pre-Alpha")
 public class MainBean {
 
     private CustomEntityLoader customEntityLoader;

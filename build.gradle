@@ -3,6 +3,7 @@ buildscript {
         //new forge repository
         maven { url "https://maven.minecraftforge.net" }
         maven { url 'https://repo.spongepowered.org/maven'}
+        mavenCentral()
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
@@ -19,8 +20,8 @@ apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: 'org.spongepowered.mixin'
 
 version = "1.0"
-group = "com.nut.client" //http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Nut Client" //name of the output jar
+group = "com.nut.client"                //http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "Nut Client"         //name of the output jar
 
 sourceCompatibility = targetCompatibility = 1.8 //using java 8
 compileJava.options.encoding = "UTF-8"
@@ -28,12 +29,13 @@ compileJava.options.encoding = "UTF-8"
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "run"
-    mappings = "stable_22" //mappings for 1.8.9
-    makeObfSourceJar = false //disable creation of sources jar
+    mappings = "stable_22"      //mappings for 1.8.9
+    makeObfSourceJar = false    //disable creation of sources jar
 }
 
 configurations {
     shade
+    shadow
     compile.extendsFrom(shade)
 }
 
@@ -50,6 +52,7 @@ dependencies {
     //your libraries will be accessible outside of intellij
     //example:
     //shade "studio.dreamys:libSkyblock:1.1.1"
+
     shade('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
         exclude module: 'launchwrapper'
         exclude module: 'guava'
@@ -58,6 +61,9 @@ dependencies {
         exclude module: 'log4j-core'
     }
     shade('org.reflections:reflections:0.10.2')
+    shade (fileTree('D:/DesktopStorage/Schematica-1.8.9-1.7.7.142-universal.jar'))
+    shade (fileTree('D:/DesktopStorage/LunatriusCore-1.8.9-1.1.2.32-universal.jar'))
+
     compileOnly 'org.projectlombok:lombok:1.18.26'
 
     //compile will make your library available only in this dev environment
@@ -88,24 +94,23 @@ processResources {
 }
 
 shadowJar {
-    dependencies {
-        //we remove gson because it belongs to the public api and will break shading
-        //exclude(dependency("com.google.code.gson:gson:2.8.6"))
-    }
     configurations = [project.configurations.shade]
     duplicatesStrategy DuplicatesStrategy.EXCLUDE //prevent duplicates
     classifier "" //prevent creation of unshadowed jar
 }
 
 reobf {
-    //reobfuscate the shadowed jar
-    shadowJar {}
+    shadowJar {
+        mappingType = 'SEARGE'
+        classpath = sourceSets.main.compileClasspath
+    }
 }
+
 
 jar {
     manifest {
         attributes "FMLCorePlugin": "com.nut.client.mixin.MixinLoader",
-                "ForceLoadAsMod": false,
+                "ForceLoadAsMod": true,
                 "TweakOrder": 0,
                 "ModSide": "CLIENT",
                 'FMLCorePluginContainsFMLMod': true,

@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @Component
-@GuiModule(name = "Crumbs")
+@GuiModule(name = "CRUMBS")
 public class CrumbsModule {
     public static CrumbsModule instance;
 
@@ -43,10 +43,7 @@ public class CrumbsModule {
     private boolean autoDirection = true;
 
     @GuiField(type = GuiField.Type.BUTTON, label = "Callouts")
-    private boolean callouts = true;
-
-    private int timeout = 1000;
-    private int sandDetectionAmount = 1;
+    private boolean callouts = false;
 
 
     @AutoInit
@@ -57,6 +54,9 @@ public class CrumbsModule {
 
     @SubscribeEvent
     public void ClientTickEvent(TickEvent.ClientTickEvent event) {
+        int timeout = 1000;
+        int sandDetectionAmount = 1;
+
         if (event.phase != TickEvent.Phase.START || mc.thePlayer == null || mc.theWorld == null) return;
 
         if (!crumbs) {

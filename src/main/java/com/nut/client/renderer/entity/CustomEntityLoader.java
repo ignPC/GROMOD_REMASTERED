@@ -4,8 +4,16 @@ import net.minecraft.client.Minecraft;
 
 public class CustomEntityLoader {
 
+    private final CustomTntRenderer customTNT;
+    private final CustomFallingBlockRenderer customFB;
+
     public CustomEntityLoader() {
-        new CustomTntRenderer(Minecraft.getMinecraft().getRenderManager());
-        new CustomFallingBlockRenderer(Minecraft.getMinecraft().getRenderManager());
+        customTNT = new CustomTntRenderer(Minecraft.getMinecraft().getRenderManager());
+        customFB = new CustomFallingBlockRenderer(Minecraft.getMinecraft().getRenderManager());
+    }
+
+    public void setRenderCustom(boolean renderCustom) {
+        customTNT.setRenderCustom(renderCustom);
+        customFB.setRenderCustom(renderCustom);
     }
 }

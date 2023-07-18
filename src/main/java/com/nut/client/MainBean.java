@@ -9,7 +9,10 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 @Mod(modid = "Nut Client", version = "1.0.0")
 public class MainBean {
-    
+
+    private CustomEntityLoader customEntityLoader;
+    private static MainBean instance;
+
     @SneakyThrows
     @Mod.EventHandler
     public void init(FMLPostInitializationEvent event) {
@@ -18,20 +21,21 @@ public class MainBean {
                 .addFont("Inter-Bold.ttf", 30, CustomFont.ALL, 0)
                 .addFont("Purple Smile.ttf", 60, CustomFont.ALL, 0)
                 .buildAtlas();
+
+        instance = this;
+        customEntityLoader = new CustomEntityLoader();
         new Loader();
-        new CustomEntityLoader();
+    }
+
+    public CustomEntityLoader getCustomEntityRenderer() {
+        return customEntityLoader;
+    }
+
+    public static MainBean getInstance() {
+        return instance;
     }
 
     /*
-    TODO:
-        - gui framework
-            - shaders
-            - more shapes
-            - make it nice
-        - modules annotation
-            - module class automatically creates gui element
-        - custom 3d renders
-
     TODO:
         - Modules:
             - patching
@@ -44,13 +48,11 @@ public class MainBean {
                 - inside of gametick tnt visualiser
             - fps
                 - entity limit
-                - entity custom render
             - schematica mods
                 - faster printer somehow
                 - replay printer
                 - auto fit schematic
             - other
                 - basebuilder
-                - flyboost
      */
 }

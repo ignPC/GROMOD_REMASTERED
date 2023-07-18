@@ -13,6 +13,7 @@ import com.nut.client.renderer.font.CustomFont;
 import com.nut.client.renderer.font.FontAtlasBuilder;
 import com.nut.client.renderer.util.ProjectionUtils;
 import com.nut.client.utils.BColor;
+import com.nut.client.utils.MessageUtils;
 import com.nut.client.utils.Scaled;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
@@ -38,12 +39,12 @@ public class BaseGui {
 
     private float screenWidth = 1920;
     private float screenHeight = 1080;
+
     private int eventButton;
     private long lastMouseEvent;
 
     protected static CustomFont interBold;
     protected static GuiComponent screen = new GuiComponent(0, 0, 1920, 1080);
-
 
     @AutoInit
     public BaseGui(Minecraft minecraft) {
@@ -58,44 +59,52 @@ public class BaseGui {
 
         for (Class<?> clazz : classes) {
 
-            GuiComponent classComponent = new GuiComponent(screen, 400, 800)
-                    .offset(classHorizontalOffset, 10);
+            GuiComponent classComponent = new GuiComponent(screen, (screen.width - 70) / 5, 800);
+            classComponent.offset(classHorizontalOffset, 10);
+            classComponent.shapes(guiComponent -> {
+                GuiModule guiModule = clazz.getAnnotation(GuiModule.class);
+                String name = guiModule.name();
+                new RRectangle(guiComponent, classComponent.width, 45, new BColor(0.52f, 0.52f, 0.52f, 1))
+                        .radius(12)
+                        .shade(3);
+                new Text(guiComponent, name, new BColor(0, 0, 0, 1))
+                        .offset(10, 5);
+            });
 
             classHorizontalOffset += classComponent.width + 10;
 
             Field[] fields = clazz.getDeclaredFields();
 
-            int fieldVerticalOffset = 5;
+            int fieldVerticalOffset = 50;
 
             for (Field field : fields) {
                 GuiField guiField = field.getAnnotation(GuiField.class);
-                if (guiField != null) {
+                if (guiField == null) continue;
 
-                    GuiComponent fieldComponent = new GuiComponent(classComponent, 400, 60)
-                            .offset(0, fieldVerticalOffset);
+                GuiComponent fieldComponent = new GuiComponent(classComponent, classComponent.width, 60)
+                        .offset(0, fieldVerticalOffset);
 
-                    fieldVerticalOffset += fieldComponent.height + 5;
+                fieldVerticalOffset += fieldComponent.height + 5;
 
-                    field.setAccessible(true); // Make the field accessible (in case it's private)
-                    GuiField.Type fieldType = guiField.type();
+                field.setAccessible(true);                  // Make the field accessible (in case it's private)
+                GuiField.Type fieldType = guiField.type();
 
-                    switch (fieldType) {
-                        case BUTTON:
-                            initButton(clazz, field, fieldComponent);
-                            break;
-                        case SLIDER:
-                            // Handle slider field
-                            break;
-                        case TEXT_INPUT:
-                            // Handle text input field
-                            break;
-                    }
+                switch (fieldType) {
+                    case BUTTON:
+                        initButton(clazz, field, fieldComponent, classComponent);
+                        break;
+                    case SLIDER:
+                        // Handle slider field
+                        break;
+                    case TEXT_INPUT:
+                        // Handle text input field
+                        break;
                 }
             }
         }
     }
 
-    private void initButton(Class<?> clazz, Field field, GuiComponent fieldComponent) {
+    private void initButton(Class<?> clazz, Field field, GuiComponent fieldComponent, GuiComponent classComponent) {
         fieldComponent.listen2Click(shapes -> {
             try {
                 Object instance = clazz.getMethod("getInstance").invoke(null);    // Get the current instance using the getInstance() method
@@ -144,7 +153,7 @@ public class BaseGui {
                     .offset(10, 5);
         });
 
-
+        components.add(classComponent);
         components.add(fieldComponent);
     }
 

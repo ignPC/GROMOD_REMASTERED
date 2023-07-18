@@ -16,10 +16,9 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import javax.swing.text.JTextComponent;
 
 @Component
-@GuiModule(name = "Flyboost")
+@GuiModule(name = "MOVEMENT")
 public class FlyBoostModule {
     public static FlyBoostModule instance;
 
@@ -28,8 +27,8 @@ public class FlyBoostModule {
     @GuiField(type = GuiField.Type.BUTTON, label = "Toggle Sprint")
     private boolean toggleSprint = true;
 
-    @GuiField(type = GuiField.Type.BUTTON, label = "FlyBoost")
-    private boolean flyBoost = true;
+    @GuiField(type = GuiField.Type.BUTTON, label = "2x FlyBoost")
+    private boolean flyBoost = false;
 
     private boolean sprinting = false;
 

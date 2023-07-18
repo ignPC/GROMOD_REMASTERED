@@ -20,8 +20,8 @@ apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: 'org.spongepowered.mixin'
 
 version = "1.0"
-group = "com.nut.client"                //http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Nut Client"         //name of the output jar
+group = "com.gromod.client"                //http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "Gromod"         //name of the output jar
 
 sourceCompatibility = targetCompatibility = 1.8 //using java 8
 compileJava.options.encoding = "UTF-8"
@@ -109,18 +109,18 @@ reobf {
 
 jar {
     manifest {
-        attributes "FMLCorePlugin": "com.nut.client.mixin.MixinLoader",
+        attributes "FMLCorePlugin": "com.gromod.client.mixin.MixinLoader",
                 "ForceLoadAsMod": true,
                 "TweakOrder": 0,
                 "ModSide": "CLIENT",
                 'FMLCorePluginContainsFMLMod': true,
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                'MixinConfigs': 'mixins.nutclient.json'
+                'MixinConfigs': 'mixins.gromodclient.json'
     }
 }
 
 sourceSets {
     main{
-        ext.refMap = "mixins.nutclient.refmap.json"
+        ext.refMap = "mixins.gromodclient.refmap.json"
     }
 }

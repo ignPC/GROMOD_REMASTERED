@@ -1,13 +1,13 @@
 [
 {
-  "modid": "Nut Client",
-  "name": "Example Mod",
-  "description": "Factions client",
+  "modid": "Gromod",
+  "name": "Gromod",
+  "description": "Factions client by realgromit and liampc_",
   "version": "1.0.0",
   "mcversion": "1.8.9",
   "url": "",
   "updateUrl": "",
-  "authorList": [],
+  "authorList": ["Gromit", "Liam"],
   "credits": "",
   "logoFile": "",
   "screenshots": [],

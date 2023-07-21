@@ -20,9 +20,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -44,19 +46,21 @@ public class CustomFallingBlockRenderer extends Render<EntityFallingBlock> {
         this.fullBright = true;
         this.entitiesRendered = 0;
         RenderingRegistry.registerEntityRenderingHandler(EntityFallingBlock.class, this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
-    public void renderWorldLast(RenderWorldLastEvent event){
-        entitiesRendered = 0;
+    public void renderTickEvent(TickEvent.RenderTickEvent event){
+        if(event.phase == TickEvent.Phase.START) {
+            entitiesRendered = 0;
+        }
     }
 
     @Override
     public void doRender(EntityFallingBlock entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        if(entitiesRendered > 20 && patchingFPS) return;
+        if(entitiesRendered > 2 && patchingFPS) return;
         entitiesRendered++;
         if (renderCustom) {
-            // Perform custom rendering logic
             Block block = entity.getBlock().getBlock();
             if (!(block instanceof BlockSand) && !(block instanceof BlockGravel)) {
                 if (entity.getBlock() != null) {

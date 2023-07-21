@@ -1,25 +1,37 @@
 package com.gromod.client.gui.guicomponent;
 
-import com.gromod.client.gui.BaseGui;
+import com.gromod.client.gui.TestGui;
 import com.gromod.client.gui.shape.Shape;
+import com.gromod.client.utils.BColor;
 import com.gromod.client.utils.Scaled;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+@Getter
 public class GuiComponent {
     public int x;
     public int y;
     public int width;
     public int height;
     public boolean hovered;
-    public boolean clicked;
+    public boolean isBeingClicked;
+    public boolean toggledOn = false;
     public boolean update = true;
+    @Setter
+    public boolean childrenVisible = true;
+    @Setter
+    public boolean isVisible = true;
+    @Setter
+    public BColor[] colors;
+
 
     public GuiComponent parent;
     public List<Shape> shapes = new ArrayList<>();
-    private final Scaled scaled = BaseGui.scaled;
+    private final Scaled scaled = TestGui.scaled;
 
     private Consumer<List<Shape>> clickListener;
     private Consumer<List<Shape>> clickReleaseListener;
@@ -30,6 +42,8 @@ public class GuiComponent {
         this.parent = parent;
         this.width = width;
         this.height = height;
+        this.x = parent.x;
+        this.y = parent.y;
     }
 
     public GuiComponent(int x, int y, int width, int height) {
@@ -70,6 +84,11 @@ public class GuiComponent {
         return this;
     }
 
+    public GuiComponent parent(GuiComponent parent){
+        this.parent = parent;
+        return this;
+    }
+
     public void update(int mouseX, int mouseY) {
         float xScale = scaled.getXScale();
         float yScale = scaled.getYScale();
@@ -84,13 +103,14 @@ public class GuiComponent {
     }
 
     public void mouseClick(int button, int mouseX, int mouseY) {
-        clicked = true;
+        toggledOn = !toggledOn;
+        isBeingClicked = true;
         if (clickListener == null) return;
         clickListener.accept(shapes);
     }
 
     public void mouseRelease(int mouseX, int mouseY) {
-        clicked = false;
+        isBeingClicked = false;
         if (clickReleaseListener == null) return;
         clickReleaseListener.accept(shapes);
     }
@@ -103,7 +123,5 @@ public class GuiComponent {
     public void drawComponent() {
         for (Shape shape : shapes)
             shape.push();
-
-
     }
 }

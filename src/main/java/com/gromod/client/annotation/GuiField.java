@@ -9,9 +9,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface GuiField {
     public enum Type {
+        MAIN_BUTTON,
         BUTTON,
         SLIDER,
-        TEXT_INPUT
+        TEXT_INPUT,
+        COMING_SOON
     }
 
     Type type();

@@ -34,8 +34,45 @@ public class Text extends Shape<Text>{
         return this;
     }
 
+    public static int getWidth(float size, String text){
+        return interBold.getWidth(size, text);
+    }
+    public static int getHeight(float size) {
+        return interBold.getHeight(size);
+    }
+
+    public Text center() {
+        int textWidth = getWidth(this.size, text);
+        int textHeight = getHeight(this.size);
+
+        int parentCenterX = parent.x + parent.width / 2;
+        int parentCenterY = parent.y + parent.height / 2;
+
+        int textX = parentCenterX - (textWidth / 2);
+        int textY = parentCenterY - (textHeight / 2);
+
+        this.x = textX;
+        this.y = textY;
+
+        return this;
+    }
+
+    public Text centerX() {
+        int textWidth = getWidth(this.size, text);
+        int parentCenterX = parent.x + parent.width / 2;
+        this.x = parentCenterX - (textWidth / 2);
+        return this;
+    }
+
+    public Text centerY() {
+        int textHeight = getHeight(this.size);
+        int parentCenterY = parent.y + parent.height / 2;
+        this.y = parentCenterY - (textHeight / 2);
+        return this;
+    }
+
     @Override
     public void push() {
-        interBold.drawString(x, y, size, text, new BColor(0, 0, 0, 1));
+        interBold.drawString(x, y, size, text, color);
     }
 }

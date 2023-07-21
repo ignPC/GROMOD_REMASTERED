@@ -2,7 +2,7 @@ package com.gromod.client.renderer;
 
 import com.gromod.client.event.AfterScreenCreationEvent;
 import com.gromod.client.event.GuiRenderEvent;
-import com.gromod.client.gui.BaseGui;
+import com.gromod.client.gui.TestGui;
 import com.gromod.client.annotation.AutoInit;
 import com.gromod.client.annotation.Component;
 import com.gromod.client.renderer.font.FontAtlasBuilder;
@@ -50,7 +50,7 @@ public class RenderPipeline {
 
     @SubscribeEvent
     public void onGuiRender(GuiRenderEvent event) {
-        if (BaseGui.currentScreen == null) return;
+        if (TestGui.currentScreen == null) return;
         if (guiShapes == 0) return;
 
         glUseProgram(guiShader.getShaderProgram());

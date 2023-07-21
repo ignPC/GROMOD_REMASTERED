@@ -1,4 +1,4 @@
-package com.gromod.client.module;
+package com.gromod.client.module.patching;
 
 import com.gromod.client.annotation.AutoInit;
 import com.gromod.client.annotation.Component;
@@ -8,6 +8,7 @@ import com.gromod.client.utils.BColor;
 import com.gromod.client.utils.MessageUtils;
 import com.gromod.client.utils.RenderUtils;
 import com.gromod.client.utils.TextureType;
+import lombok.Getter;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockObsidian;
 import net.minecraft.block.BlockSand;
@@ -24,19 +25,20 @@ import java.util.List;
 
 
 @Component
-@GuiModule(name = "CRUMBS", index = 2)
+@GuiModule(name = "Patchcrumbs", category = GuiModule.Category.Patching, index = 2)
 public class CrumbsModule {
+    @Getter
     public static CrumbsModule instance;
 
     public Minecraft mc;
-    public AxisAlignedBB Box;
+    public AxisAlignedBB box;
 
     public boolean renderX;
     public boolean renderZ;
     public long crumbTimeoutAfterEnd;
     public long crumbTimeoutShot;
 
-    @GuiField(type = GuiField.Type.BUTTON, label = "Crumbs")
+    @GuiField(type = GuiField.Type.MAIN_BUTTON, label = "Patchrumbs")
     private boolean crumbs = true;
 
     @GuiField(type = GuiField.Type.BUTTON, label = "Cannon Detection")
@@ -66,12 +68,12 @@ public class CrumbsModule {
         if (event.phase != TickEvent.Phase.START || mc.thePlayer == null || mc.theWorld == null) return;
 
         if (!crumbs) {
-            if (Box != null)
-                Box = null;
+            if (box != null)
+                box = null;
             return;
         }
 
-        if (Box != null && System.currentTimeMillis() > crumbTimeoutAfterEnd) Box = null;
+        if (box != null && System.currentTimeMillis() > crumbTimeoutAfterEnd) box = null;
 
 
         for (Entity entity : mc.theWorld.getLoadedEntityList()) {
@@ -118,18 +120,18 @@ public class CrumbsModule {
                         || mc.theWorld.getBlockState(zPositive).getBlock() instanceof BlockSand
                         || mc.theWorld.getBlockState(zNegative).getBlock() instanceof BlockSand
                 ) renderX = false;
-
-                Box = sandCheckRadius;
-
-                // callouts
-                if (callouts) {
-                    MessageUtils.addClientMessage("Patch Y: " + Math.ceil(Box.minY));
-                }
-
-                // you will still see crumbs for 20 seconds after last shot
-                crumbTimeoutAfterEnd = System.currentTimeMillis() + 20000L;
-                crumbTimeoutShot = System.currentTimeMillis() + (long) timeout;
             }
+
+            box = sandCheckRadius;
+
+            // callouts
+            if (callouts) {
+                MessageUtils.addClientMessage("Patch Y: " + Math.ceil(box.minY));
+            }
+
+            // you will still see crumbs for 20 seconds after last shot
+            crumbTimeoutAfterEnd = System.currentTimeMillis() + 20000L;
+            crumbTimeoutShot = System.currentTimeMillis() + (long) timeout;
         }
     }
 
@@ -138,7 +140,7 @@ public class CrumbsModule {
         if (event.phase != TickEvent.Phase.START) {
             return;
         }
-        if (Box == null) return;
+        if (box == null) return;
 
         BColor extensionColor = new BColor(1, 1, 1, 1);
         BColor boxColor = new BColor(1, 1, 1, 1);
@@ -147,22 +149,22 @@ public class CrumbsModule {
         float lineLength = 200f;
 
         // Main box
-        RenderUtils.drawCube(Box.minX, Box.minY, Box.minZ, 1f, 1f, 1f, boxColor, TextureType.NONE, true);
+        RenderUtils.drawCube(box.minX, box.minY, box.minZ, 1f, 1f, 1f, boxColor, TextureType.NONE, true);
 
         if (renderX) {
             // 4 lines along the x-axis
-            RenderUtils.drawCube(Box.minX - lineLength / 2, Box.minY, Box.minZ, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(Box.minX - lineLength / 2, Box.minY, Box.minZ + 1, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(Box.minX - lineLength / 2, Box.minY + 1, Box.minZ, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(Box.minX - lineLength / 2, Box.minY + 1, Box.minZ + 1, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY, box.minZ, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY, box.minZ + 1, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY + 1, box.minZ, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY + 1, box.minZ + 1, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
         }
 
         if (renderZ) {
             // 4 lines along the x-axis
-            RenderUtils.drawCube(Box.minX, Box.minY, Box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(Box.minX + 1, Box.minY, Box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(Box.minX, Box.minY + 1, Box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(Box.minX + 1, Box.minY + 1, Box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX, box.minY, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX + 1, box.minY, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX, box.minY + 1, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX + 1, box.minY + 1, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
         }
     }
 

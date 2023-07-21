@@ -8,6 +8,7 @@ import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraft.client.renderer.entity.RenderTNTPrimed;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -32,20 +33,21 @@ public class CustomTntRenderer extends RenderTNTPrimed {
         this.fullBright = true;
         this.entitiesRendered = 0;
         RenderingRegistry.registerEntityRenderingHandler(EntityTNTPrimed.class, this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
-    public void renderWorldLast(TickEvent.RenderTickEvent event){
-        if(event.phase != TickEvent.Phase.START) return;
-        entitiesRendered = 0;
+    public void renderTickEvent(TickEvent.RenderTickEvent event){
+        if(event.phase == TickEvent.Phase.START) {
+            entitiesRendered = 0;
+        }
     }
 
     @Override
     public void doRender(EntityTNTPrimed entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        if(entitiesRendered > 20 && patchingFPS) return;
+        if(entitiesRendered > 2 && patchingFPS) return;
         entitiesRendered++;
         if (renderCustom) {
-            // Perform custom rendering logic
             float brightness = Minecraft.getMinecraft().theWorld.getSunBrightness(partialTicks) * 0.85f;
 
             if (fullBright) brightness = 1f;
@@ -53,7 +55,6 @@ public class CustomTntRenderer extends RenderTNTPrimed {
             /*TODO:
                 - IMPLEMENT FULLBRIGHT FOR NON CUSTOM RENDER
              */
-
 
             BVector3d interpolated = MathUtils.interpolateCoords(entity, partialTicks);
             RenderUtils.drawCube(interpolated.x - 0.5, interpolated.y, interpolated.z - 0.5, 0.98f, 0.98f, 0.98f, new BColor(brightness, brightness, brightness, 1), TextureType.TNT, xray);

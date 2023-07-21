@@ -1,6 +1,6 @@
 package com.gromod.client.utils;
 
-import com.gromod.client.gui.BaseGui;
+import com.gromod.client.gui.TestGui;
 import com.gromod.client.renderer.RenderPipeline;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -80,8 +80,8 @@ public class RenderUtils {
     }
 
     public static void drawRoundedRectangle(float x, float y, float width, float height, float radius, float shade, BColor color) {
-        float xScale = BaseGui.scaled.getXScale();
-        float yScale = BaseGui.scaled.getYScale();
+        float xScale = TestGui.scaled.getXScale();
+        float yScale = TestGui.scaled.getYScale();
 
         x *= xScale;
         y = (int) ((Display.getHeight() - y * yScale - height * yScale));
@@ -101,8 +101,8 @@ public class RenderUtils {
     }
 
     public static void drawCircle(float x, float y, float width, float height, float radius, float shade, BColor color) {
-        float xScale = BaseGui.scaled.getXScale();
-        float yScale = BaseGui.scaled.getYScale();
+        float xScale = TestGui.scaled.getXScale();
+        float yScale = TestGui.scaled.getYScale();
 
         x *= xScale;
         y = (int) ((Display.getHeight() - y * yScale - height * yScale));

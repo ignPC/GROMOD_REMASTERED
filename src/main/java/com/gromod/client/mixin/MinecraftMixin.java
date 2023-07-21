@@ -1,7 +1,7 @@
 package com.gromod.client.mixin;
 
 import com.gromod.client.event.AfterScreenCreationEvent;
-import com.gromod.client.gui.BaseGui;
+import com.gromod.client.gui.TestGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.client.audio.SoundHandler;
@@ -90,7 +90,7 @@ public abstract class MinecraftMixin {
 
     @Inject(method = "displayGuiScreen", at = @At("HEAD"))
     public void displayGuiScreen(GuiScreen guiScreenIn, CallbackInfo ci) {
-        BaseGui.currentScreen = null;
+        TestGui.currentScreen = null;
     }
 
     /**
@@ -153,8 +153,8 @@ public abstract class MinecraftMixin {
             this.leftClickCounter = 10000;
         }
 
-        if (BaseGui.currentScreen != null)
-            BaseGui.currentScreen.loop();
+        if (TestGui.currentScreen != null)
+            TestGui.currentScreen.loop();
 
         if (this.currentScreen != null)
         {
@@ -200,7 +200,7 @@ public abstract class MinecraftMixin {
 
         if (this.currentScreen == null || this.currentScreen.allowUserInput)
         {
-            if (BaseGui.currentScreen == null) {
+            if (TestGui.currentScreen == null) {
                 this.mcProfiler.endStartSection("mouse");
 
                 while (Mouse.next())

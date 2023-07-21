@@ -1,6 +1,6 @@
 package com.gromod.client.renderer.font;
 
-import com.gromod.client.gui.BaseGui;
+import com.gromod.client.gui.TestGui;
 import com.gromod.client.renderer.RenderPipeline;
 import com.gromod.client.utils.BColor;
 import com.gromod.client.utils.ShapeType;
@@ -40,8 +40,8 @@ public class CustomFont {
 
     public void drawString(int x, int y, String text, BColor color) {
         CharInfo charInfo = charInfos['a'];
-        float xScale = BaseGui.scaled.getXScale();
-        float yScale = BaseGui.scaled.getYScale();
+        float xScale = TestGui.scaled.getXScale();
+        float yScale = TestGui.scaled.getYScale();
 
         x = (int) (x * xScale);
         y = (int) (Display.getHeight() - y * yScale - charInfo.height * yScale);
@@ -72,8 +72,8 @@ public class CustomFont {
 
     public void drawString(int x, int y, float letterSize, String text, BColor color) {
         CharInfo charInfo = charInfos['a'];
-        float xScale = BaseGui.scaled.getXScale();
-        float yScale = BaseGui.scaled.getYScale();
+        float xScale = TestGui.scaled.getXScale();
+        float yScale = TestGui.scaled.getYScale();
 
         x = (int) (x * xScale);
         y = (int) (Display.getHeight() - y * yScale - charInfo.height * yScale * letterSize);
@@ -102,4 +102,26 @@ public class CustomFont {
         }
     }
 
+    public int getWidth(float letterSize, String text) {
+        int totalWidth = 0;
+        CharInfo charInfo = charInfos['a'];
+        float xScale = TestGui.scaled.getXScale();
+
+        for (char character : text.toCharArray()) {
+            if (character == ' ') {
+                totalWidth += charInfo.metrics.charWidth(' ') * xScale * letterSize;
+                continue;
+            }
+            charInfo = charInfos[character];
+            totalWidth += (int) (charInfo.width * xScale * letterSize);
+        }
+
+        return totalWidth;
+    }
+
+    public int getHeight(float letterSize) {
+        CharInfo charInfo = charInfos['a'];
+        float yScale = TestGui.scaled.getYScale();
+        return (int) (charInfo.height * yScale * letterSize);
+    }
 }

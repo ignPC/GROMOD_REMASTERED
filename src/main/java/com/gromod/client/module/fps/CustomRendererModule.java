@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @Component
-@GuiModule(name = "Custom Renderer",category = GuiModule.Category.Fps, index = 0)
+@GuiModule(name = "Custom Renderer",category = GuiModule.Category.Fps)
 public class CustomRendererModule {
     @Getter
     private static CustomRendererModule instance;

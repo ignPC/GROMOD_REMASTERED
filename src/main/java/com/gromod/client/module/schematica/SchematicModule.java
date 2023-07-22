@@ -8,7 +8,7 @@ import lombok.Getter;
 import net.minecraftforge.common.MinecraftForge;
 
 @Component
-@GuiModule(name = "Replay Printer", category = GuiModule.Category.Schematica, index = 4)
+@GuiModule(name = "Replay Printer", category = GuiModule.Category.Schematica)
 public class SchematicModule {
     @Getter
     private static SchematicModule instance;

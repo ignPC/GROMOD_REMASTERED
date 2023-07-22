@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Component
-@GuiModule(name = "Clear Water",category = GuiModule.Category.Patching, index = 3)
+@GuiModule(name = "Clear Water",category = GuiModule.Category.Patching)
 public class ClearWaterModule {
     @Getter
     private static ClearWaterModule instance;

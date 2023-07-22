@@ -1,8 +1,10 @@
 package com.gromod.client;
 
+import com.gromod.client.fpstest.FpsTest;
 import com.gromod.client.renderer.entity.CustomEntityLoader;
 import com.gromod.client.renderer.font.CustomFont;
 import com.gromod.client.renderer.font.FontAtlasBuilder;
+import com.gromod.client.settings.SaveSettings;
 import lombok.SneakyThrows;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -25,6 +27,8 @@ public class MainBean {
         instance = this;
         customEntityLoader = new CustomEntityLoader();
         new Loader();
+        new FpsTest();
+        new SaveSettings();
     }
 
     public CustomEntityLoader getCustomEntityRenderer() {

@@ -16,5 +16,4 @@ public @interface GuiModule {
     }
     Category category();
     String name();
-    int index();
 }

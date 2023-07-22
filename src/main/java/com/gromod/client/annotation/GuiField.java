@@ -17,7 +17,8 @@ public @interface GuiField {
     }
 
     Type type();
-    String label() default "";
+    String label();
+    String value() default "";
     double min() default 0;
     double max() default 1;
 }

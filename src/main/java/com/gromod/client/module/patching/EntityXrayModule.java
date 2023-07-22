@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Component
-@GuiModule(name = "Entity Xray",category = GuiModule.Category.Patching, index = 3)
+@GuiModule(name = "Entity Xray",category = GuiModule.Category.Patching)
 public class EntityXrayModule {
     @Getter
     private static EntityXrayModule instance;

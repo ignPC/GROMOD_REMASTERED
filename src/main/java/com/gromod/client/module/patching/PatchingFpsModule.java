@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 
 @Component
-@GuiModule(name = "Patching FPS",category = GuiModule.Category.Patching, index = 3)
+@GuiModule(name = "Patching FPS",category = GuiModule.Category.Patching)
 public class PatchingFpsModule {
     @Getter
     private static PatchingFpsModule instance;

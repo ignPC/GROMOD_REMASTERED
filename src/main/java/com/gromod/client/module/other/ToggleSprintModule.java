@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @Component
-@GuiModule(name = "Toggle Sprint", category = GuiModule.Category.Other, index = 1)
+@GuiModule(name = "Toggle Sprint", category = GuiModule.Category.Other)
 public class ToggleSprintModule {
     @Getter
     public static ToggleSprintModule instance;

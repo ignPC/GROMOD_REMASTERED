@@ -6,6 +6,7 @@ import com.gromod.client.annotation.AutoInit;
 import com.gromod.client.annotation.GuiField;
 import com.gromod.client.annotation.GuiModule;
 import com.gromod.client.annotation.Component;
+import com.gromod.client.gui.shape.Shape;
 import com.gromod.client.gui.shape.Text;
 import com.gromod.client.renderer.RenderPipeline;
 import com.gromod.client.renderer.font.CustomFont;
@@ -15,7 +16,6 @@ import com.gromod.client.utils.BColor;
 import com.gromod.client.utils.Scaled;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -23,10 +23,9 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class TestGui {
@@ -43,12 +42,12 @@ public class TestGui {
     private int eventButton;
     private long lastMouseEvent;
 
-    private final BColor backgroundColor = new BColor(0.537f, 0.427f, 0.361f, 0.72f);
-    private final BColor shade1 = new BColor(0.451f, 0.349f, 0.286f, 1f);
-    private final BColor shade2 = new BColor(0.247f, 0.141f, 0.078f, 1f);
-    private final BColor shade3 = new BColor(0.165f, 0.094f, 0.051f, 1f);
-    private final BColor orange1 = new BColor(0.741f, 0.424f, 0.231f, 1f);
-    private final BColor white = new BColor(1f, 1f, 1f, 1f);
+    private BColor backgroundColor = new BColor(0.537f, 0.427f, 0.361f, 0.72f);
+    private BColor shade1 = new BColor(0.451f, 0.349f, 0.286f, 1f);
+    private BColor shade2 = new BColor(0.247f, 0.141f, 0.078f, 1f);
+    private BColor shade3 = new BColor(0.165f, 0.094f, 0.051f, 1f);
+    private BColor main1 = new BColor(0.741f, 0.424f, 0.231f, 1f);
+    private BColor white = new BColor(1f, 1f, 1f, 1f);
 
     private int mainBoxWidth;
     private int mainBoxHeight;
@@ -64,9 +63,11 @@ public class TestGui {
     private GuiComponent moduleBox;  //example: fps: custom renderer
     private GuiComponent fieldBox;   //example: fps: custom renderer: toggle custom render sand, toggle custom render tnt
     private GuiComponent scrollbar;
+    private GuiComponent topLogo;
 
     protected static CustomFont interBold;
-    protected static GuiComponent screen = new GuiComponent(0, 0, 1920, 1080);
+    protected static GuiComponent screen = new GuiComponent(0, 0, 1920, 1080);;
+    private int currentColorSchemeIndex = 0;
 
     @AutoInit
     public TestGui(Minecraft minecraft) {
@@ -170,10 +171,7 @@ public class TestGui {
         topBox.shapes(guiComponent -> {
             int moduleOffsetX = mainBoxWidth / 16;
             int moduleWidth = (moduleBox.width - moduleOffsetX * 2)  / 3;
-            int categoryWidth = (categoryBox.width - categoryOffsetX * 3) / 4;
-
             int titleBoxWidth = guiComponent.width - moduleOffsetX - moduleWidth;
-
 
            new Rectangle(guiComponent, titleBoxWidth, guiComponent.height, shade2)
                    .radius(10)
@@ -181,11 +179,61 @@ public class TestGui {
            new Text(guiComponent, 1, "Search Modules (WIP)", shade1)
                    .offset(guiComponent.width / 30, 0)
                    .centerY();
-
-           new Text(guiComponent, 1.3f, "Gromod", white)
-                   .offset(mainBox.width - Text.getWidth(1.3f, "Gromod"), 0)
-                   .centerY();
         });
+
+        topLogo = new GuiComponent(mainBox, Text.getWidth(1.3f, "Gromod Alpha"), topBox.height)
+                .offset(mainBox.width - Text.getWidth(1.3f, "Gromod Alpha"), 0)
+                .shapes(guiComponent -> {
+                    new Text(guiComponent, 1.3f, "Gromod Alpha", white)
+                            .centerY();
+        });
+
+        topLogo.listen2Click(shapes -> {
+            BColor[] colorsArray1 = new BColor[6];
+
+            colorsArray1[0] = new BColor(0.537f, 0.427f, 0.361f, 0.72f);
+            colorsArray1[1] = new BColor(0.451f, 0.349f, 0.286f, 1f);
+            colorsArray1[2] = new BColor(0.247f, 0.141f, 0.078f, 1f);
+            colorsArray1[3] = new BColor(0.165f, 0.094f, 0.051f, 1f);
+            colorsArray1[4] = new BColor(0.741f, 0.424f, 0.231f, 1f);
+            colorsArray1[5] = new BColor(1f, 1f, 1f, 1f);
+
+            BColor[] colorsArray2 = new BColor[6];
+
+            colorsArray2[0] = hexToRGB("707070", 0.72f);
+            colorsArray2[1] = hexToRGB("52555F", 1);
+            colorsArray2[2] = hexToRGB("2A3247", 1);
+            colorsArray2[3] = hexToRGB("292A2E", 1);
+            colorsArray2[4] = hexToRGB("7277FF", 1);
+            colorsArray2[5] = hexToRGB("FFFFFF", 1);
+
+            BColor[] colorsArray3 = new BColor[6];
+
+            colorsArray3[0] = hexToRGB("646464", 0.72f);
+            colorsArray3[1] = hexToRGB("5F5252", 1);
+            colorsArray3[2] = hexToRGB("472A2A", 1);
+            colorsArray3[3] = hexToRGB("291A1A", 1);
+            colorsArray3[4] = hexToRGB("FF7272", 1);
+            colorsArray3[5] = hexToRGB("FFD8D8", 1);
+
+
+            BColor[][] caa = {colorsArray1, colorsArray2, colorsArray3};
+
+            currentColorSchemeIndex = (currentColorSchemeIndex + 1) % caa.length;
+
+            BColor[] currentColorScheme = caa[currentColorSchemeIndex];
+
+            updateColors(
+                    currentColorScheme[0],
+                    currentColorScheme[1],
+                    currentColorScheme[2],
+                    currentColorScheme[3],
+                    currentColorScheme[4],
+                    currentColorScheme[5]
+            );
+        });
+
+
 
 
         components.add(screen);
@@ -193,6 +241,7 @@ public class TestGui {
         components.add(categoryBox);
         components.add(moduleBox);
         components.add(scrollbar);
+        components.add(topLogo);
 
 
 
@@ -209,7 +258,7 @@ public class TestGui {
                     .offset(iteratingOffsetX, 0);
 
             BColor[] onColors = {shade1, shade1};
-            BColor[] offColors = {orange1, white};
+            BColor[] offColors = {main1, white};
 
             // Set initial colors based on the toggledOn state
             BColor[] colors = categoryComponent.toggledOn ? offColors : onColors;
@@ -249,16 +298,13 @@ public class TestGui {
             categoryComponents.add(categoryComponent);
         }
 
-        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(GuiModule.class);
-        ArrayList<Class<?>> sortedClasses = classes.stream()
-                .sorted(Comparator.comparingInt(clazz -> clazz.getAnnotation(GuiModule.class).index())).collect(Collectors.toCollection(ArrayList::new));
-
 
 
         //---------------------------------------------------------MODULES---------------------------------------------------------//
 
 
 
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(GuiModule.class);
         ArrayList<GuiComponent> moduleComponents = new ArrayList<>();
 
         for (GuiModule.Category category : GuiModule.Category.values()){
@@ -268,7 +314,7 @@ public class TestGui {
             int moduleIteratingOffsetX = 0;
             int moduleIteratingOffsetY = moduleOffsetY;
 
-            for (Class<?> clazz : sortedClasses) {
+            for (Class<?> clazz : classes) {
                 if(clazz.getAnnotation(GuiModule.class) == null) continue;
                 if(clazz.getAnnotation(GuiModule.class).category() != category) continue;
 
@@ -317,7 +363,7 @@ public class TestGui {
 
                 // Set initial colors based on the state
                 BColor[] onColors = {shade1, shade1};
-                BColor[] offColors = {orange1, white};
+                BColor[] offColors = {main1, white};
                 BColor[] colors = buttonValue ? offColors : onColors;
 
                 Field finalMainButtonField = mainButtonField;
@@ -361,6 +407,40 @@ public class TestGui {
         }
     }
 
+    private boolean needsReinitialization = false;
+
+    private void updateColors(BColor newBackgroundColor, BColor newShade1, BColor newShade2, BColor newShade3, BColor newMain1, BColor newWhite) {
+        backgroundColor = newBackgroundColor;
+        shade1 = newShade1;
+        shade2 = newShade2;
+        shade3 = newShade3;
+        main1 = newMain1;
+        white = newWhite;
+
+        // Set the flag to indicate that re-initialization is required
+        needsReinitialization = true;
+    }
+
+    public void reinitializeIfNeeded() {
+        if (needsReinitialization) {
+            // Clear the components list and other data structures if needed
+            components.clear();
+
+            screen = new GuiComponent(0, 0, 1920, 1080);
+            categoryBox = null;
+            moduleBox = null;
+            fieldBox = null;
+            scrollbar = null;
+            topLogo = null;
+            // Re-initialize the GUI to apply the updated colors
+
+            init();
+
+            // Reset the flag
+            needsReinitialization = false;
+        }
+    }
+
 
     public void drawGui() {
         Minecraft.getMinecraft().ingameGUI.getChatGUI().clearChatMessages();
@@ -386,6 +466,7 @@ public class TestGui {
     public void loop() {
         handleResolution();
         handleInput();
+        reinitializeIfNeeded();
     }
 
     public void handleInput() {
@@ -454,6 +535,29 @@ public class TestGui {
         RenderPipeline.clearGuiPipeline();
         drawGui();
         RenderPipeline.refreshGuiPipeline();
+    }
+
+    public BColor newColor(int r, int g, int b, int a){
+        return new BColor((float) (r / 255), (float) (g / 255), (float) (b / 255), (float) (a / 255));
+    }
+
+    public static BColor hexToRGB(String hexCode, float alpha) {
+        // Remove '#' character if present
+        if (hexCode.startsWith("#")) {
+            hexCode = hexCode.substring(1);
+        }
+
+        // Parse the individual red, green, and blue components
+        int red = Integer.parseInt(hexCode.substring(0, 2), 16);
+        int green = Integer.parseInt(hexCode.substring(2, 4), 16);
+        int blue = Integer.parseInt(hexCode.substring(4, 6), 16);
+
+        // Normalize the RGB values to the range 0-1
+        float normalizedRed = (float) (red / 255.0);
+        float normalizedGreen = (float) (green / 255.0);
+        float normalizedBlue = (float) (blue / 255.0);
+
+        return new BColor(normalizedRed, normalizedGreen, normalizedBlue, alpha);
     }
 
     public void setMainBox(int width, int height, int offsetX, int offsetY) {

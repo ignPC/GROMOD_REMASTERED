@@ -18,6 +18,8 @@ public abstract class EntityTntPrimedMixin extends Entity {
 
     @Shadow protected abstract void explode();
 
+
+
     public EntityTntPrimedMixin(World worldIn) {
         super(worldIn);
     }
@@ -67,6 +69,16 @@ public abstract class EntityTntPrimedMixin extends Entity {
         {
             this.handleWaterMovement();
         }
+    }
+
+    /**
+     * @author pc
+     * @reason idk
+     */
+    @Overwrite
+    public boolean canBeCollidedWith()
+    {
+        return false;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.gromod.client.module.other;
+package com.gromod.client.module.patching;
 
 import com.gromod.client.MainBean;
 import com.gromod.client.annotation.AutoInit;
@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @Component
-@GuiModule(name = "Full Bright",category = GuiModule.Category.Patching, index = 3)
+@GuiModule(name = "Full Bright",category = GuiModule.Category.Patching)
 public class FullBrightModule {
     @Getter
     private static FullBrightModule instance;

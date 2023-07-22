@@ -1,10 +1,13 @@
 package com.gromod.client.mixin;
 
+import com.gromod.client.module.patching.ExplosionParticlesModule;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.*;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -13,6 +16,9 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +33,7 @@ public class ExplosionMixin {
     @Shadow @Final private double explosionZ;
     @Shadow @Final private Entity exploder;
     @Shadow @Final private Map<EntityPlayer, Vec3> playerKnockbackMap;
+    @Shadow @Final private boolean isSmoking;
 
     /**
      * @author Gromit
@@ -106,6 +113,25 @@ public class ExplosionMixin {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * @author PC
+     * @reason Explosion Particles
+     */
+    @Overwrite
+    public void doExplosionB(boolean spawnParticles) {
+        this.worldObj.playSoundEffect(this.explosionX, this.explosionY, this.explosionZ, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+
+        if (this.explosionSize >= 2.0F && this.isSmoking) {
+            if (spawnParticles && ExplosionParticlesModule.getInstance().isExplosionparticles()) {
+                this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
+            }
+        } else {
+            if (spawnParticles && ExplosionParticlesModule.getInstance().isExplosionparticles()) {
+                this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
             }
         }
     }

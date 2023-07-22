@@ -21,11 +21,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.HashSet;
 import java.util.List;
 
 
 @Component
-@GuiModule(name = "Patchcrumbs", category = GuiModule.Category.Patching, index = 2)
+@GuiModule(name = "Patchcrumbs", category = GuiModule.Category.Patching)
 public class CrumbsModule {
     @Getter
     public static CrumbsModule instance;
@@ -38,7 +39,7 @@ public class CrumbsModule {
     public long crumbTimeoutAfterEnd;
     public long crumbTimeoutShot;
 
-    @GuiField(type = GuiField.Type.MAIN_BUTTON, label = "Patchrumbs")
+    @GuiField(type = GuiField.Type.MAIN_BUTTON, label = "Patchcrumbs")
     private boolean crumbs = true;
 
     @GuiField(type = GuiField.Type.BUTTON, label = "Cannon Detection")
@@ -61,8 +62,8 @@ public class CrumbsModule {
 
     @SubscribeEvent
     public void ClientTickEvent(TickEvent.ClientTickEvent event) {
-        int timeout = 2000;
-        int sandDetectionAmount = 1;
+        int timeout = 2900;
+        int sandDetectionAmount = 2;
         //int tntDetectionAmount = 1;
 
         if (event.phase != TickEvent.Phase.START || mc.thePlayer == null || mc.theWorld == null) return;
@@ -146,7 +147,8 @@ public class CrumbsModule {
         BColor boxColor = new BColor(1, 1, 1, 1);
 
         float lineThickness = 0.02f;
-        float lineLength = 200f;
+        float lineLength = 16 * 20;
+
 
         // Main box
         RenderUtils.drawCube(box.minX, box.minY, box.minZ, 1f, 1f, 1f, boxColor, TextureType.NONE, true);

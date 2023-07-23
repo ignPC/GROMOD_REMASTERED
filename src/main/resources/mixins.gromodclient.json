@@ -5,12 +5,14 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "ClippingHelperImplMixin",
+    "EffectRendererMixin",
     "EntityRendererMixin",
     "EntityTntPrimedMixin",
     "ExplosionMixin",
     "MinecraftMixin"
   ],
   "mixins": [
+    "ChunkMixin",
     "PlayerCapabilitiesMixin"
   ]
 }

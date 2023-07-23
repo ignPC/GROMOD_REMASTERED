@@ -98,11 +98,13 @@ public class GuiComponent {
     }
 
     public void mouseHover(int mouseX, int mouseY) {
+        if(!isVisible) return;
         if (hoverListener == null) return;
         hoverListener.accept(shapes);
     }
 
     public void mouseClick(int button, int mouseX, int mouseY) {
+        if(!isVisible) return;
         toggledOn = !toggledOn;
         isBeingClicked = true;
         if (clickListener == null) return;
@@ -110,12 +112,14 @@ public class GuiComponent {
     }
 
     public void mouseRelease(int mouseX, int mouseY) {
+        if(!isVisible) return;
         isBeingClicked = false;
         if (clickReleaseListener == null) return;
         clickReleaseListener.accept(shapes);
     }
 
     public void mouseDrag(int mouseX, int mouseY) {
+        if(!isVisible) return;
         if (dragListener == null) return;
         dragListener.accept(shapes);
     }

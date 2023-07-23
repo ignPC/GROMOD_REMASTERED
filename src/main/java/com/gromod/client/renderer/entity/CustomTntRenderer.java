@@ -1,11 +1,14 @@
 package com.gromod.client.renderer.entity;
 
 import com.gromod.client.utils.*;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
@@ -19,6 +22,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
@@ -29,6 +34,10 @@ public class CustomTntRenderer extends RenderTNTPrimed {
     private boolean fullBright;
     private boolean patchingFPS;
     private int entitiesRendered;
+
+    @Setter
+    @Getter
+    private ArrayList<Entity> renderEntityList = new ArrayList<>();
 
     public CustomTntRenderer(RenderManager renderManager) {
         super(renderManager);
@@ -49,10 +58,16 @@ public class CustomTntRenderer extends RenderTNTPrimed {
 
     @Override
     public void doRender(EntityTNTPrimed entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        // Temporarily disable shadows
+        // disable shadows
         renderManager.options.entityShadows = false;
+
         if(entitiesRendered > 2 && patchingFPS) return;
+
+        if(!renderEntityList.contains(entity) && patchingFPS)
+            renderEntityList.add(entity);
+
         entitiesRendered++;
+
         if (renderCustom) {
             float brightness = Minecraft.getMinecraft().theWorld.getSunBrightness(partialTicks) * 0.85f;
 

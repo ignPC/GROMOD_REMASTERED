@@ -1,10 +1,13 @@
 package com.gromod.client.renderer.entity;
 
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 
 public class CustomEntityLoader {
 
+    @Getter
     private final CustomTntRenderer customTNT;
+    @Getter
     private final CustomFallingBlockRenderer customFB;
 
     public CustomEntityLoader() {

@@ -1,7 +1,12 @@
 package com.gromod.client.settings;
 
+import com.gromod.client.annotation.Component;
 import com.gromod.client.annotation.GuiField;
 import com.gromod.client.annotation.GuiModule;
+import com.gromod.client.annotation.SaveSetting;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import org.reflections.Reflections;
 import scala.util.parsing.json.JSONArray;
 import scala.util.parsing.json.JSONObject;
@@ -12,17 +17,21 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class SaveSettings {
+
+    public static final String FILE_NAME = "gromod_settings.json";
+
     public SaveSettings() {
         Reflections reflections = new Reflections("com.gromod.client");
 
-        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(GuiModule.class);
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Component.class);
 
         Map<String, Map<String, Object>> valuesMap = new HashMap<>();
 
         for (Class<?> clazz : classes) {
             Map<String, Object> fieldValues = new HashMap<>();
             for (Field field : clazz.getDeclaredFields()) {
-                if (field.getAnnotation(GuiField.class) == null) continue;
+                if (!field.isAnnotationPresent(SaveSetting.class) && !field.isAnnotationPresent(GuiField.class))
+                    continue;
 
                 field.setAccessible(true);
                 try {
@@ -36,11 +45,11 @@ public class SaveSettings {
             }
 
             if (!fieldValues.isEmpty()) {
-                valuesMap.put(clazz.getSimpleName(), fieldValues);
+                valuesMap.put(clazz.getName(), fieldValues);
             }
         }
 
-        saveToJson(valuesMap, "output.json");
+        saveToJson(valuesMap, FILE_NAME);
     }
 
 

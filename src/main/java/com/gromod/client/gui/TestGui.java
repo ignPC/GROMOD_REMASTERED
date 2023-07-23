@@ -1,19 +1,19 @@
 package com.gromod.client.gui;
 
+import com.gromod.client.annotation.*;
 import com.gromod.client.gui.guicomponent.GuiComponent;
 import com.gromod.client.gui.shape.Rectangle;
-import com.gromod.client.annotation.AutoInit;
-import com.gromod.client.annotation.GuiField;
-import com.gromod.client.annotation.GuiModule;
-import com.gromod.client.annotation.Component;
 import com.gromod.client.gui.shape.Shape;
 import com.gromod.client.gui.shape.Text;
 import com.gromod.client.renderer.RenderPipeline;
 import com.gromod.client.renderer.font.CustomFont;
 import com.gromod.client.renderer.font.FontAtlasBuilder;
 import com.gromod.client.renderer.util.ProjectionUtils;
+import com.gromod.client.settings.LoadSettings;
 import com.gromod.client.utils.BColor;
 import com.gromod.client.utils.Scaled;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
@@ -30,6 +30,9 @@ import java.util.Set;
 @Component
 public class TestGui {
 
+    @Getter
+    private static TestGui instance;
+
     public static TestGui currentScreen;
     public static Scaled scaled = new Scaled();
     private final List<GuiComponent> components = new ArrayList<>();
@@ -42,12 +45,12 @@ public class TestGui {
     private int eventButton;
     private long lastMouseEvent;
 
-    private BColor backgroundColor = new BColor(0.537f, 0.427f, 0.361f, 0.72f);
-    private BColor shade1 = new BColor(0.451f, 0.349f, 0.286f, 1f);
-    private BColor shade2 = new BColor(0.247f, 0.141f, 0.078f, 1f);
-    private BColor shade3 = new BColor(0.165f, 0.094f, 0.051f, 1f);
-    private BColor main1 = new BColor(0.741f, 0.424f, 0.231f, 1f);
-    private BColor white = new BColor(1f, 1f, 1f, 1f);
+    private BColor backgroundColor;
+    private BColor shade1;
+    private BColor shade2;
+    private BColor shade3;
+    private BColor main1;
+    private BColor white;
 
     private int mainBoxWidth;
     private int mainBoxHeight;
@@ -67,10 +70,14 @@ public class TestGui {
 
     protected static CustomFont interBold;
     protected static GuiComponent screen = new GuiComponent(0, 0, 1920, 1080);;
-    private int currentColorSchemeIndex = 0;
+
+    @Getter
+    @SaveSetting
+    private int currentColorSchemeIndex = 1;
 
     @AutoInit
     public TestGui(Minecraft minecraft) {
+        instance = this;
         this.minecraft = minecraft;
         interBold = FontAtlasBuilder.fonts.get("Inter-Bold.ttf");
         init();
@@ -79,7 +86,52 @@ public class TestGui {
     @SneakyThrows
     public void init() {
 
+        //---------------------------------------------------------COLOR-SCHEMES---------------------------------------------------------//
+
+        BColor[] colorsArray1 = new BColor[6];
+
+        colorsArray1[0] = new BColor(0.537f, 0.427f, 0.361f, 0.72f);
+        colorsArray1[1] = new BColor(0.451f, 0.349f, 0.286f, 1f);
+        colorsArray1[2] = new BColor(0.247f, 0.141f, 0.078f, 1f);
+        colorsArray1[3] = new BColor(0.165f, 0.094f, 0.051f, 1f);
+        colorsArray1[4] = new BColor(0.741f, 0.424f, 0.231f, 1f);
+        colorsArray1[5] = new BColor(1f, 1f, 1f, 1f);
+
+        BColor[] colorsArray2 = new BColor[6];
+
+        colorsArray2[0] = hexToRGB("707070", 0.72f);
+        colorsArray2[1] = hexToRGB("52555F", 1);
+        colorsArray2[2] = hexToRGB("2A3247", 1);
+        colorsArray2[3] = hexToRGB("292A2E", 1);
+        colorsArray2[4] = hexToRGB("7277FF", 1);
+        colorsArray2[5] = hexToRGB("FFFFFF", 1);
+
+        BColor[] colorsArray3 = new BColor[6];
+
+        colorsArray3[0] = hexToRGB("646464", 0.72f);
+        colorsArray3[1] = hexToRGB("5F5252", 1);
+        colorsArray3[2] = hexToRGB("472A2A", 1);
+        colorsArray3[3] = hexToRGB("291A1A", 1);
+        colorsArray3[4] = hexToRGB("FF7272", 1);
+        colorsArray3[5] = hexToRGB("FFD8D8", 1);
+
+
+        BColor[][] caa = {colorsArray1, colorsArray2, colorsArray3};
+
+        BColor[] currentColorScheme = caa[currentColorSchemeIndex];
+
+        backgroundColor = currentColorScheme[0];
+        shade1 = currentColorScheme[1];
+        shade2 = currentColorScheme[2];
+        shade3 = currentColorScheme[3];
+        main1 = currentColorScheme[4];
+        white = currentColorScheme[5];
+
+
+
         //---------------------------------------------------------BACKGROUND---------------------------------------------------------//
+
+
 
         screen.shapes(guiComponent -> { // Background shapes
             new Rectangle(guiComponent, backgroundColor);  // Makes background darker
@@ -189,47 +241,22 @@ public class TestGui {
         });
 
         topLogo.listen2Click(shapes -> {
-            BColor[] colorsArray1 = new BColor[6];
-
-            colorsArray1[0] = new BColor(0.537f, 0.427f, 0.361f, 0.72f);
-            colorsArray1[1] = new BColor(0.451f, 0.349f, 0.286f, 1f);
-            colorsArray1[2] = new BColor(0.247f, 0.141f, 0.078f, 1f);
-            colorsArray1[3] = new BColor(0.165f, 0.094f, 0.051f, 1f);
-            colorsArray1[4] = new BColor(0.741f, 0.424f, 0.231f, 1f);
-            colorsArray1[5] = new BColor(1f, 1f, 1f, 1f);
-
-            BColor[] colorsArray2 = new BColor[6];
-
-            colorsArray2[0] = hexToRGB("707070", 0.72f);
-            colorsArray2[1] = hexToRGB("52555F", 1);
-            colorsArray2[2] = hexToRGB("2A3247", 1);
-            colorsArray2[3] = hexToRGB("292A2E", 1);
-            colorsArray2[4] = hexToRGB("7277FF", 1);
-            colorsArray2[5] = hexToRGB("FFFFFF", 1);
-
-            BColor[] colorsArray3 = new BColor[6];
-
-            colorsArray3[0] = hexToRGB("646464", 0.72f);
-            colorsArray3[1] = hexToRGB("5F5252", 1);
-            colorsArray3[2] = hexToRGB("472A2A", 1);
-            colorsArray3[3] = hexToRGB("291A1A", 1);
-            colorsArray3[4] = hexToRGB("FF7272", 1);
-            colorsArray3[5] = hexToRGB("FFD8D8", 1);
-
-
-            BColor[][] caa = {colorsArray1, colorsArray2, colorsArray3};
+            instance = this;
 
             currentColorSchemeIndex = (currentColorSchemeIndex + 1) % caa.length;
 
-            BColor[] currentColorScheme = caa[currentColorSchemeIndex];
+            System.out.println(currentColorSchemeIndex);
+            System.out.println(instance.currentColorSchemeIndex);
+
+            BColor[] newColorScheme = caa[currentColorSchemeIndex];
 
             updateColors(
-                    currentColorScheme[0],
-                    currentColorScheme[1],
-                    currentColorScheme[2],
-                    currentColorScheme[3],
-                    currentColorScheme[4],
-                    currentColorScheme[5]
+                    newColorScheme[0],
+                    newColorScheme[1],
+                    newColorScheme[2],
+                    newColorScheme[3],
+                    newColorScheme[4],
+                    newColorScheme[5]
             );
         });
 
@@ -407,6 +434,7 @@ public class TestGui {
         }
     }
 
+    @Setter
     private boolean needsReinitialization = false;
 
     private void updateColors(BColor newBackgroundColor, BColor newShade1, BColor newShade2, BColor newShade3, BColor newMain1, BColor newWhite) {
@@ -423,7 +451,6 @@ public class TestGui {
 
     public void reinitializeIfNeeded() {
         if (needsReinitialization) {
-            // Clear the components list and other data structures if needed
             components.clear();
 
             screen = new GuiComponent(0, 0, 1920, 1080);
@@ -436,7 +463,6 @@ public class TestGui {
 
             init();
 
-            // Reset the flag
             needsReinitialization = false;
         }
     }
@@ -451,6 +477,7 @@ public class TestGui {
     }
 
     public void openGui() {
+        needsReinitialization = true;
         Minecraft.getMinecraft().ingameGUI.getChatGUI().clearChatMessages();
         minecraft.setIngameNotInFocus();
         if (!handleResolution())

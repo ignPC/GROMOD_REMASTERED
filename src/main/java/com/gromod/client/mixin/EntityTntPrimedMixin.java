@@ -1,5 +1,8 @@
 package com.gromod.client.mixin;
 
+import com.gromod.client.MainBean;
+import com.gromod.client.module.patching.PatchingFpsModule;
+import com.gromod.client.renderer.entity.CustomTntRenderer;
 import com.gromod.client.utils.BEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityTNTPrimed;
@@ -9,6 +12,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.ArrayList;
+
 @Mixin(EntityTNTPrimed.class)
 public abstract class EntityTntPrimedMixin extends Entity {
 
@@ -17,8 +22,6 @@ public abstract class EntityTntPrimedMixin extends Entity {
     @Shadow public int fuse;
 
     @Shadow protected abstract void explode();
-
-
 
     public EntityTntPrimedMixin(World worldIn) {
         super(worldIn);
@@ -33,11 +36,28 @@ public abstract class EntityTntPrimedMixin extends Entity {
      * @author Gromit + PC
      * @reason Remove ugly ass smoke particle + send info to TNTVisualizationModule
      */
+
     @Overwrite
     public void onUpdate()
     {
-        if(!(this.fuse - 1 <= 0 && !this.worldObj.isRemote)){
-            this.bEntity.setCurrentPos(this.posX, this.posY, this.posZ);
+
+        ArrayList<Entity> renderEntityList = MainBean.getInstance().getCustomEntityRenderer().getCustomTNT().getRenderEntityList();
+
+        if(!renderEntityList.contains(this) && PatchingFpsModule.getInstance().isPatchingFps()) {
+            if (this.fuse-- <= 0)
+            {
+                this.setDead();
+
+                if (!this.worldObj.isRemote)
+                {
+                    this.explode();
+                }
+            }
+            else
+            {
+                this.handleWaterMovement();
+            }
+            return;
         }
 
         this.prevPosX = this.posX;
@@ -59,6 +79,7 @@ public abstract class EntityTntPrimedMixin extends Entity {
         if (this.fuse-- <= 0)
         {
             this.setDead();
+            renderEntityList.remove(this);
 
             if (!this.worldObj.isRemote)
             {

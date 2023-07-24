@@ -9,6 +9,7 @@
     "EntityRendererMixin",
     "EntityTntPrimedMixin",
     "ExplosionMixin",
+    "GlStateManagerMixin",
     "MinecraftMixin"
   ],
   "mixins": [

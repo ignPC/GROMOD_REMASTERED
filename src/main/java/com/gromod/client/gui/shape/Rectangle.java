@@ -27,6 +27,13 @@ public class Rectangle extends Shape<Rectangle> {
         return this;
     }
 
+    public Rectangle centerY() {
+        int height = this.height;
+        int parentCenterY = parent.y + parent.height / 2;
+        this.y = parentCenterY - (height / 2);
+        return this;
+    }
+
     @Override
     public void push() {
         RenderUtils.drawRoundedRectangle(x, y, width, height, radius, shade, color);

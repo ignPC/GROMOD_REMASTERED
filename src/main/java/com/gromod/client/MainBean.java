@@ -5,9 +5,11 @@ import com.gromod.client.gui.TestGui;
 import com.gromod.client.renderer.entity.CustomEntityLoader;
 import com.gromod.client.renderer.font.CustomFont;
 import com.gromod.client.renderer.font.FontAtlasBuilder;
+import com.gromod.client.renderer.image.ImageLoader;
 import com.gromod.client.settings.LoadSettings;
 import com.gromod.client.settings.SaveSettings;
 import com.gromod.client.utils.MessageUtils;
+import com.gromod.client.utils.RenderUtils;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,7 +42,7 @@ public class MainBean {
         customEntityLoader = new CustomEntityLoader();
         new Loader();
 
-
+        ImageLoader.createTexture("D:\\DesktopStorage\\Intellij_Projects\\Minecraft_Projects\\GROMOD_REMASTERED\\src\\main\\resources\\assets\\bean\\logo\\logo.png");
         //new FpsTest();
 
         loadSettings = true;

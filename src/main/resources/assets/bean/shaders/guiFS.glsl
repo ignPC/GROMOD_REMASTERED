@@ -8,6 +8,7 @@ in vec4 outShapeInfo;
 in vec4 outTextureInfo;
 
 uniform sampler2D font_atlas;
+uniform sampler2D image;
 
 float roundedRectangle(vec2 center, vec2 size, float radius) {
     return length(max(abs(center) - size + radius, 0.0)) - radius;
@@ -33,5 +34,7 @@ void main() {
         gl_FragColor = vec4(outColor.rgb, alpha * outColor.a);
     } else if (shapeType == 3) {
         gl_FragColor = outColor;
+    } else if (shapeType == 4) {
+        gl_FragColor = texture(image, vec2(outPos.x, 1. - outPos.y) * outTextureInfo.zw + outTextureInfo.xy);
     }
 }

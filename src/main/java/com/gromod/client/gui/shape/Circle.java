@@ -27,8 +27,16 @@ public class Circle extends Shape<Circle> {
         return this;
     }
 
+    public Circle centerY() {
+        int height = this.height;
+        int parentCenterY = parent.y + parent.height / 2;
+        this.y = parentCenterY - (height / 2);
+        return this;
+    }
+
     @Override
     public void push() {
         RenderUtils.drawCircle(x, y, width, height, radius, shade, color);
     }
+
 }

@@ -2,11 +2,36 @@ package com.gromod.client.utils;
 
 import com.gromod.client.gui.TestGui;
 import com.gromod.client.renderer.RenderPipeline;
+import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import org.lwjgl.opengl.Display;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
 public class RenderUtils {
+
+    public static void drawImage(float x, float y, float width, float height, BColor color) {
+        float xScale = TestGui.scaled.getXScale();
+        float yScale = TestGui.scaled.getYScale();
+
+        x *= xScale;
+        y = (int) ((Display.getHeight() - y * yScale - height * yScale));
+        width *= xScale;
+        height *= yScale;
+
+        RenderPipeline.queueGuiData(
+                x, y,
+                color.r, color.g, color.b, color.a,
+                width, height,
+                0, 0, 0, ShapeType.IMAGE.ordinal(),
+                0, 0, 1, 1
+        );
+        RenderPipeline.guiShapes++;
+    }
 
     public static void drawCube(double x, double y, double z, float scaleX, float scaleY, float scaleZ, BColor color, TextureType textureType) {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();

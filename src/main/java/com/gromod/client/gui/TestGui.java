@@ -2,9 +2,7 @@ package com.gromod.client.gui;
 
 import com.gromod.client.annotation.*;
 import com.gromod.client.gui.guicomponent.GuiComponent;
-import com.gromod.client.gui.shape.Rectangle;
-import com.gromod.client.gui.shape.Shape;
-import com.gromod.client.gui.shape.Text;
+import com.gromod.client.gui.shape.*;
 import com.gromod.client.renderer.RenderPipeline;
 import com.gromod.client.renderer.font.CustomFont;
 import com.gromod.client.renderer.font.FontAtlasBuilder;
@@ -115,7 +113,6 @@ public class TestGui {
         colorsArray3[4] = hexToRGB("FF7272", 1);
         colorsArray3[5] = hexToRGB("FFD8D8", 1);
 
-
         BColor[][] caa = {colorsArray1, colorsArray2, colorsArray3};
 
         BColor[] currentColorScheme = caa[currentColorSchemeIndex];
@@ -225,10 +222,10 @@ public class TestGui {
             int moduleWidth = (moduleBox.width - moduleOffsetX * 2)  / 3;
             int titleBoxWidth = guiComponent.width - moduleOffsetX - moduleWidth;
 
-           new Rectangle(guiComponent, titleBoxWidth, guiComponent.height, shade2)
+            new Rectangle(guiComponent, titleBoxWidth, guiComponent.height, shade2)
                    .radius(10)
                    .shade(3);
-           new Text(guiComponent, 1, "Search Modules (WIP)", shade1)
+            new Text(guiComponent, 1, "Search Modules (WIP)", shade1)
                    .offset(guiComponent.width / 30, 0)
                    .centerY();
         });
@@ -236,8 +233,34 @@ public class TestGui {
         topLogo = new GuiComponent(mainBox, Text.getWidth(1.3f, "Gromod Alpha"), topBox.height)
                 .offset(mainBox.width - Text.getWidth(1.3f, "Gromod Alpha"), 0)
                 .shapes(guiComponent -> {
+                    int moduleOffsetX = mainBoxWidth / 16;
+                    int moduleWidth = (moduleBox.width - moduleOffsetX * 2)  / 3;
+
                     new Text(guiComponent, 1.3f, "Gromod Alpha", white)
                             .centerY();
+
+                    int size = moduleWidth / 6;
+
+
+                    /*
+
+                    new Rectangle(guiComponent, (int) (size * 1.1), (int) (size * 1.1), shade2)
+                            .shade(3)
+                            .radius(30)
+                            .centerY()
+                            .offset((int) (-size*1.1*1.2), 0);
+
+                    new Rectangle(guiComponent, size, size, shade3)
+                            .shade(3)
+                            .radius(20)
+                            .centerY()
+                            .offset((int) (-size*1.2), 0);
+
+                    new Image(guiComponent, size, size,new BColor(0, 0, 0, 0))
+                            .centerY()
+                            .offset((int) (-size*1.2), 0);
+
+                     */
         });
 
         topLogo.listen2Click(shapes -> {
@@ -259,7 +282,6 @@ public class TestGui {
                     newColorScheme[5]
             );
         });
-
 
 
 
@@ -436,6 +458,7 @@ public class TestGui {
 
     @Setter
     private boolean needsReinitialization = false;
+    private boolean needsClose = false;
 
     private void updateColors(BColor newBackgroundColor, BColor newShade1, BColor newShade2, BColor newShade3, BColor newMain1, BColor newWhite) {
         backgroundColor = newBackgroundColor;
@@ -491,9 +514,9 @@ public class TestGui {
     }
 
     public void loop() {
+        reinitializeIfNeeded();
         handleResolution();
         handleInput();
-        reinitializeIfNeeded();
     }
 
     public void handleInput() {
@@ -559,6 +582,7 @@ public class TestGui {
     }
 
     public void refreshPipeline() {
+        reinitializeIfNeeded();
         RenderPipeline.clearGuiPipeline();
         drawGui();
         RenderPipeline.refreshGuiPipeline();

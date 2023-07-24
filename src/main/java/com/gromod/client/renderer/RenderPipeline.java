@@ -5,10 +5,13 @@ import com.gromod.client.event.GuiRenderEvent;
 import com.gromod.client.gui.TestGui;
 import com.gromod.client.annotation.AutoInit;
 import com.gromod.client.annotation.Component;
+import com.gromod.client.mixin.GlStateManagerMixin;
 import com.gromod.client.renderer.font.FontAtlasBuilder;
+import com.gromod.client.renderer.image.ImageLoader;
 import com.gromod.client.renderer.util.CommonShapes;
 import com.gromod.client.renderer.util.ProjectionUtils;
 import com.gromod.client.utils.FpsTimer;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -19,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -42,6 +44,9 @@ public class RenderPipeline {
     private Shader guiShader;
     private Shader worldShader;
 
+    public static int currentActiveTexture;
+    public static int currentBindTexture;
+
     @AutoInit
     public RenderPipeline(Minecraft minecraft) {
         this.minecraft = minecraft;
@@ -50,14 +55,25 @@ public class RenderPipeline {
 
     @SubscribeEvent
     public void onGuiRender(GuiRenderEvent event) {
+        int active = currentActiveTexture;
+        int bind = currentBindTexture;
+
         if (TestGui.currentScreen == null) return;
         if (guiShapes == 0) return;
 
         glUseProgram(guiShader.getShaderProgram());
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, FontAtlasBuilder.textureId);
+
+
+        glActiveTexture(GL_TEXTURE19);
+        glBindTexture(GL_TEXTURE_2D, ImageLoader.textureId);
+
         glUniformMatrix4(guiShader.getUniform("projection"), false, ProjectionUtils.guiProjection);
+
         glUniform1i(guiShader.getUniform("font_atlas"), 0);
+        glUniform1i(guiShader.getUniform("image"), 19);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -69,6 +85,48 @@ public class RenderPipeline {
         guiPipeline.unbindVao();
 
         glUseProgram(0);
+
+        glActiveTexture(active);
+        glBindTexture(GL_TEXTURE_2D, bind);
+    }
+
+    public int getTextureUnitFromHex(int hexCode) {
+        switch (hexCode) {
+            case 0x84C0: return 0;
+            case 0x84C1: return 1;
+            case 0x84C2: return 2;
+            case 0x84C3: return 3;
+            case 0x84C4: return 4;
+            case 0x84C5: return 5;
+            case 0x84C6: return 6;
+            case 0x84C7: return 7;
+            case 0x84C8: return 8;
+            case 0x84C9: return 9;
+            case 0x84CA: return 10;
+            case 0x84CB: return 11;
+            case 0x84CC: return 12;
+            case 0x84CD: return 13;
+            case 0x84CE: return 14;
+            case 0x84CF: return 15;
+            case 0x84D0: return 16;
+            case 0x84D1: return 17;
+            case 0x84D2: return 18;
+            case 0x84D3: return 19;
+            case 0x84D4: return 20;
+            case 0x84D5: return 21;
+            case 0x84D6: return 22;
+            case 0x84D7: return 23;
+            case 0x84D8: return 24;
+            case 0x84D9: return 25;
+            case 0x84DA: return 26;
+            case 0x84DB: return 27;
+            case 0x84DC: return 28;
+            case 0x84DD: return 29;
+            case 0x84DE: return 30;
+            case 0x84DF: return 31;
+            default: return -1; // Invalid hex code, texture unit not found
+        }
+
     }
 
     @SubscribeEvent
@@ -115,7 +173,8 @@ public class RenderPipeline {
                 new ResourceLocation("bean", "shaders/guiVS.glsl"),
                 new ResourceLocation("bean", "shaders/guiFS.glsl"),
                 "projection",
-                "font_atlas"
+                "font_atlas",
+                "image"
         );
 
         worldShader = new Shader(

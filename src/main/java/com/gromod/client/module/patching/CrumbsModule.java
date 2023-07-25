@@ -155,18 +155,18 @@ public class CrumbsModule {
 
         if (renderX) {
             // 4 lines along the x-axis
-            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY, box.minZ, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY, box.minZ + 1, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY + 1, box.minZ, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY + 1, box.minZ + 1, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY, box.minZ, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE);
+            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY, box.minZ + 1, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE);
+            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY + 1, box.minZ, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE);
+            RenderUtils.drawCube(box.minX - lineLength / 2, box.minY + 1, box.minZ + 1, lineLength, lineThickness, lineThickness, extensionColor, TextureType.NONE);
         }
 
         if (renderZ) {
             // 4 lines along the x-axis
-            RenderUtils.drawCube(box.minX, box.minY, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(box.minX + 1, box.minY, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(box.minX, box.minY + 1, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
-            RenderUtils.drawCube(box.minX + 1, box.minY + 1, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE, true);
+            RenderUtils.drawCube(box.minX, box.minY, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE);
+            RenderUtils.drawCube(box.minX + 1, box.minY, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE);
+            RenderUtils.drawCube(box.minX, box.minY + 1, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE);
+            RenderUtils.drawCube(box.minX + 1, box.minY + 1, box.minZ - lineLength / 2, lineThickness, lineThickness, lineLength, extensionColor, TextureType.NONE);
         }
     }
 

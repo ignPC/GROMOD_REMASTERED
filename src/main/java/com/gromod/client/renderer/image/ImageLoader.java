@@ -1,6 +1,7 @@
 package com.gromod.client.renderer.image;
 
 import lombok.SneakyThrows;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;

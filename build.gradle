@@ -19,7 +19,7 @@ plugins {
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: 'org.spongepowered.mixin'
 
-version = "Pre-Alpha"
+version = "Alpha"
 group = "com.gromod.client"         //http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Gromod"         //name of the output jar
 

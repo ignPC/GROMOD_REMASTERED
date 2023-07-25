@@ -12,6 +12,7 @@ import com.gromod.client.utils.MessageUtils;
 import com.gromod.client.utils.RenderUtils;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -42,7 +43,8 @@ public class MainBean {
         customEntityLoader = new CustomEntityLoader();
         new Loader();
 
-        ImageLoader.createTexture("D:\\DesktopStorage\\Intellij_Projects\\Minecraft_Projects\\GROMOD_REMASTERED\\src\\main\\resources\\assets\\bean\\logo\\logo.png");
+        //String logo = "bean:logo/logo.png";
+        //ImageLoader.createTexture(logo);
         //new FpsTest();
 
         loadSettings = true;

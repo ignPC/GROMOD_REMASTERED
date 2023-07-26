@@ -1,6 +1,7 @@
 package com.gromod.client.gui.guicomponent;
 
-import com.gromod.client.gui.TestGui;
+import com.google.common.io.PatternFilenameFilter;
+import com.gromod.client.gui.NewGui;
 import com.gromod.client.gui.shape.Shape;
 import com.gromod.client.utils.BColor;
 import com.gromod.client.utils.Scaled;
@@ -19,27 +20,31 @@ public class GuiComponent {
     public int height;
     public boolean hovered;
     public boolean isBeingClicked;
+    private boolean isBeingRightClicked;
     public boolean toggledOn = false;
+    private boolean rightClickToggledOn = false;
     public boolean update = true;
-    @Setter
-    public boolean childrenVisible = true;
-    @Setter
-    public boolean isVisible = true;
-    @Setter
-    public BColor[] colors;
 
+    @Setter public boolean isVisible = true;
+    @Setter public BColor[] colors;
+
+
+    private final Scaled scaled = NewGui.scaled;
+    public List<Shape> shapes = new ArrayList<>();
 
     public GuiComponent parent;
-    public List<Shape> shapes = new ArrayList<>();
-    private final Scaled scaled = TestGui.scaled;
+    @Getter public List<GuiComponent> children = new ArrayList<>();
 
     private Consumer<List<Shape>> clickListener;
     private Consumer<List<Shape>> clickReleaseListener;
     private Consumer<List<Shape>> hoverListener;
     private Consumer<List<Shape>> dragListener;
+    private Consumer<List<Shape>> rightClickListener;
 
     public GuiComponent(GuiComponent parent, int width, int height) {
         this.parent = parent;
+        parent.getChildren().add(this);
+        this.isVisible = parent.isVisible();
         this.width = width;
         this.height = height;
         this.x = parent.x;
@@ -69,6 +74,11 @@ public class GuiComponent {
         return this;
     }
 
+    public GuiComponent listen2RightClick(Consumer<List<Shape>> action) {
+        rightClickListener = action;
+        return this;
+    }
+
     public GuiComponent listen2ClickRelease(Consumer<List<Shape>> action) {
         clickReleaseListener = action;
         return this;
@@ -84,8 +94,10 @@ public class GuiComponent {
         return this;
     }
 
-    public GuiComponent parent(GuiComponent parent){
-        this.parent = parent;
+    public GuiComponent parent(GuiComponent newParent){
+        this.parent.getChildren().remove(this);
+        this.parent = newParent;
+        newParent.getChildren().add(this);
         return this;
     }
 
@@ -109,6 +121,13 @@ public class GuiComponent {
         isBeingClicked = true;
         if (clickListener == null) return;
         clickListener.accept(shapes);
+    }
+
+    public void mouseClickRight(int button, int mouseX, int mouseY) {
+        if(!isVisible) return;
+        rightClickToggledOn = !rightClickToggledOn;
+        if (rightClickListener == null) return;
+        rightClickListener.accept(shapes);
     }
 
     public void mouseRelease(int mouseX, int mouseY) {

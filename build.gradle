@@ -19,7 +19,7 @@ plugins {
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: 'org.spongepowered.mixin'
 
-version = "Alpha"
+version = "Alpha-1.0.1"
 group = "com.gromod.client"         //http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Gromod"         //name of the output jar
 
@@ -91,7 +91,7 @@ processResources {
         into ""
     }
 
-    rename '(.+_at.cfg)', 'META-INF/$1'
+    //rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
 shadowJar {
@@ -116,6 +116,7 @@ jar {
     manifest {
         attributes "FMLCorePlugin": "com.gromod.client.mixin.MixinLoader",
                 "ForceLoadAsMod": false,
+                'FMLAT': 'accesstransformer.cfg',
                 "TweakOrder": 0,
                 "ModSide": "CLIENT",
                 'FMLCorePluginContainsFMLMod': true,

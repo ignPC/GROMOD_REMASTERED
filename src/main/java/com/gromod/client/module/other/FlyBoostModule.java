@@ -22,6 +22,7 @@ public class FlyBoostModule {
     @GuiField(type = GuiField.Type.MAIN_BUTTON, label = "FlyBoost")
     private boolean flyBoost = false;
 
+    @GuiField(type = GuiField.Type.SLIDER, label = "FlyBoost Multiplier")
     private final double flyBoostMultiplier = 2;
 
     @AutoInit

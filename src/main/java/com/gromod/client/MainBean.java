@@ -1,26 +1,17 @@
 package com.gromod.client;
 
-import com.gromod.client.fpstest.FpsTest;
-import com.gromod.client.gui.TestGui;
 import com.gromod.client.renderer.entity.CustomEntityLoader;
 import com.gromod.client.renderer.font.CustomFont;
 import com.gromod.client.renderer.font.FontAtlasBuilder;
-import com.gromod.client.renderer.image.ImageLoader;
 import com.gromod.client.settings.LoadSettings;
 import com.gromod.client.settings.SaveSettings;
-import com.gromod.client.utils.MessageUtils;
-import com.gromod.client.utils.RenderUtils;
 import lombok.SneakyThrows;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 @Mod(modid = "Gromod", version = "Pre-Alpha")
 public class MainBean {
@@ -43,9 +34,9 @@ public class MainBean {
         customEntityLoader = new CustomEntityLoader();
         new Loader();
 
-        //String logo = "bean:logo/logo.png";
-        //ImageLoader.createTexture(logo);
-        //new FpsTest();
+        //  String logo = "bean:logo/logo.png";
+        //  ImageLoader.createTexture(logo);
+        //  new FpsTest();
 
         loadSettings = true;
     }

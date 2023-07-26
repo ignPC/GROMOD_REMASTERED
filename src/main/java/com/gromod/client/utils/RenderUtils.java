@@ -1,22 +1,16 @@
 package com.gromod.client.utils;
 
-import com.gromod.client.gui.TestGui;
+import com.gromod.client.gui.NewGui;
 import com.gromod.client.renderer.RenderPipeline;
-import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import org.lwjgl.opengl.Display;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-
 public class RenderUtils {
 
     public static void drawImage(float x, float y, float width, float height, BColor color) {
-        float xScale = TestGui.scaled.getXScale();
-        float yScale = TestGui.scaled.getYScale();
+        float xScale = NewGui.scaled.getXScale();
+        float yScale = NewGui.scaled.getYScale();
 
         x *= xScale;
         y = (int) ((Display.getHeight() - y * yScale - height * yScale));
@@ -105,8 +99,8 @@ public class RenderUtils {
     }
 
     public static void drawRoundedRectangle(float x, float y, float width, float height, float radius, float shade, BColor color) {
-        float xScale = TestGui.scaled.getXScale();
-        float yScale = TestGui.scaled.getYScale();
+        float xScale = NewGui.scaled.getXScale();
+        float yScale = NewGui.scaled.getYScale();
 
         x *= xScale;
         y = (int) ((Display.getHeight() - y * yScale - height * yScale));
@@ -122,12 +116,13 @@ public class RenderUtils {
                 radius, shade, 0, ShapeType.ROUNDEDRECTANGLE.ordinal(),
                 0, 0, 0, 0
         );
+
         RenderPipeline.guiShapes++;
     }
 
     public static void drawCircle(float x, float y, float width, float height, float radius, float shade, BColor color) {
-        float xScale = TestGui.scaled.getXScale();
-        float yScale = TestGui.scaled.getYScale();
+        float xScale = NewGui.scaled.getXScale();
+        float yScale = NewGui.scaled.getYScale();
 
         x *= xScale;
         y = (int) ((Display.getHeight() - y * yScale - height * yScale));
@@ -143,6 +138,7 @@ public class RenderUtils {
                 radius, shade, 0, ShapeType.CIRCLE.ordinal(),
                 0, 0, 0, 0
         );
+
         RenderPipeline.guiShapes++;
     }
 }

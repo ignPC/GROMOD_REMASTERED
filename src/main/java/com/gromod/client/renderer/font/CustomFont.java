@@ -1,6 +1,6 @@
 package com.gromod.client.renderer.font;
 
-import com.gromod.client.gui.TestGui;
+import com.gromod.client.gui.NewGui;
 import com.gromod.client.renderer.RenderPipeline;
 import com.gromod.client.utils.BColor;
 import com.gromod.client.utils.ShapeType;
@@ -40,8 +40,8 @@ public class CustomFont {
 
     public void drawString(int x, int y, String text, BColor color) {
         CharInfo charInfo = charInfos['a'];
-        float xScale = TestGui.scaled.getXScale();
-        float yScale = TestGui.scaled.getYScale();
+        float xScale = NewGui.scaled.getXScale();
+        float yScale = NewGui.scaled.getYScale();
 
         x = (int) (x * xScale);
         y = (int) (Display.getHeight() - y * yScale - charInfo.height * yScale);
@@ -72,8 +72,8 @@ public class CustomFont {
 
     public void drawString(int x, int y, float letterSize, String text, BColor color) {
         CharInfo charInfo = charInfos['a'];
-        float xScale = TestGui.scaled.getXScale();
-        float yScale = TestGui.scaled.getYScale();
+        float xScale = NewGui.scaled.getXScale();
+        float yScale = NewGui.scaled.getYScale();
 
         x = (int) (x * xScale);
         y = (int) (Display.getHeight() - y * yScale - charInfo.height * yScale * letterSize);
@@ -105,7 +105,7 @@ public class CustomFont {
     public int getWidth(float letterSize, String text) {
         int totalWidth = 0;
         CharInfo charInfo = charInfos['a'];
-        float xScale = TestGui.scaled.getXScale();
+        float xScale = NewGui.scaled.getXScale();
 
         for (char character : text.toCharArray()) {
             if (character == ' ') {
@@ -121,7 +121,7 @@ public class CustomFont {
 
     public int getHeight(float letterSize) {
         CharInfo charInfo = charInfos['a'];
-        float yScale = TestGui.scaled.getYScale();
+        float yScale = NewGui.scaled.getYScale();
         return (int) (charInfo.height * yScale * letterSize);
     }
 }

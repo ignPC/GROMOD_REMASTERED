@@ -7,8 +7,8 @@ import com.gromod.client.renderer.RenderPipeline;
 import com.gromod.client.renderer.font.CustomFont;
 import com.gromod.client.renderer.font.FontAtlasBuilder;
 import com.gromod.client.renderer.util.ProjectionUtils;
-import com.gromod.client.settings.LoadSettings;
 import com.gromod.client.utils.BColor;
+import com.gromod.client.utils.MessageUtils;
 import com.gromod.client.utils.Scaled;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,16 +22,15 @@ import org.reflections.Reflections;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 @Component
-public class TestGui {
+public class NewGui {
 
     @Getter
-    private static TestGui instance;
+    private static NewGui instance;
 
-    public static TestGui currentScreen;
+    public static NewGui currentScreen;
     public static Scaled scaled = new Scaled();
     private final List<GuiComponent> components = new ArrayList<>();
     private final Minecraft minecraft;
@@ -74,7 +73,7 @@ public class TestGui {
     private int currentColorSchemeIndex = 1;
 
     @AutoInit
-    public TestGui(Minecraft minecraft) {
+    public NewGui(Minecraft minecraft) {
         instance = this;
         this.minecraft = minecraft;
         interBold = FontAtlasBuilder.fonts.get("Inter-Bold.ttf");
@@ -286,11 +285,11 @@ public class TestGui {
 
 
         components.add(screen);
-        components.add(topBox);
-        components.add(categoryBox);
-        components.add(moduleBox);
-        components.add(scrollbar);
-        components.add(topLogo);
+            components.add(topBox);
+            components.add(categoryBox);
+            components.add(moduleBox);
+            components.add(scrollbar);
+            components.add(topLogo);
 
 
 
@@ -311,14 +310,15 @@ public class TestGui {
 
             // Set initial colors based on the toggledOn state
             BColor[] colors = categoryComponent.toggledOn ? offColors : onColors;
-            categoryComponent.childrenVisible = categoryComponent.toggledOn;
 
             categoryComponent.listen2Click(shapes -> {
                 BColor[] updatedColors = categoryComponent.toggledOn ? offColors : onColors;
                 shapes.get(0).color = updatedColors[0];
                 shapes.get(2).color = updatedColors[1];
 
-                categoryComponent.childrenVisible = categoryComponent.toggledOn;
+                for (GuiComponent child : categoryComponent.getChildren()){
+                    child.isVisible = categoryComponent.toggledOn;
+                }
 
                 if (!categoryComponent.toggledOn) return;
 
@@ -388,6 +388,8 @@ public class TestGui {
                         .offset(moduleIteratingOffsetX, moduleIteratingOffsetY)
                         .parent(parentComponent);
 
+                moduleComponent.setVisible(parentComponent.toggledOn);
+
                 // Iterate Offsets
                 moduleIteratingOffsetX += moduleComponent.width + moduleOffsetX;
                 if(moduleComponent.x + moduleComponent.width + moduleOffsetX + moduleComponent.width >= mainBox.x + mainBox.width){
@@ -435,7 +437,6 @@ public class TestGui {
                     shapes.get(2).color = updatedColors[1];
                 });
 
-
                 moduleComponent.shapes(guiComponent1 -> {
                     int outlineThickness = 2;
                     new Rectangle(moduleComponent, colors[0])
@@ -450,7 +451,114 @@ public class TestGui {
                             .center();
                 });
 
+
+
+
+                //
+                // TODO:
+                //      -----------------------------------------NEW-MODULE-SETTINGS-----------------------------------------
+                //
+
+
+
+                GuiComponent moduleSettingsComponent = new GuiComponent(mainBox, mainBox.getWidth(), mainBox.getHeight());
+
+                GuiComponent settingsModuleNameBox = new GuiComponent(moduleSettingsComponent, mainBoxWidth, mainBoxHeight / 9)
+                        .shapes(guiComponent -> {
+                            new Text(guiComponent, 1.3f, finalMainButtonField.getAnnotation(GuiField.class).label(), white)
+                                    .offset(categoryOffsetX, 0)
+                                    .centerY();
+                });
+
+                GuiComponent settingsDescriptionBox = new GuiComponent(moduleSettingsComponent, mainBoxWidth, mainBoxHeight / 9)
+                        .offset(0, settingsModuleNameBox.height + paddingY)
+                        .shapes(guiComponent -> {
+                            new Text(guiComponent, 0.9f, "This is a description box", shade1)
+                                    .offset(0, 0)
+                                    .centerY();
+                });
+
+                // Modules Under Categories
+                int settingsBoxOffsetY = settingsModuleNameBox.height + paddingY + settingsDescriptionBox.height + paddingY;
+                int settingsBoxHeight = mainBoxHeight - settingsBoxOffsetY;
+
+                GuiComponent settingsBox = new GuiComponent(moduleSettingsComponent, mainBoxWidth, settingsBoxHeight)
+                        .offset(0, settingsBoxOffsetY)
+                        .shapes(guiComponent -> {
+                            new Rectangle(guiComponent, mainBoxWidth, 2, shade1); // Line for decoration
+                });
+
+                settingsBox.shapes(guiComponent -> {
+                    new Rectangle(guiComponent, mainBoxWidth + mainBoxPaddingX, 2, shade1); // Line for decoration
+                });
+
+                int iteratingSettingsOffsetY = paddingY;
+                int iteratingSettingsOffsetX = 0;
+
+                for (Field field : clazz.getDeclaredFields()) {
+                    if (field.getAnnotation(GuiField.class) == null) continue;
+                    if (field.getAnnotation(GuiField.class).type() == GuiField.Type.MAIN_BUTTON) continue;
+
+                    field.setAccessible(true);
+                    Object settingInstance = clazz.getMethod("getInstance").invoke(null);
+
+                    GuiComponent setting = new GuiComponent(settingsBox, settingsBox.getWidth() / 6, settingsBox.getHeight() / 6)
+                            .offset(iteratingSettingsOffsetX, iteratingSettingsOffsetY)
+                            .parent(moduleSettingsComponent)
+                            .shapes(guiComponent -> {
+                                new Rectangle(guiComponent, guiComponent.getWidth(), guiComponent.getHeight(), shade1);
+                            });
+
+                    setting.listen2Click(shapes -> {
+                        boolean updatedButtonValue = false;
+                        try {
+                            updatedButtonValue = field.getBoolean(settingInstance);
+                            field.set(!updatedButtonValue, settingInstance);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+
+                        BColor[] updatedColors = updatedButtonValue ? onColors : offColors;
+                        shapes.get(0).color = updatedColors[0];
+                    });
+
+                    iteratingSettingsOffsetY += setting.getHeight()* 1.2;
+
+                    components.add(setting);
+                }
+
+
+                moduleSettingsComponent.setVisible(false);
+                for (GuiComponent c : moduleSettingsComponent.getChildren()){
+                    c.setVisible(false);
+                }
+
+                moduleComponent.listen2RightClick(shapes -> {
+                    shapes.stream().iterator().next();
+
+                    for (GuiComponent c : mainBox.getChildren()){
+                        c.setVisible(!moduleComponent.isRightClickToggledOn());
+                    }
+
+                    moduleSettingsComponent.setVisible(moduleComponent.isRightClickToggledOn());
+                    for (GuiComponent c : moduleSettingsComponent.getChildren()){
+                        c.setVisible(moduleComponent.isRightClickToggledOn());
+                    }
+                });
+
+
+
+                //---------------------------------------------------------ADD COMPONENTS---------------------------------------------------------//
+
+
+
                 components.add(moduleComponent);
+
+                components.add(moduleSettingsComponent);
+                    components.add(settingsModuleNameBox);
+                    components.add(settingsDescriptionBox);
+                    components.add(settingsBox);
+
                 moduleComponents.add(moduleComponent);
             }
         }
@@ -458,7 +566,6 @@ public class TestGui {
 
     @Setter
     private boolean needsReinitialization = false;
-    private boolean needsClose = false;
 
     private void updateColors(BColor newBackgroundColor, BColor newShade1, BColor newShade2, BColor newShade3, BColor newMain1, BColor newWhite) {
         backgroundColor = newBackgroundColor;
@@ -491,10 +598,45 @@ public class TestGui {
     }
 
 
+    public BColor newColor(int r, int g, int b, int a){
+        return new BColor((float) (r / 255), (float) (g / 255), (float) (b / 255), (float) (a / 255));
+    }
+
+    public static BColor hexToRGB(String hexCode, float alpha) {
+        // Remove '#' character if present
+        if (hexCode.startsWith("#")) {
+            hexCode = hexCode.substring(1);
+        }
+
+        // Parse the individual red, green, and blue components
+        int red = Integer.parseInt(hexCode.substring(0, 2), 16);
+        int green = Integer.parseInt(hexCode.substring(2, 4), 16);
+        int blue = Integer.parseInt(hexCode.substring(4, 6), 16);
+
+        // Normalize the RGB values to the range 0-1
+        float normalizedRed = (float) (red / 255.0);
+        float normalizedGreen = (float) (green / 255.0);
+        float normalizedBlue = (float) (blue / 255.0);
+
+        return new BColor(normalizedRed, normalizedGreen, normalizedBlue, alpha);
+    }
+
+    public void setMainBox(int width, int height, int offsetX, int offsetY) {
+        mainBoxWidth = width - mainBoxPaddingX * 3;
+        mainBoxHeight = height - mainBoxPaddingY * 2;
+        mainBoxOffsetX = offsetX + mainBoxPaddingX;
+        mainBoxOffsetY = offsetY + mainBoxPaddingY;
+    }
+
+
+
+
+    //-----------------------------------------GUI-STUFF-----------------------------------------//
+
     public void drawGui() {
         Minecraft.getMinecraft().ingameGUI.getChatGUI().clearChatMessages();
         for (GuiComponent component : components) {
-            if (component.parent != null) component.setVisible(component.parent.childrenVisible);
+            if (component.parent != null && !component.parent.isVisible) component.setVisible(false);
             if (component.isVisible) component.drawComponent();
         }
     }
@@ -556,7 +698,11 @@ public class TestGui {
 
             for (GuiComponent component : components)
                 if (component.update && component.hovered)
-                    component.mouseClick(button, mouseX, mouseY);
+                    if (button == 0)
+                        component.mouseClick(button, mouseX, mouseY);           // Left Click
+                    else if (button == 1)
+                        component.mouseClickRight(button, mouseX, mouseY);      // Right Click
+
         } else if (button != -1) {
             this.eventButton = -1;
             for (GuiComponent component : components)
@@ -588,33 +734,4 @@ public class TestGui {
         RenderPipeline.refreshGuiPipeline();
     }
 
-    public BColor newColor(int r, int g, int b, int a){
-        return new BColor((float) (r / 255), (float) (g / 255), (float) (b / 255), (float) (a / 255));
-    }
-
-    public static BColor hexToRGB(String hexCode, float alpha) {
-        // Remove '#' character if present
-        if (hexCode.startsWith("#")) {
-            hexCode = hexCode.substring(1);
-        }
-
-        // Parse the individual red, green, and blue components
-        int red = Integer.parseInt(hexCode.substring(0, 2), 16);
-        int green = Integer.parseInt(hexCode.substring(2, 4), 16);
-        int blue = Integer.parseInt(hexCode.substring(4, 6), 16);
-
-        // Normalize the RGB values to the range 0-1
-        float normalizedRed = (float) (red / 255.0);
-        float normalizedGreen = (float) (green / 255.0);
-        float normalizedBlue = (float) (blue / 255.0);
-
-        return new BColor(normalizedRed, normalizedGreen, normalizedBlue, alpha);
-    }
-
-    public void setMainBox(int width, int height, int offsetX, int offsetY) {
-        mainBoxWidth = width - mainBoxPaddingX * 3;
-        mainBoxHeight = height - mainBoxPaddingY * 2;
-        mainBoxOffsetX = offsetX + mainBoxPaddingX;
-        mainBoxOffsetY = offsetY + mainBoxPaddingY;
-    }
 }

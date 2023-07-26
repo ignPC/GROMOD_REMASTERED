@@ -2,16 +2,14 @@ package com.gromod.client.renderer;
 
 import com.gromod.client.event.AfterScreenCreationEvent;
 import com.gromod.client.event.GuiRenderEvent;
-import com.gromod.client.gui.TestGui;
+import com.gromod.client.gui.NewGui;
 import com.gromod.client.annotation.AutoInit;
 import com.gromod.client.annotation.Component;
-import com.gromod.client.mixin.GlStateManagerMixin;
 import com.gromod.client.renderer.font.FontAtlasBuilder;
 import com.gromod.client.renderer.image.ImageLoader;
 import com.gromod.client.renderer.util.CommonShapes;
 import com.gromod.client.renderer.util.ProjectionUtils;
 import com.gromod.client.utils.FpsTimer;
-import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -58,7 +56,7 @@ public class RenderPipeline {
         int active = currentActiveTexture;
         int bind = currentBindTexture;
 
-        if (TestGui.currentScreen == null) return;
+        if (NewGui.currentScreen == null) return;
         if (guiShapes == 0) return;
 
         glUseProgram(guiShader.getShaderProgram());

@@ -3,8 +3,6 @@ package com.gromod.client;
 import com.gromod.client.annotation.AutoInit;
 import com.gromod.client.annotation.Component;
 import com.gromod.client.annotation.GuiModule;
-import com.gromod.client.gui.TestGui;
-import com.gromod.client.settings.LoadSettings;
 import net.minecraft.client.Minecraft;
 import org.reflections.Reflections;
 

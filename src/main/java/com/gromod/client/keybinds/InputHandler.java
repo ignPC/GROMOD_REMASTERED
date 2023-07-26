@@ -1,6 +1,6 @@
 package com.gromod.client.keybinds;
 
-import com.gromod.client.gui.TestGui;
+import com.gromod.client.gui.NewGui;
 import com.gromod.client.annotation.AutoInit;
 import com.gromod.client.annotation.Component;
 import net.minecraft.client.settings.KeyBinding;
@@ -17,12 +17,12 @@ import java.util.List;
 public class InputHandler {
 
     private static final KeyBinding KEY_BINDING_GUI = new KeyBinding("Click Gui", 56, "Gromod");
-    private final TestGui testGui;
+    private final NewGui newGui;
 
     @AutoInit
-    public InputHandler(TestGui testGui) {
+    public InputHandler(NewGui newGui) {
         MinecraftForge.EVENT_BUS.register(this);
-        this.testGui = testGui;
+        this.newGui = newGui;
 
         List<KeyBinding> bindingList = new ArrayList<>();
 
@@ -35,9 +35,9 @@ public class InputHandler {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent event) {
-        if (TestGui.currentScreen == null) {
+        if (NewGui.currentScreen == null) {
             if (KEY_BINDING_GUI.isPressed()) {
-                testGui.openGui();
+                newGui.openGui();
             }
         }
     }
